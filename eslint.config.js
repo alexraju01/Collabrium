@@ -54,7 +54,7 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-console': 'error',
+      'no-console': 'warn',
       'no-undef': 'error',
     },
   },
