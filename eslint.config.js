@@ -9,9 +9,7 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import { defineConfig } from 'eslint/config';
 
 export default defineConfig([
-  // -------------------------------------------------------------
   // 1. BASE CONFIGURATION (Applied to all files by default)
-  // -------------------------------------------------------------
   {
     ignores: ['node_modules/', 'dist/', 'build/'],
 
@@ -27,12 +25,12 @@ export default defineConfig([
     },
 
     rules: {
-      // ✅ Quality & Style Enforcement
+      //  Quality & Style Enforcement
       'prefer-const': 'error',
       'prefer-arrow-callback': 'error',
       'func-style': ['error', 'expression'],
 
-      // ✅ Unused Variables
+      //  Unused Variables
       'no-unused-vars': [
         'warn',
         {
@@ -41,17 +39,13 @@ export default defineConfig([
         },
       ],
 
-      // 🛑 Bug Prevention
+      //  Bug Prevention
       eqeqeq: ['error', 'always'],
       'no-var': 'error',
     },
   },
 
-  // -------------------------------------------------------------
-  // 2. OVERRIDES (Specific rules for backend and frontend)
-  // -------------------------------------------------------------
-
-  // ➡️ A. BACKEND OVERRIDES (Node/Express code)
+  // BACKEND OVERRIDES (Node/Express code)
   {
     files: ['backend/**/*.js'],
     languageOptions: {
@@ -65,7 +59,7 @@ export default defineConfig([
     },
   },
 
-  // ➡️ B. FRONTEND OVERRIDES (React/JSX code)
+  // FRONTEND OVERRIDES (React/JSX code)
   {
     files: ['frontend/**/*.{js,jsx}'],
 
