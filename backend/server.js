@@ -10,3 +10,7 @@ app.listen(port, () => {
   // eslint-disable-next-line no-console
   console.log(`Server listening on http://localhost:${port}`);
 });
+
+function add(a, b) {
+  return a + b;
+}
