@@ -11,6 +11,8 @@ app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);
 });
 
-function add(a, b) {
+const add = (a, b) => {
   return a + b;
-}
+};
+
+add(2, 3);
