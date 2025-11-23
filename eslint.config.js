@@ -5,21 +5,21 @@ import js from '@eslint/js';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import { defineConfig } from 'eslint/config';
 
-export default [
+export default defineConfig([
   // -------------------------------------------------------------
   // 1. BASE CONFIGURATION (Applied to all files by default)
   // -------------------------------------------------------------
   {
-    // Ignore files/directories
     ignores: ['node_modules/', 'dist/', 'build/'],
 
-    // Base rules for ALL files
     ...js.configs.recommended,
     ...prettierRecommended,
 
     languageOptions: {
-      ecmaVersion: 12,
+      ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
         ...globals.es2021,
@@ -27,19 +27,21 @@ export default [
     },
 
     rules: {
-      'no-unused-vars': [
-        'warn', // Treat unused variables as an error
-        {
-          vars: 'all', // Check all variables
-          args: 'after-used', // Only check arguments that appear after the last used argument
-        },
-      ],
-
+      // ✅ Quality & Style Enforcement
       'prefer-const': 'error',
       'prefer-arrow-callback': 'error',
       'func-style': ['error', 'expression'],
 
-      // 🛑 Common Rules for ALL code
+      // ✅ Unused Variables
+      'no-unused-vars': [
+        'warn',
+        {
+          vars: 'all',
+          args: 'after-used',
+        },
+      ],
+
+      // 🛑 Bug Prevention
       eqeqeq: ['error', 'always'],
       'no-var': 'error',
     },
@@ -58,10 +60,8 @@ export default [
       },
     },
     rules: {
-      // Setting no-console to 'error' for the backend
       'no-console': 'error',
       'no-undef': 'error',
-      // Note: prefer-arrow-callback and func-style are now in the Base Config
     },
   },
 
@@ -73,6 +73,20 @@ export default [
       react,
       'react-hooks': reactHooks,
     },
+
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+
+    extends: [reactRefresh.configs.vite],
+
     settings: {
       react: { version: 'detect' },
     },
@@ -85,19 +99,6 @@ export default [
       'no-console': 'warn',
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off',
-
-      // Language configuration for browser globals and JSX
-      languageOptions: {
-        globals: {
-          ...globals.browser,
-        },
-        parserOptions: {
-          ecmaFeatures: {
-            jsx: true,
-          },
-        },
-      },
-      // Note: prefer-arrow-callback and func-style are now in the Base Config
     },
   },
-];
+]);

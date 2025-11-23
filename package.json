@@ -16,7 +16,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "start": "nodemon backend/server.js"
+    "start": "nodemon backend/server.js",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
   },
   "devDependencies": {
     "eslint": "^9.39.1",
@@ -24,6 +25,10 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
     "prettier": "^3.6.2"
+  },
+  "dependencies": {
+    "concurrently": "^9.2.1"
   }
 }
