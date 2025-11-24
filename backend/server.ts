@@ -3,9 +3,8 @@ import express from 'express';
 const app = express();
 const port = 3000;
 
-app.get('/', (_, res) => {
-  res.send('Hello from server!!');
-});
+app.use(express.json());
+
 
 // ANSI Escape Codes:
 const RESET = '\x1b[0m';
