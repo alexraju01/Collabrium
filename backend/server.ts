@@ -6,7 +6,6 @@ const GREEN = '\x1b[32m';
 const ORANGE = '\x1b[33m';
 const RED = '\x1b[31m';
 
-
 async function startServer() {
   try {
     console.log(`${ORANGE}Connecting to the database...`);

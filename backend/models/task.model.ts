@@ -1,5 +1,4 @@
 import { CreationOptional, DataTypes, Model, Optional } from 'sequelize';
-
 import { sequelize } from '../config/db';
 
 // 1. Define the attributes required for a Task instance (a row in the DB)
