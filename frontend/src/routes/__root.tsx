@@ -5,7 +5,10 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 export const Route = createRootRoute({
   component: () => (
     <>
+    <div>
       <Outlet />
+      {/* Footer */}
+    </div>
       <TanStackDevtools
         config={{
           position: 'bottom-right',
