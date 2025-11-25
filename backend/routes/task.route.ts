@@ -1,6 +1,12 @@
-import express, { Request, Response, Router } from 'express';
-import { getAllTasks } from '../controllers/task.controller';
+import { Router } from 'express';
+import {
+  getAllTasks,
+  getOneTask,
+  updateTask,
+} from '../controllers/task.controller';
 
 export const taskRouter = Router();
 
-taskRouter.get('/', getAllTasks);
+taskRouter.route('/').get(getAllTasks);
+
+taskRouter.route('/:id').get(getOneTask).patch(updateTask);

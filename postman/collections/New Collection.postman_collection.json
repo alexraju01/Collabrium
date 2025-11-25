@@ -1,0 +1,39 @@
+{
+  "info": {
+    "_postman_id": "bf8c971e-7bf0-4b39-9e2d-df560a6af392",
+    "name": "Tasks",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Task",
+      "id": "01180d81-ceda-46c5-8b4d-1a73b22386b2",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": ""
+        }
+      }
+    },
+    {
+      "name": "Get One Task",
+      "id": "29f292dc-1362-4f64-acad-06df222f63c8",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": ""
+        }
+      }
+    },
+    {
+      "name": "New Request",
+      "id": "d58b0158-a5bd-448d-8864-ec2885356ec4",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": ""
+        }
+      }
+    }
+  ]
+}
