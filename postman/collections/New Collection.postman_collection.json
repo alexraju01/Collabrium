@@ -11,7 +11,14 @@
       "request": {
         "method": "GET",
         "url": {
-          "raw": ""
+          "raw": "{{URL}}api/v1/task",
+          "host": [
+            "{{URL}}api"
+          ],
+          "path": [
+            "v1",
+            "task"
+          ]
         }
       }
     },
@@ -21,7 +28,15 @@
       "request": {
         "method": "GET",
         "url": {
-          "raw": ""
+          "raw": "{{URL}}api/v1/task/1",
+          "host": [
+            "{{URL}}api"
+          ],
+          "path": [
+            "v1",
+            "task",
+            "1"
+          ]
         }
       }
     },
@@ -32,7 +47,7 @@
         "method": "PATCH",
         "body": {
           "mode": "raw",
-          "raw": " {\r\n    \"title\": \"Setup Sequelize Models\",\r\n    \"description\": \"Finalize the Task model definition, including all necessary attributes and associationsss.\",\r\n    \"status\": \"completed\",\r\n    \"tags\": [\"backend\", \"sequelize\", \"test\"],\r\n    \"dueBy\": \"2025-12-01T12:00:00Z\"\r\n  }",
+          "raw": "",
           "options": {
             "raw": {
               "language": "json"
@@ -40,14 +55,11 @@
           }
         },
         "url": {
-          "raw": "http://localhost:3000/api/v1/task/1",
-          "protocol": "http",
+          "raw": "{{URL}}api/v1/task/1",
           "host": [
-            "localhost"
+            "{{URL}}api"
           ],
-          "port": "3000",
           "path": [
-            "api",
             "v1",
             "task",
             "1"
@@ -62,7 +74,7 @@
         "method": "POST",
         "body": {
           "mode": "raw",
-          "raw": "  {\r\n    \"title\": \"Testing create task\",\r\n    \"description\": \"task should be created.\",\r\n    \"status\": \"completed\",\r\n    \"tags\": [\"testing\",\"check me out baby\"],\r\n    \"dueBy\": null\r\n  }",
+          "raw": "",
           "options": {
             "raw": {
               "language": "json"
@@ -70,14 +82,11 @@
           }
         },
         "url": {
-          "raw": "http://localhost:3000/api/v1/task",
-          "protocol": "http",
+          "raw": "{{URL}}api/v1/task",
           "host": [
-            "localhost"
+            "{{URL}}api"
           ],
-          "port": "3000",
           "path": [
-            "api",
             "v1",
             "task"
           ]
@@ -85,12 +94,20 @@
       }
     },
     {
-      "name": "New Request",
+      "name": "Delete Task",
       "id": "3f3d452f-2237-472f-bce4-87406347bdca",
       "request": {
-        "method": "GET",
+        "method": "DELETE",
         "url": {
-          "raw": ""
+          "raw": "{{URL}}api/v1/task/11",
+          "host": [
+            "{{URL}}api"
+          ],
+          "path": [
+            "v1",
+            "task",
+            "11"
+          ]
         }
       }
     }
