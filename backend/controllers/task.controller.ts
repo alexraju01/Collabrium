@@ -3,7 +3,9 @@ import Task from '../models/task.model';
 
 export const getAllTasks = async (_: Request, res: Response) => {
   const tasks = await Task.findAll();
-  res.status(200).json({ status: 'success', data: tasks });
+  res
+    .status(200)
+    .json({ status: 'success', results: tasks.length, data: tasks });
 };
 
 export const getOneTask = async (req: Request, res: Response) => {
@@ -26,5 +28,16 @@ export const updateTask = async (req: Request, res: Response) => {
   res.status(200).json({
     message: 'success',
     blog: updatedTask,
+  });
+};
+
+export const createTask = async (req: Request, res: Response) => {
+  const taskData = req.body;
+
+  const newTask = await Task.create(taskData);
+
+  res.status(201).json({
+    status: 'success',
+    data: newTask,
   });
 };

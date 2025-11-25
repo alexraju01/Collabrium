@@ -26,12 +26,52 @@
       }
     },
     {
-      "name": "New Request",
+      "name": "Update Task",
       "id": "d58b0158-a5bd-448d-8864-ec2885356ec4",
       "request": {
-        "method": "GET",
+        "method": "PATCH",
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n    \"title\": \"Setup Sequelize Models\",\r\n    \"description\": \"Finalize the Task model definition, including all necessary attributes and associationsss.\",\r\n    \"status\": \"completed\",\r\n    \"tags\": [\"backend\", \"sequelize\", \"test\"],\r\n    \"dueBy\": \"2025-12-01T12:00:00Z\"\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
-          "raw": ""
+          "raw": "http://localhost:3000/api/v1/task/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "task",
+            "1"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Task",
+      "id": "da741a6e-f6d0-468c-96e9-3604751c3e76",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/task",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "task"
+          ]
         }
       }
     }

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  createTask,
   getAllTasks,
   getOneTask,
   updateTask,
@@ -7,6 +8,6 @@ import {
 
 export const taskRouter = Router();
 
-taskRouter.route('/').get(getAllTasks);
+taskRouter.route('/').get(getAllTasks).post(createTask);
 
 taskRouter.route('/:id').get(getOneTask).patch(updateTask);
