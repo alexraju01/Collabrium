@@ -1,7 +1,6 @@
 import express, { Request, Response, Router } from 'express';
+import { getAllTasks } from '../controllers/task.controller';
 
 export const taskRouter = Router();
 
-taskRouter.get('/', (_: Request, res: Response) => {
-  res.status(200).json({ status: 'success', message: 'Task route is working' });
-});
+taskRouter.get('/', getAllTasks);
