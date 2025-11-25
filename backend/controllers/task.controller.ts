@@ -41,3 +41,17 @@ export const createTask = async (req: Request, res: Response) => {
     data: newTask,
   });
 };
+
+export const deleteTask = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const deleteTask = await Task.destroy({
+    where: {
+      id,
+    },
+  });
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+};

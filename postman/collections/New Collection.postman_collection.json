@@ -60,6 +60,15 @@
       "id": "da741a6e-f6d0-468c-96e9-3604751c3e76",
       "request": {
         "method": "POST",
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n    \"title\": \"Testing create task\",\r\n    \"description\": \"task should be created.\",\r\n    \"status\": \"completed\",\r\n    \"tags\": [\"testing\",\"check me out baby\"],\r\n    \"dueBy\": null\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
           "raw": "http://localhost:3000/api/v1/task",
           "protocol": "http",
@@ -72,6 +81,16 @@
             "v1",
             "task"
           ]
+        }
+      }
+    },
+    {
+      "name": "New Request",
+      "id": "3f3d452f-2237-472f-bce4-87406347bdca",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": ""
         }
       }
     }
