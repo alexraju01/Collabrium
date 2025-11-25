@@ -2,51 +2,71 @@
   {
     "title": "Setup Sequelize Model",
     "description": "Finalize the Task model definition, including all necessary attributes and associations.",
-    "isComplete": false
+    "status": "not started",
+    "tags": ["backend", "sequelize"],
+    "dueBy": "2025-12-01T12:00:00Z"
   },
   {
     "title": "Configure Database Connection",
     "description": "Establish a stable connection to the PostgreSQL/MySQL database using the provided credentials in 'config/db.ts'.",
-    "isComplete": true
+    "status": "completed",
+    "tags": [],
+    "dueBy": null
   },
   {
     "title": "Implement API Route for Tasks",
     "description": "Create GET, POST, PUT, and DELETE endpoints for managing tasks (CRUD operations).",
-    "isComplete": false
+    "status": "in progress",
+    "tags": ["api", "routes"],
+    "dueBy": "2025-11-30T09:00:00Z"
   },
   {
     "title": "Write Unit Tests for Model",
     "description": "Develop comprehensive unit tests to ensure the Task model behaves as expected.",
-    "isComplete": false
+    "status": "not started",
+    "tags": [],
+    "dueBy": null
   },
   {
     "title": "Design Front-End Task List",
     "description": "Create the initial HTML/React component structure for displaying the list of tasks.",
-    "isComplete": true
+    "status": "completed",
+    "tags": ["frontend", "react"],
+    "dueBy": "2025-12-05T17:00:00Z"
   },
   {
     "title": "Debug Task Creation Bug",
     "description": "Investigate and resolve the issue where new tasks are being saved without a 'title'.",
-    "isComplete": false
+    "status": "in progress",
+    "tags": [],
+    "dueBy": null
   },
   {
     "title": "Review PR #42: Database Seeding",
     "description": "Check the pull request that adds the initial data seeding script for the Task model.",
-    "isComplete": true
+    "status": "completed",
+    "tags": ["review", "database"],
+    "dueBy": "2025-11-28T15:00:00Z"
   },
   {
     "title": "Update Documentation",
     "description": "Document the new Task model and its API endpoints in the project README.",
-    "isComplete": false
+    "status": "not started",
+    "tags": [],
+    "dueBy": null
   },
   {
     "title": "Refactor Task Controller Logic",
     "description": "Clean up the code in the Task controller to improve readability and performance.",
-    "isComplete": true
+    "status": "in review",
+    "tags": ["refactor", "backend"],
+    "dueBy": "2025-12-02T10:30:00Z"
   },
   {
     "title": "Plan Next Sprint Features",
     "description": "Meet with the team to define tasks for the upcoming development sprint.",
-    "isComplete": false
+    "status": "not started",
+    "tags": [],
+    "dueBy": null
   }
 ]

@@ -1,11 +1,15 @@
 import { CreationOptional, DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/db';
 
+type Status = 'not started' | 'in progress' | 'completed' | 'in review';
 // 1. Define the attributes required for a Task instance (a row in the DB)
 export interface TaskAttributes {
   id: number;
   title: string;
   description: string;
+  status: Status;
+  tags: string[];
+  dueBy: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -21,6 +25,9 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> {
   declare id: CreationOptional<number>;
   declare title: string;
   declare description: string;
+  declare status: Status;
+  declare tags: string[];
+  declare dueBy: Date | null;
   declare createdAt: Date;
   declare updatedAt: Date;
 }
@@ -38,6 +45,25 @@ Task.init(
     },
     description: {
       type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    status: {
+      type: DataTypes.ENUM(
+        'not started',
+        'in progress',
+        'completed',
+        'in review',
+      ),
+      allowNull: false,
+      defaultValue: 'not started',
+    },
+    tags: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+      defaultValue: [],
+    },
+    dueBy: {
+      type: DataTypes.DATE,
       allowNull: true,
     },
   },
