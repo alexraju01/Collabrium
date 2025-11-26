@@ -28,14 +28,14 @@
       "request": {
         "method": "GET",
         "url": {
-          "raw": "{{URL}}api/v1/user/",
+          "raw": "{{URL}}api/v1/user/4",
           "host": [
             "{{URL}}api"
           ],
           "path": [
             "v1",
             "user",
-            ""
+            "4"
           ]
         }
       }
@@ -46,14 +46,14 @@
       "request": {
         "method": "DELETE",
         "url": {
-          "raw": "{{URL}}api/v1/user/",
+          "raw": "{{URL}}api/v1/user/1",
           "host": [
             "{{URL}}api"
           ],
           "path": [
             "v1",
             "user",
-            ""
+            "1"
           ]
         }
       }

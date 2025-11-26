@@ -2,12 +2,14 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/db';
 
 type Roles = 'project manager' | 'line manager' | 'user';
+
 // User attributes interface
 interface UserAttributes {
   id: number;
   username: string;
   email: string;
   password: string;
+  confirmPassword: string;
   role: Roles;
 }
 
@@ -20,6 +22,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
   declare username: string;
   declare email: string;
   declare password: string;
+  declare confirmPassword: string;
   declare role: Roles;
 }
 
@@ -71,6 +74,22 @@ User.init(
         },
       },
     },
+
+    confirmPassword: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: 'Confirm password is required' },
+
+        passwordMatches(value: string) {
+          if (value !== this.password) {
+            // Sequelize will catch this error and prevent saving/updating
+            throw new Error('Password and Confirm Password must match.');
+          }
+        },
+      },
+    },
+
     role: {
       type: DataTypes.ENUM('project manager', 'line manager', 'user'),
       allowNull: false,
