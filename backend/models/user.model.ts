@@ -12,7 +12,7 @@ interface UserAttributes {
   password: string;
   confirmPassword: string;
   role?: Roles;
-  //   passwordChangedAt: number;
+  passwordChangedAt: Date | null;
 }
 
 // 2. Define the attributes required for creation (ID is optional)
@@ -26,9 +26,10 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
   declare password: string;
   declare confirmPassword: string;
   declare role?: Roles;
+  declare passwordChangedAt: Date | null;
 
   correctPassword!: (candidatePassword: string) => Promise<boolean>;
-  //   declare passwordChangedAt: number;
+  changedPasswordAfter!: (JWTTimestamp: number) => boolean;
 }
 
 // Initialize the User model
@@ -95,9 +96,9 @@ User.init(
       },
     },
 
-    // passwordChangedAt: {
-    //   type: DataTypes.DATE,
-    // },
+    passwordChangedAt: {
+      type: DataTypes.DATE,
+    },
 
     role: {
       type: DataTypes.ENUM('project manager', 'line manager', 'user'),
@@ -140,6 +141,15 @@ User.beforeUpdate(async (user) => {
 
 User.prototype.correctPassword = async function (candidatePassword: string) {
   return await bcrypt.compare(candidatePassword, this.password);
+};
+
+User.prototype.changedPasswordAfter = function (JWTTimestamp: number) {
+  if (this.passwordChangedAt instanceof Date && this.passwordChangedAt) {
+    const changedTimestamp = Math.floor(this.passwordChangedAt.getTime() / 1000);
+
+    return JWTTimestamp < changedTimestamp;
+  }
+  return false;
 };
 
 export default User;

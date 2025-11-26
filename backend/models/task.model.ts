@@ -51,8 +51,8 @@ Task.init(
         },
 
         len: {
-          args: [5, 100],
-          msg: 'Title must be between 5 and 100n characters long.',
+          args: [1, 100],
+          msg: 'Title must be between 1 and 100 characters long.',
         },
       },
     },
@@ -60,12 +60,6 @@ Task.init(
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
-      validate: {
-        len: {
-          args: [0, 200], // Minimum 0, maximum 200 characters
-          msg: 'Description cannot be longer than 200 characters.',
-        },
-      },
     },
 
     status: {

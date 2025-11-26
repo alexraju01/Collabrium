@@ -7,12 +7,34 @@
   "item": [
     {
       "name": "Signup",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "836f626c-8444-4bda-a968-01231fe44729",
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "id": "c3ae490f-464d-4228-b237-8c32c4e8899f",
+            "exec": [
+              "pm.environment.set(\"JWT\", pm.response.json().token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
       "id": "48a13260-c043-48a9-b512-b2c28063e5ef",
       "request": {
         "method": "POST",
         "body": {
           "mode": "raw",
-          "raw": " {\r\n    \"username\": \"cowlefdleabde2_user_2\",\r\n    \"email\": \"udserewfdeeee2@example.com\",\r\n    \"password\": \"Password123!\",\r\n    \"confirmPassword\": \"Password123!\",\r\n    \"role\": \"user\"\r\n  }",
+          "raw": " {\r\n    \"username\": \"tesdt4\",\r\n    \"email\": \"tesdt4@example.com\",\r\n    \"password\": \"Password123!\",\r\n    \"confirmPassword\": \"Password123!\",\r\n    \"passwordChangedAt\": \"2012-05-27\"\r\n    \r\n  }",
           "options": {
             "raw": {
               "language": "json"

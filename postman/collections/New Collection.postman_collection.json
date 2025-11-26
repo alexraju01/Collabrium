@@ -9,6 +9,16 @@
       "name": "Get All Task",
       "id": "01180d81-ceda-46c5-8b4d-1a73b22386b2",
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{JWT}}",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
         "url": {
           "raw": "{{URL}}api/v1/task",
