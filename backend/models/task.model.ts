@@ -92,17 +92,9 @@ Task.init(
       type: DataTypes.ENUM('low', 'medium', 'high'),
       allowNull: true,
       validate: {
-        // Custom validator to allow null/undefined OR be one of the enum values
-        isPriorityValid(value: Priority | null | undefined) {
-          if (
-            value !== null &&
-            value !== undefined &&
-            !['low', 'medium', 'high'].includes(value)
-          ) {
-            throw new Error(
-              'Invalid priority value. Must be low, medium, or high.',
-            );
-          }
+        isIn: {
+          args: [['low', 'medium', 'high']],
+          msg: 'Priority must be one of: low, medium, or high.',
         },
       },
     },
