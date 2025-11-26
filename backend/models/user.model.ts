@@ -26,6 +26,8 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
   declare password: string;
   declare confirmPassword: string;
   declare role?: Roles;
+
+  correctPassword!: (candidatePassword: string) => Promise<boolean>;
   //   declare passwordChangedAt: number;
 }
 
@@ -115,14 +117,29 @@ User.init(
     defaultScope: {
       attributes: { exclude: ['password'] },
     },
+
+    scopes: {
+      withPasswords: {
+        attributes: {
+          include: ['password'],
+        },
+      },
+    },
   },
 );
 
+User.beforeCreate(async (user, options) => {
+  user.password = await bcrypt.hash(user.password, 12);
+});
 // Hook to hash the password only if it has been changed before an existing user is updated.
 User.beforeUpdate(async (user) => {
   if (!user.changed('password')) return;
   user.password = await bcrypt.hash(user.password, 12);
   //   user.passwordChangedAt = Date.now();
 });
+
+User.prototype.correctPassword = async function (candidatePassword: string) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
 
 export default User;

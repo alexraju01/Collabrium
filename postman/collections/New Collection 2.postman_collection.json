@@ -9,9 +9,53 @@
       "name": "Signup",
       "id": "48a13260-c043-48a9-b512-b2c28063e5ef",
       "request": {
-        "method": "GET",
+        "method": "POST",
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n    \"username\": \"cowlefdleabde2_user_2\",\r\n    \"email\": \"udserewfdeeee2@example.com\",\r\n    \"password\": \"Password123!\",\r\n    \"confirmPassword\": \"Password123!\",\r\n    \"role\": \"user\"\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
-          "raw": ""
+          "raw": "{{URL}}api/v1/user/signup",
+          "host": [
+            "{{URL}}api"
+          ],
+          "path": [
+            "v1",
+            "user",
+            "signup"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "id": "c70202b7-b087-4ae1-8510-80db2817e0c3",
+      "request": {
+        "method": "POST",
+        "body": {
+          "mode": "raw",
+          "raw": " {\r\n    \"email\": \"line_manager_john\",\r\n    \"password\": \"Password123!\"\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}api/v1/user/login",
+          "host": [
+            "{{URL}}api"
+          ],
+          "path": [
+            "v1",
+            "user",
+            "login"
+          ]
         }
       }
     }

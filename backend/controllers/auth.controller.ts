@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import User from '../models/user.model';
 import jwt, { Secret } from 'jsonwebtoken';
+import AppError from '../lib/AppError';
 
 const signToken = (id: string): string => {
   const secret: Secret = process.env.JWT_SECRET!;
@@ -19,7 +20,6 @@ export const signUp = async (req: Request, res: Response) => {
   });
 
   console.log(typeof newUser.id);
-  //   console.log(typeof (process.env.JWT_SECRET as Secret));
   const token = signToken(String(newUser.id));
 
   res.status(201).json({
@@ -28,5 +28,30 @@ export const signUp = async (req: Request, res: Response) => {
     data: {
       user: newUser,
     },
+  });
+};
+
+export const login = async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return next(new AppError('Please provide email and password', 400));
+  }
+
+  const user = await User.scope('withPasswords').findOne({
+    where: {
+      email: email,
+    },
+  });
+
+  if (!user || !(await user.correctPassword(password))) {
+    return next(new AppError('Incorrect email or password', 401));
+  }
+
+  const token = signToken(String(user.id));
+
+  res.status(200).json({
+    status: 'success',
+    token,
   });
 };
