@@ -13,9 +13,7 @@ app.use('/api/v1/task', taskRouter);
 app.use('/api/v1/user', userRouter);
 
 app.get('/*splat', async (req, res, next) => {
-  next(
-    new AppError(`can't find the ${req.originalUrl} on the this server`, 404),
-  );
+  next(new AppError(`can't find the ${req.originalUrl} on the this server`, 404));
 });
 
 app.use(globalErrorHandler);

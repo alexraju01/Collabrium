@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/db';
+import bcrypt from 'bcryptjs';
 
 type Roles = 'project manager' | 'line manager' | 'user';
 
@@ -10,7 +11,8 @@ interface UserAttributes {
   email: string;
   password: string;
   confirmPassword: string;
-  role: Roles;
+  role?: Roles;
+  //   passwordChangedAt: number;
 }
 
 // 2. Define the attributes required for creation (ID is optional)
@@ -23,7 +25,8 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
   declare email: string;
   declare password: string;
   declare confirmPassword: string;
-  declare role: Roles;
+  declare role?: Roles;
+  //   declare passwordChangedAt: number;
 }
 
 // Initialize the User model
@@ -76,7 +79,7 @@ User.init(
     },
 
     confirmPassword: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.VIRTUAL,
       allowNull: false,
       validate: {
         notEmpty: { msg: 'Confirm password is required' },
@@ -89,6 +92,10 @@ User.init(
         },
       },
     },
+
+    // passwordChangedAt: {
+    //   type: DataTypes.DATE,
+    // },
 
     role: {
       type: DataTypes.ENUM('project manager', 'line manager', 'user'),
@@ -104,26 +111,18 @@ User.init(
   },
   {
     sequelize,
+    timestamps: false,
     defaultScope: {
       attributes: { exclude: ['password'] },
     },
-    // hooks: {
-    //   // Hash password before creating user
-    //   beforeCreate: async (user: User) => {
-    //     if (user.password) {
-    //       const salt = await bcrypt.genSalt(10);
-    //       user.password = await bcrypt.hash(user.password, salt);
-    //     }
-    //   },
-    //   // Hash password before updating user if password is modified
-    //   beforeUpdate: async (user: User) => {
-    //     if (user.changed('password')) {
-    //       const salt = await bcrypt.genSalt(10);
-    //       user.password = await bcrypt.hash(user.password, salt);
-    //     }
-    //   },
-    // },
   },
 );
+
+// Hook to hash the password only if it has been changed before an existing user is updated.
+User.beforeUpdate(async (user) => {
+  if (!user.changed('password')) return;
+  user.password = await bcrypt.hash(user.password, 12);
+  //   user.passwordChangedAt = Date.now();
+});
 
 export default User;

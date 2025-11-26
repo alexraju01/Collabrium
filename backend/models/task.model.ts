@@ -18,10 +18,7 @@ export interface TaskAttributes {
 }
 
 // 2. Define the attributes required for creation (ID is optional)
-export type TaskCreationAttributes = Optional<
-  TaskAttributes,
-  'id' | 'createdAt' | 'updatedAt'
->;
+export type TaskCreationAttributes = Optional<TaskAttributes, 'id' | 'createdAt' | 'updatedAt'>;
 
 // 3. Define the Model Class extending Sequelize.Model
 class Task extends Model<TaskAttributes, TaskCreationAttributes> {
@@ -72,12 +69,7 @@ Task.init(
     },
 
     status: {
-      type: DataTypes.ENUM(
-        'not started',
-        'in progress',
-        'completed',
-        'in review',
-      ),
+      type: DataTypes.ENUM('not started', 'in progress', 'completed', 'in review'),
       allowNull: false,
       defaultValue: 'not started',
       validate: {
