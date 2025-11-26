@@ -10,7 +10,7 @@ const seedDatabase = async () => {
   try {
     await sequelize.sync({ force: true });
 
-    await User.bulkCreate(usersData);
+    await User.bulkCreate(usersData, { individualHooks: true });
     console.log(`${GREEN} Users seeded Successfully!${RESET}`);
     await Task.bulkCreate(tasksData);
     console.log(`${GREEN} Task seeded Successfully!${RESET}`);

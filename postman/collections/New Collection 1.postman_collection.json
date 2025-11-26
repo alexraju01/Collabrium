@@ -28,14 +28,14 @@
       "request": {
         "method": "GET",
         "url": {
-          "raw": "{{URL}}api/v1/user/",
+          "raw": "{{URL}}api/v1/user/4",
           "host": [
             "{{URL}}api"
           ],
           "path": [
             "v1",
             "user",
-            ""
+            "4"
           ]
         }
       }
@@ -44,16 +44,26 @@
       "name": "Delete User",
       "id": "899c4a43-75d2-4fe7-be47-030d6bbad3e2",
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{JWT}}",
+              "type": "string"
+            }
+          ]
+        },
         "method": "DELETE",
         "url": {
-          "raw": "{{URL}}api/v1/user/",
+          "raw": "{{URL}}api/v1/user/1",
           "host": [
             "{{URL}}api"
           ],
           "path": [
             "v1",
             "user",
-            ""
+            "1"
           ]
         }
       }

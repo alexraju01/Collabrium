@@ -1,14 +1,18 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/db';
+import bcrypt from 'bcryptjs';
 
 type Roles = 'project manager' | 'line manager' | 'user';
+
 // User attributes interface
 interface UserAttributes {
   id: number;
   username: string;
   email: string;
   password: string;
-  role: Roles;
+  confirmPassword: string;
+  role?: Roles;
+  passwordChangedAt: Date | null;
 }
 
 // 2. Define the attributes required for creation (ID is optional)
@@ -20,7 +24,12 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
   declare username: string;
   declare email: string;
   declare password: string;
-  declare role: Roles;
+  declare confirmPassword: string;
+  declare role?: Roles;
+  declare passwordChangedAt: Date | null;
+
+  correctPassword!: (candidatePassword: string) => Promise<boolean>;
+  changedPasswordAfter!: (JWTTimestamp: number) => boolean;
 }
 
 // Initialize the User model
@@ -71,6 +80,26 @@ User.init(
         },
       },
     },
+
+    confirmPassword: {
+      type: DataTypes.VIRTUAL,
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: 'Confirm password is required' },
+
+        passwordMatches(value: string) {
+          if (value !== this.password) {
+            // Sequelize will catch this error and prevent saving/updating
+            throw new Error('Password and Confirm Password must match.');
+          }
+        },
+      },
+    },
+
+    passwordChangedAt: {
+      type: DataTypes.DATE,
+    },
+
     role: {
       type: DataTypes.ENUM('project manager', 'line manager', 'user'),
       allowNull: false,
@@ -85,26 +114,42 @@ User.init(
   },
   {
     sequelize,
+    timestamps: false,
     defaultScope: {
       attributes: { exclude: ['password'] },
     },
-    // hooks: {
-    //   // Hash password before creating user
-    //   beforeCreate: async (user: User) => {
-    //     if (user.password) {
-    //       const salt = await bcrypt.genSalt(10);
-    //       user.password = await bcrypt.hash(user.password, salt);
-    //     }
-    //   },
-    //   // Hash password before updating user if password is modified
-    //   beforeUpdate: async (user: User) => {
-    //     if (user.changed('password')) {
-    //       const salt = await bcrypt.genSalt(10);
-    //       user.password = await bcrypt.hash(user.password, salt);
-    //     }
-    //   },
-    // },
+
+    scopes: {
+      withPasswords: {
+        attributes: {
+          include: ['password'],
+        },
+      },
+    },
   },
 );
+
+User.beforeCreate(async (user, options) => {
+  user.password = await bcrypt.hash(user.password, 12);
+});
+// Hook to hash the password only if it has been changed before an existing user is updated.
+User.beforeUpdate(async (user) => {
+  if (!user.changed('password')) return;
+  user.password = await bcrypt.hash(user.password, 12);
+  //   user.passwordChangedAt = Date.now();
+});
+
+User.prototype.correctPassword = async function (candidatePassword: string) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+
+User.prototype.changedPasswordAfter = function (JWTTimestamp: number) {
+  if (this.passwordChangedAt instanceof Date && this.passwordChangedAt) {
+    const changedTimestamp = Math.floor(this.passwordChangedAt.getTime() / 1000);
+
+    return JWTTimestamp < changedTimestamp;
+  }
+  return false;
+};
 
 export default User;

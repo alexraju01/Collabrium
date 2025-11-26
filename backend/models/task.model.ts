@@ -18,10 +18,7 @@ export interface TaskAttributes {
 }
 
 // 2. Define the attributes required for creation (ID is optional)
-export type TaskCreationAttributes = Optional<
-  TaskAttributes,
-  'id' | 'createdAt' | 'updatedAt'
->;
+export type TaskCreationAttributes = Optional<TaskAttributes, 'id' | 'createdAt' | 'updatedAt'>;
 
 // 3. Define the Model Class extending Sequelize.Model
 class Task extends Model<TaskAttributes, TaskCreationAttributes> {
@@ -54,8 +51,8 @@ Task.init(
         },
 
         len: {
-          args: [5, 100],
-          msg: 'Title must be between 5 and 100n characters long.',
+          args: [1, 100],
+          msg: 'Title must be between 1 and 100 characters long.',
         },
       },
     },
@@ -63,21 +60,10 @@ Task.init(
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
-      validate: {
-        len: {
-          args: [0, 200], // Minimum 0, maximum 200 characters
-          msg: 'Description cannot be longer than 200 characters.',
-        },
-      },
     },
 
     status: {
-      type: DataTypes.ENUM(
-        'not started',
-        'in progress',
-        'completed',
-        'in review',
-      ),
+      type: DataTypes.ENUM('not started', 'in progress', 'completed', 'in review'),
       allowNull: false,
       defaultValue: 'not started',
       validate: {
