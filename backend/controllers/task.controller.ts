@@ -4,29 +4,19 @@ import AppError from '../lib/AppError';
 
 export const getAllTasks = async (_: Request, res: Response) => {
   const tasks = await Task.findAll();
-  res
-    .status(200)
-    .json({ status: 'success', results: tasks.length, data: { tasks: tasks } });
+  res.status(200).json({ status: 'success', results: tasks.length, data: { tasks: tasks } });
 };
 
-export const getOneTask = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const getOneTask = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
-  const task = await Task.findByPk(id);
 
-  if (!task) return next(new AppError('No Task with this id!', 404));
+  const task = await Task.findByPk(id);
+  if (!task) return next(new AppError('No Task with this id', 404));
 
   res.status(200).json({ status: 'success', data: { task } });
 };
 
-export const updateTask = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const updateTask = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
   const updateData = req.body;
 
@@ -35,10 +25,8 @@ export const updateTask = async (
     returning: true,
   });
 
-  if (!updatedCount)
-    return next(new AppError('ID with this task does not exist', 404));
+  if (!updatedCount) return next(new AppError('ID with this task does not exist', 404));
 
-  console.log(updateTask);
   res.status(200).json({
     message: 'success',
     task: updatedTask,
@@ -56,19 +44,16 @@ export const createTask = async (req: Request, res: Response) => {
   });
 };
 
-export const deleteTask = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const deleteTask = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
+
   const deleteTask = await Task.destroy({
     where: {
       id,
     },
   });
 
-  if (!deleteTask) return next(new AppError('This task does not exist.', 403));
+  if (!deleteTask) return next(new AppError('This task does not exist', 404));
 
   res.status(204).json({
     status: 'success',
