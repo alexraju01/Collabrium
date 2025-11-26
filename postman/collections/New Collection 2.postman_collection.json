@@ -6,29 +6,12 @@
   },
   "item": [
     {
-      "name": "Sign Up",
-      "id": "d4b1c2cd-70d8-41d0-9456-afaffcb19128",
+      "name": "Signup",
+      "id": "48a13260-c043-48a9-b512-b2c28063e5ef",
       "request": {
-        "method": "POST",
-        "body": {
-          "mode": "raw",
-          "raw": " {\r\n    \"username\": \"testinguseddrs\",\r\n    \"email\": \"testusder@example.com\",\r\n    \"password\": \"Password123!\",\r\n    \"confirmPassword\": \"Password123!\"\r\n  }\r\n",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
+        "method": "GET",
         "url": {
-          "raw": "{{URL}}api/v1/user/signup",
-          "host": [
-            "{{URL}}api"
-          ],
-          "path": [
-            "v1",
-            "user",
-            "signup"
-          ]
+          "raw": ""
         }
       }
     }
