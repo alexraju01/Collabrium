@@ -73,6 +73,15 @@
       "id": "0f1642bc-b8fe-4618-a63a-16f4e04bec76",
       "request": {
         "method": "POST",
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"inviteCode\" : \"099C91C2\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
           "raw": "{{URL}}api/v1/workspace/join",
           "host": [
@@ -103,7 +112,7 @@
         "method": "POST",
         "body": {
           "mode": "raw",
-          "raw": "",
+          "raw": "{\r\n    \"name\": \"test room 3\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
