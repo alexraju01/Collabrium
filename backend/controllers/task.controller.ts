@@ -71,3 +71,18 @@ export const getAllSimpleTask = async (_: Request, res: Response) => {
   });
   res.status(200).json({ status: 'success', results: simpleTasks.length, data: { simpleTasks } });
 };
+
+//  ====================== Search Task =====================
+
+export const searchTasks = async (req: Request, res: Response, next: NextFunction) => {
+  const { q } = req.query;
+
+  // Basic response for now
+  const tasks: any[] = [];
+
+  res.status(200).json({
+    status: 'success',
+    results: tasks.length,
+    data: { tasks },
+  });
+};
