@@ -99,6 +99,12 @@ export const searchTasks = async (req: Request, res: Response, next: NextFunctio
     return next(new AppError('Search query must not exceed 50 characters', 400));
   }
 
+  // Validate alphabetic characters and spaces only
+  const alphabeticRegex = /^[a-zA-Z\s]+$/;
+  if (!alphabeticRegex.test(trimmedQuery)) {
+    return next(new AppError('Search query can only contain alphabetic characters and spaces', 400));
+  }
+
   // Basic response for now
   const tasks: any[] = [];
 
