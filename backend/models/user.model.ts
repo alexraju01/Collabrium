@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/db';
 import bcrypt from 'bcryptjs';
 
-type Roles = 'project manager' | 'line manager' | 'user';
+type Roles = 'admin' | 'user';
 
 // User attributes interface
 interface UserAttributes {
@@ -101,12 +101,12 @@ User.init(
     },
 
     role: {
-      type: DataTypes.ENUM('project manager', 'line manager', 'user'),
+      type: DataTypes.ENUM('admin', 'user'),
       allowNull: false,
       defaultValue: 'user',
       validate: {
         isIn: {
-          args: [['project manager', 'line manager', 'user']],
+          args: [['admin', 'user']],
           msg: 'Invalid role',
         },
       },
