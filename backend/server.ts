@@ -8,6 +8,8 @@ async function startServer() {
     await sequelize.authenticate();
     console.log(`${BLUE}Successfully connected to the database.${RESET}`);
 
+    await sequelize.sync({ alter: true });
+
     const { PORT } = process.env;
     app.listen(PORT, () => {
       console.log(`${ORANGE}Server listenings on http://localhost:${PORT}${RESET}`);

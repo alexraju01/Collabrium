@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "role": "Admin",
+    "UserId": 1,
+    "WorkspaceId": 1
+  },
+  {
+    "id": 2,
+    "role": "Regular",
+    "UserId": 2,
+    "WorkspaceId": 1
+  },
+  {
+    "id": 3,
+    "role": "Regular",
+    "UserId": 3,
+    "WorkspaceId": 1
+  },
+  {
+    "id": 4,
+    "role": "Regular",
+    "UserId": 4,
+    "WorkspaceId": 1
+  },
+  {
+    "id": 5,
+    "role": "Regular",
+    "UserId": 5,
+    "WorkspaceId": 1
+  },
+
+  {
+    "id": 6,
+    "role": "Admin",
+    "UserId": 1,
+    "WorkspaceId": 2
+  },
+  {
+    "id": 7,
+    "role": "Regular",
+    "UserId": 2,
+    "WorkspaceId": 2
+  },
+  {
+    "id": 8,
+    "role": "Regular",
+    "UserId": 3,
+    "WorkspaceId": 2
+  }
+]
