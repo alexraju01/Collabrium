@@ -65,6 +65,15 @@
           ]
         },
         "method": "DELETE",
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\"password\": \"Password123!\"\r\n\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
           "raw": "{{URL}}api/v1/user/1",
           "host": [
@@ -75,6 +84,16 @@
             "user",
             "1"
           ]
+        }
+      }
+    },
+    {
+      "name": "New Request",
+      "id": "47a82edd-b9bf-4692-872d-e4de1824ea01",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": ""
         }
       }
     }
