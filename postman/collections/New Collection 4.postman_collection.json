@@ -42,43 +42,6 @@
       }
     },
     {
-      "name": "Create WorkSpace",
-      "id": "7b80216a-aea7-4abf-b366-dc69445f2555",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{JWT}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"name\": \"checkout new room\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{URL}}api/v1/workspace/create",
-          "host": [
-            "{{URL}}api"
-          ],
-          "path": [
-            "v1",
-            "workspace",
-            "create"
-          ]
-        }
-      }
-    },
-    {
       "name": "Update Workspace",
       "id": "c985469b-265e-4022-bdef-16b5520b1c5f",
       "request": {
@@ -101,6 +64,61 @@
             "v1",
             "workspace",
             "1"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Join Workspace",
+      "id": "0f1642bc-b8fe-4618-a63a-16f4e04bec76",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{URL}}api/v1/workspace/join",
+          "host": [
+            "{{URL}}api"
+          ],
+          "path": [
+            "v1",
+            "workspace",
+            "join"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Workspace",
+      "id": "9ddb7ee2-15cf-4e9a-8969-ae6bff9bfa17",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{JWT}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}api/v1/workspace/create",
+          "host": [
+            "{{URL}}api"
+          ],
+          "path": [
+            "v1",
+            "workspace",
+            "create"
           ]
         }
       }

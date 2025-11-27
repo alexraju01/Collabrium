@@ -15,13 +15,17 @@ export const getAllWorkspace = async (_: Request, res: Response) => {
 export const createWorkspace = async (req: Request, res: Response, next: NextFunction) => {
   const { name } = req.body;
   const creatorId = req.user?.dataValues?.id;
-  console.log(name);
+
   if (!creatorId) {
-    throw new AppError('Authentication required. User ID is missing.', 401);
+    throw new AppError('Authentication required. User ID is missing', 401);
+  }
+
+  // Check if workspace name is provided
+  if (!name || name.trim() === '') {
+    return next(new AppError('Workspace name is required', 400));
   }
 
   const existingWorkspace = await Workspace.findOne({ where: { name } });
-  console.log(existingWorkspace);
   if (existingWorkspace) return next(new AppError('A workspace with this name already exist', 400));
 
   //  Transaction makes it so that we can group the db opeeration
@@ -75,5 +79,50 @@ export const updateWorkspace = async (req: Request, res: Response, next: NextFun
   res.status(200).json({
     status: 'success',
     data: updatedWorkspace,
+  });
+};
+
+export const joinWorkspace = async (req: Request, res: Response, next: NextFunction) => {
+  const { inviteCode } = req.body;
+  const userId = req.user?.dataValues.id;
+
+  if (!userId) {
+    return next(new AppError('Authentication required. User ID is missing.', 401));
+  }
+
+  // 1. Find the workspace by invite code
+  const workspace = await Workspace.findOne({ where: { inviteCode } });
+  if (!workspace) {
+    return next(new AppError('Workspace not found with the provided invite code.', 404));
+  }
+  // 2. Check if the user is already a member
+  const existingMember = await WorkspaceUser.findOne({
+    where: {
+      WorkspaceId: workspace?.dataValues.id,
+      UserId: userId,
+    },
+  });
+
+  if (existingMember) {
+    return next(
+      new AppError(
+        `You are already a member of this workspace with the role: ${existingMember.role}.`,
+        400,
+      ),
+    );
+  }
+
+  // 3. Add the user to the WorkspaceUser join table with 'Regular' role
+  await WorkspaceUser.create({
+    WorkspaceId: workspace.dataValues.id,
+    UserId: userId,
+    role: 'Regular', // Joining users become Regular
+  });
+
+  res.json({
+    status: 'success',
+    message: `Successfully joined workspace: ${workspace.name}`,
+    workspaceId: workspace.id,
+    role: 'Regular',
   });
 };
