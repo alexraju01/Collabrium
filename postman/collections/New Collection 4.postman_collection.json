@@ -9,6 +9,16 @@
       "name": "Get All Workspace",
       "id": "cfa85306-b2e8-4e5d-9a8c-8f3ddec3bdea",
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{JWT}}",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
         "url": {
           "raw": "{{URL}}api/v1/workspace",
@@ -44,6 +54,51 @@
           "path": [
             "v1",
             "workspace"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Workspace",
+      "id": "c985469b-265e-4022-bdef-16b5520b1c5f",
+      "request": {
+        "method": "PATCH",
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}api/v1/workspace/1",
+          "host": [
+            "{{URL}}api"
+          ],
+          "path": [
+            "v1",
+            "workspace",
+            "1"
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Request",
+      "id": "1395d004-9d6c-446d-8a24-b800730d1e5d",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{URL}}api/v1/workspace/1",
+          "host": [
+            "{{URL}}api"
+          ],
+          "path": [
+            "v1",
+            "workspace",
+            "1"
           ]
         }
       }
