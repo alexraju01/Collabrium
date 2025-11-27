@@ -60,3 +60,36 @@ export const updateDisplayName = async (req: Request, res: Response, next: NextF
     },
   });
 };
+
+export const deleteAccount = async (req: Request, res: Response, next: NextFunction) => {
+  const { password } = req.body;
+
+  if (!password) {
+    return next(new AppError('Password confirmation is required to delete your account', 400));
+  }
+
+  const authenticatedUser = req.user;
+
+  if (!authenticatedUser) {
+    return next(new AppError('User not authenticated', 401));
+  }
+
+  const userWithPassword = await User.scope('withPasswords').findByPk(authenticatedUser.id);
+
+  if (!userWithPassword) {
+    return next(new AppError('User not found', 404));
+  }
+
+  const isPasswordCorrect = await userWithPassword.correctPassword(password);
+
+  if (!isPasswordCorrect) {
+    return next(new AppError('Incorrect password. Account deletion failed.', 401));
+  }
+
+  await userWithPassword.destroy();
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+};
