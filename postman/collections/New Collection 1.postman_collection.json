@@ -26,6 +26,16 @@
       "name": "Get Single User",
       "id": "4d6d5622-98c5-4e28-945d-6179ce04efc6",
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{JWT}}",
+              "type": "string"
+            }
+          ]
+        },
         "method": "GET",
         "url": {
           "raw": "{{URL}}api/v1/user/4",

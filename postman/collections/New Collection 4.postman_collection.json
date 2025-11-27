@@ -11,9 +11,39 @@
       "request": {
         "method": "GET",
         "url": {
-          "raw": "{{URL}}",
+          "raw": "{{URL}}api/v1/workspace",
           "host": [
-            "{{URL}}"
+            "{{URL}}api"
+          ],
+          "path": [
+            "v1",
+            "workspace"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create WorkSpace",
+      "id": "7b80216a-aea7-4abf-b366-dc69445f2555",
+      "request": {
+        "method": "POST",
+        "body": {
+          "mode": "raw",
+          "raw": "{ \r\n    \"name\": \"creating testing workspace\" \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}api/v1/workspace",
+          "host": [
+            "{{URL}}api"
+          ],
+          "path": [
+            "v1",
+            "workspace"
           ]
         }
       }

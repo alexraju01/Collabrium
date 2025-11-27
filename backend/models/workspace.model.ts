@@ -40,8 +40,8 @@ Workspace.init(
         },
 
         is: {
-          args: /^[a-zA-Z0-9._]+$/i,
-          msg: 'Workspace name can only contain letters, numbers, dots, and underscores',
+          args: /^[a-zA-Z0-9\s'!]+$/i,
+          msg: 'Workspace name can only contain letters, numbers, spaces, apostrophes, and exclamation marks',
         },
       },
     },
@@ -49,17 +49,13 @@ Workspace.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+      defaultValue: () => crypto.randomBytes(4).toString('hex').toUpperCase(),
     },
   },
   {
     sequelize,
   },
 );
-
-// HOOKS
-Workspace.beforeCreate(async (workspace) => {
-  workspace.inviteCode = crypto.randomBytes(4).toString('hex').toUpperCase();
-});
 
 // ######### Define Associations ##########
 

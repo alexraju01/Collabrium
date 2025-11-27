@@ -17,7 +17,7 @@ const seedDatabase = async () => {
     await User.bulkCreate(usersData, { individualHooks: true });
     console.log(`${GREEN} Users seeded Successfully!${RESET}`);
 
-    await Workspace.bulkCreate(workspacesData, { individualHooks: true });
+    await Workspace.bulkCreate(workspacesData);
     console.log(`${GREEN} Workspaces seeded Successfully!${RESET}`);
 
     await WorkspaceUser.bulkCreate(workspaceUsersData);
@@ -25,6 +25,7 @@ const seedDatabase = async () => {
 
     await Task.bulkCreate(tasksData);
     console.log(`${GREEN} Task seeded Successfully!${RESET}`);
+    
     // 5. Exit the process
     process.exit(0); // Use code 0 for a successful exit
   } catch (error) {
