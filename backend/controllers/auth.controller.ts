@@ -103,3 +103,23 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
   req.user = currentUser;
   next();
 };
+
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+  console.log('check email');
+  console.log(req.body);
+  const { email } = req.body;
+  console.log('chec email2:', email);
+  // Get user based on the email
+  const user = await User.findOne({ where: { email } });
+  if (!user) {
+    return next(new AppError('There is no user with this email address', 404));
+  }
+
+  //   2) Generate the random reset token
+  const resetToken = user.createPasswordResetToken();
+  await user.save({ validate: false });
+
+  res.status(200).json({ status: 'success', resetToken });
+};
+
+export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {};

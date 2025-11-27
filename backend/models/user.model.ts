@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/db';
 import bcrypt from 'bcryptjs';
-
+import crypto from 'crypto';
 type Roles = 'project manager' | 'line manager' | 'user';
 
 // User attributes interface
@@ -13,6 +13,9 @@ interface UserAttributes {
   confirmPassword: string;
   role?: Roles;
   passwordChangedAt: Date | null;
+
+  passwordResetToken?: string | null;
+  passwordResetExpires?: Date | null;
 }
 
 // 2. Define the attributes required for creation (ID is optional)
@@ -28,8 +31,12 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
   declare role?: Roles;
   declare passwordChangedAt: Date | null;
 
+  declare passwordResetToken: string | null;
+  declare passwordResetExpires: Date | null;
+
   correctPassword!: (candidatePassword: string) => Promise<boolean>;
   changedPasswordAfter!: (JWTTimestamp: number) => boolean;
+  createPasswordResetToken!: () => string;
 }
 
 // Initialize the User model
@@ -111,6 +118,14 @@ User.init(
         },
       },
     },
+
+    passwordResetToken: {
+      type: DataTypes.STRING,
+    },
+
+    passwordResetExpires: {
+      type: DataTypes.DATE,
+    },
   },
   {
     sequelize,
@@ -150,6 +165,17 @@ User.prototype.changedPasswordAfter = function (JWTTimestamp: number) {
     return JWTTimestamp < changedTimestamp;
   }
   return false;
+};
+
+User.prototype.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  console.log(resetToken);
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  console.log('resetToken', resetToken);
+  console.log('passwordResetToken', this.passwordResetToken);
+
+  this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
+  return resetToken;
 };
 
 export default User;
