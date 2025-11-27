@@ -3,13 +3,33 @@ import Workspace from '../models/workspace.model';
 import AppError from '../lib/AppError';
 import { WorkspaceUser } from '../models/workspaceUser.model';
 import { sequelize } from '../config/db';
+import User from '../models/user.model';
 
-export const getAllWorkspace = async (_: Request, res: Response) => {
+export const getAllWorkspace = async (req: Request, res: Response) => {
+  // req.user.id should contain the logged-in user’s ID
+  const userId = req?.user?.dataValues?.id;
+
+  // Find all workspaces the user belongs to
   const workspaces = await Workspace.findAll({
+    include: [
+      {
+        model: User,
+        as: 'Members', // Must match your association alias in Workspace model
+        attributes: ['id', 'displayname', 'email'], // Correct field names
+        through: {
+          attributes: ['role'],
+        },
+        where: { id: userId }, // only include the logged-in user
+        required: true, // ensures the workspace has the user as member
+      },
+    ],
     order: [['id', 'asc']],
   });
-
-  res.status(200).json({ status: 'success', results: workspaces.length, data: { workspaces } });
+  res.status(200).json({
+    status: 'success',
+    results: workspaces.length,
+    data: { workspaces },
+  });
 };
 
 export const createWorkspace = async (req: Request, res: Response, next: NextFunction) => {

@@ -88,12 +88,39 @@
       }
     },
     {
-      "name": "New Request",
+      "name": "Delete User Account",
       "id": "47a82edd-b9bf-4692-872d-e4de1824ea01",
       "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{JWT}}",
+              "type": "string"
+            }
+          ]
+        },
         "method": "DELETE",
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
-          "raw": ""
+          "raw": "{{URL}}api/v1/user/me",
+          "host": [
+            "{{URL}}api"
+          ],
+          "path": [
+            "v1",
+            "user",
+            "me"
+          ]
         }
       }
     }
