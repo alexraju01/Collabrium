@@ -1,0 +1,22 @@
+{
+  "info": {
+    "_postman_id": "d2129e5d-058d-44a6-a365-6a649adaed28",
+    "name": "Workspaces",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Workspace",
+      "id": "cfa85306-b2e8-4e5d-9a8c-8f3ddec3bdea",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{URL}}",
+          "host": [
+            "{{URL}}"
+          ]
+        }
+      }
+    }
+  ]
+}

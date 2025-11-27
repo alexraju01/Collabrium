@@ -28,6 +28,22 @@ Workspace.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
+      validate: {
+        notEmpty: {
+          msg: 'Workspace name is required',
+        },
+
+        len: {
+          args: [1, 70],
+          msg: 'Workspace name  must be between 1 and 70 character',
+        },
+
+        is: {
+          args: /^[a-zA-Z0-9._]+$/i,
+          msg: 'Workspace name can only contain letters, numbers, dots, and underscores',
+        },
+      },
     },
     inviteCode: {
       type: DataTypes.STRING,
