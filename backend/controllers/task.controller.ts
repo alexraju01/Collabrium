@@ -113,22 +113,31 @@ export const searchTasks = async (req: Request, res: Response, next: NextFunctio
     return next(new AppError('User not authenticated', 401));
   }
 
-  // Search tasks by title and description (case-insensitive, partial matching)
-  // TODO: Add user authorization filter when Task-User relationship is implemented
-  // Filter by userId to ensure users only see their own tasks
-  const tasks = await Task.findAll({
-    where: {
-      // userId: user.id, // Uncomment when Task model has userId field
-      [Op.or]: [
-        { title: { [Op.iLike]: `%${trimmedQuery}%` } },
-        { description: { [Op.iLike]: `%${trimmedQuery}%` } },
-      ],
-    },
-  });
+  try {
+    // Search tasks by title and description (case-insensitive, partial matching)
+    // TODO: Add user authorization filter when Task-User relationship is implemented
+    // Filter by userId to ensure users only see their own tasks
+    const tasks = await Task.findAll({
+      where: {
+        // userId: user.id, // Uncomment when Task model has userId field
+        [Op.or]: [
+          { title: { [Op.iLike]: `%${trimmedQuery}%` } },
+          {
+            [Op.and]: [
+              { description: { [Op.ne]: null } },
+              { description: { [Op.iLike]: `%${trimmedQuery}%` } },
+            ],
+          },
+        ],
+      },
+    });
 
-  res.status(200).json({
-    status: 'success',
-    results: tasks.length,
-    data: { tasks },
-  });
+    res.status(200).json({
+      status: 'success',
+      results: tasks.length,
+      data: { tasks },
+    });
+  } catch (error) {
+    return next(new AppError('An error occurred while searching tasks', 500));
+  }
 };
