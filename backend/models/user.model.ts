@@ -122,13 +122,13 @@ User.init(
       },
     },
 
-    passwordResetToken: {
-      type: DataTypes.STRING,
-    },
+    // passwordResetToken: {
+    //   type: DataTypes.STRING,
+    // },
 
-    passwordResetExpires: {
-      type: DataTypes.DATE,
-    },
+    // passwordResetExpires: {
+    //   type: DataTypes.DATE,
+    // },
   },
   {
     sequelize,

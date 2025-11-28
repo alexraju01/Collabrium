@@ -14,7 +14,7 @@ declare global {
 }
 //#endregion
 
-//   Some reson id works but not iat so had to do this way
+//   Some reason id works but not "iat" so had to do this way
 //   so typescript know!
 interface CustomJwtPayload extends jwt.JwtPayload {
   id: number;
@@ -27,6 +27,15 @@ const signToken = (id: string): string => {
   return jwt.sign({ id }, secret, { expiresIn: expiresIn as any });
 };
 
+const createSendToken = (user: User, statusCode: number, res: Response) => {
+  const token = signToken(String(user.id));
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: { user },
+  });
+};
+
 export const signUp = async (req: Request, res: Response) => {
   const { displayname, email, password, confirmPassword, passwordChangedAt } = req.body;
 
@@ -37,16 +46,7 @@ export const signUp = async (req: Request, res: Response) => {
     confirmPassword,
     passwordChangedAt,
   });
-
-  const token = signToken(String(newUser.id));
-
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  createSendToken(newUser, 201, res);
 };
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
@@ -66,12 +66,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     return next(new AppError('Incorrect email or password', 401));
   }
 
-  const token = signToken(String(user.id));
-
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
 };
 
 export const protect = async (req: Request, res: Response, next: NextFunction) => {
@@ -144,22 +139,22 @@ export const restrictTo = (...roles: string[]) => {
   };
 };
 
-export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
-  console.log('check email');
-  console.log(req.body);
-  const { email } = req.body;
-  console.log('chec email2:', email);
-  // Get user based on the email
-  const user = await User.findOne({ where: { email } });
-  if (!user) {
-    return next(new AppError('There is no user with this email address', 404));
-  }
+// export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+//   console.log('check email');
+//   console.log(req.body);
+//   const { email } = req.body;
+//   console.log('chec email2:', email);
+//   // Get user based on the email
+//   const user = await User.findOne({ where: { email } });
+//   if (!user) {
+//     return next(new AppError('There is no user with this email address', 404));
+//   }
 
-  //   2) Generate the random reset token
-  const resetToken = user.createPasswordResetToken();
-  await user.save({ validate: false });
+//   //   2) Generate the random reset token
+//   const resetToken = user.createPasswordResetToken();
+//   await user.save({ validate: false });
 
-  res.status(200).json({ status: 'success', resetToken });
-};
+//   res.status(200).json({ status: 'success', resetToken });
+// };
 
-export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {};
+// export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {};
