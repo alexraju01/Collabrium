@@ -4,7 +4,7 @@ import AppError from '../lib/AppError';
 import APIFeatures, { QueryString } from '../lib/APIFearure';
 
 export const getAllTasks = async (req: Request, res: Response) => {
-  const features = new APIFeatures(Task, req.query as QueryString).filter();
+  const features = new APIFeatures(Task, req.query as QueryString).filter().sort().exec(); // execute query here
   const { count, rows } = await features.query;
   res.status(200).json({
     status: 'success',

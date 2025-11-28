@@ -1,40 +1,46 @@
-import { FindAndCountOptions, Model } from 'sequelize';
+import { FindAndCountOptions, Model, Order } from 'sequelize';
 
 export interface QueryString {
-  page?: string;
   sort?: string;
-  limit?: string;
   fields?: string;
   [key: string]: any; // Allows for any other filter properties
 }
 
 class APIFeatures<TModel extends Model> {
+  public options: FindAndCountOptions = {};
   public query!: Promise<{ count: number; rows: TModel[] }>;
-  // The query options built throughout the class methods
-  private options: FindAndCountOptions = {};
-  // The raw query string object from the request
-  private queryString: QueryString;
-  // The static Model class (e.g., Blog)
-  private model: new () => TModel;
 
-  constructor(model: new () => TModel, queryString: QueryString) {
+  private queryString: QueryString;
+  private model: any;
+
+  constructor(model: any, queryString: QueryString) {
     this.model = model;
     this.queryString = queryString;
   }
 
   public filter(): APIFeatures<TModel> {
-    const queryObject: QueryString = { ...this.queryString };
+    const queryObject = { ...this.queryString };
+    ['page', 'sort', 'limit', 'fields'].forEach((f) => delete queryObject[f]);
 
-    // 1. Exclusion: Remove special fields from the filter object
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
-    excludedFields.forEach((element) => delete queryObject[element]);
-
-    // 2. Simple Filtering: Assign remaining properties to the 'where' clause
     this.options.where = queryObject;
+    return this;
+  }
 
-    // 3. Execute the query using the Model's findAndCountAll method
-    this.query = (this.model as any).findAndCountAll(this.options);
+  public sort(): APIFeatures<TModel> {
+    if (this.queryString.sort) {
+      this.options.order = this.queryString.sort
+        .split(',')
+        .map((field) => (field.startsWith('-') ? [field.substring(1), 'DESC'] : [field, 'ASC']));
+    } else {
+      // Dedault sort
+      this.options.order = [['dueBy', 'ASC']];
+    }
+    return this;
+  }
 
+  // Runs the query with options specified before
+  public exec() {
+    this.query = this.model.findAndCountAll(this.options);
     return this;
   }
 }
