@@ -106,9 +106,9 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
 };
 
 export const restrictTo = (...roles: string[]) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, _: Response, next: NextFunction) => {
     const userId = req.user?.id;
-    const workspaceId = req.params.id; // Expecting the workspace ID from the URL parameter
+    const workspaceId = req.params.id;
 
     if (!userId) {
       return next(new AppError('User authentication failed.', 401));
