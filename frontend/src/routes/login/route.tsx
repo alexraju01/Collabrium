@@ -104,22 +104,26 @@ function LoginComponent({ setLogin }: { setLogin: () => void }) {
 	const [password, setPassword] = useState("");
 
 	async function Login() {
-		console.log(`login ${email} ${password} button`);
 		const detials = {
 			email: email,
 			password: password,
 		} as LoginForm;
-		const response = await fetch(`${import.meta.env.VITE_BASE_API}users/login`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(detials),
-		});
-		if (!response || response.status != 200) {
-			console.log("failed");
-			return;
-		}
+		try {
+			const response = await fetch(`${import.meta.env.VITE_BASE_API}/user/login`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(detials),
+			});
+			if (!response || response.status != 200) {
+				console.log("failed");
+				return;
+			}
+			const { data } = await response.json();
 
-		console.log(response);
+			console.log(data);
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	return (
