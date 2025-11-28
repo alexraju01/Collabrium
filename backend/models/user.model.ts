@@ -1,35 +1,52 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/db';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
-type Roles = 'project manager' | 'line manager' | 'user';
+export type Roles = 'admin' | 'user';
 
 // User attributes interface
-interface UserAttributes {
+export interface UserAttributes {
   id: number;
-  username: string;
+  displayname: string;
   email: string;
   password: string;
   confirmPassword: string;
   role?: Roles;
   passwordChangedAt: Date | null;
+
+  passwordResetToken?: string | null;
+  passwordResetExpires?: Date | null;
+  currentWorkspaceRole?: Roles;
 }
 
 // 2. Define the attributes required for creation (ID is optional)
-export type UserCreationAttributes = Optional<UserAttributes, 'id'>;
+export type UserCreationAttributes = Optional<UserAttributes, 'id' | 'currentWorkspaceRole'>;
 
 // User model class
 class User extends Model<UserAttributes, UserCreationAttributes> {
   declare id: number;
-  declare username: string;
+  declare displayname: string;
   declare email: string;
   declare password: string;
   declare confirmPassword: string;
   declare role?: Roles;
   declare passwordChangedAt: Date | null;
 
+  declare passwordResetToken: string | null;
+  declare passwordResetExpires: Date | null;
+  currentWorkspaceRole?: Roles;
+
+  toJSON() {
+    const values: Partial<UserAttributes> = this.get();
+    delete values.password;
+    delete values.confirmPassword;
+    return values;
+  }
+
   correctPassword!: (candidatePassword: string) => Promise<boolean>;
   changedPasswordAfter!: (JWTTimestamp: number) => boolean;
+  createPasswordResetToken!: () => string;
 }
 
 // Initialize the User model
@@ -40,21 +57,21 @@ User.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    username: {
+    displayname: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      unique: true,
+      unique: false,
       validate: {
         notEmpty: {
-          msg: 'Username is required',
+          msg: 'Display name is required',
         },
         len: {
           args: [3, 50],
-          msg: 'Username must be between 3 and 50 character',
+          msg: 'Display name must be between 3 and 50 characters',
         },
         is: {
-          args: /^[a-zA-Z0-9._]+$/i,
-          msg: 'Username can only contain letters, numbers, dots, and underscores',
+          args: /^[a-zA-Z0-9._\s]+$/i,
+          msg: 'Display name can only contain letters, numbers, dots, underscores, and spaces',
         },
       },
     },
@@ -101,16 +118,24 @@ User.init(
     },
 
     role: {
-      type: DataTypes.ENUM('project manager', 'line manager', 'user'),
+      type: DataTypes.ENUM('admin', 'user'),
       allowNull: false,
       defaultValue: 'user',
       validate: {
         isIn: {
-          args: [['project manager', 'line manager', 'user']],
+          args: [['admin', 'user']],
           msg: 'Invalid role',
         },
       },
     },
+
+    // passwordResetToken: {
+    //   type: DataTypes.STRING,
+    // },
+
+    // passwordResetExpires: {
+    //   type: DataTypes.DATE,
+    // },
   },
   {
     sequelize,
@@ -150,6 +175,17 @@ User.prototype.changedPasswordAfter = function (JWTTimestamp: number) {
     return JWTTimestamp < changedTimestamp;
   }
   return false;
+};
+
+User.prototype.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  console.log(resetToken);
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  console.log('resetToken', resetToken);
+  console.log('passwordResetToken', this.passwordResetToken);
+
+  this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
+  return resetToken;
 };
 
 export default User;
