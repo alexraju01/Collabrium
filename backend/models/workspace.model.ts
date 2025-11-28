@@ -8,6 +8,7 @@ interface WorkspaceAttributes {
   id: number;
   name: string;
   inviteCode: string;
+  AllMembers?: (User & { WorkspaceUser: WorkspaceUser })[];
 }
 
 export type WorkspaceCreationAttributes = Optional<WorkspaceAttributes, 'id' | 'inviteCode'>;
@@ -17,6 +18,7 @@ class Workspace extends Model<WorkspaceAttributes, WorkspaceCreationAttributes> 
   declare name: string;
   declare inviteCode: string;
 
+  declare AllMembers?: (User & { WorkspaceUser: WorkspaceUser })[];
   declare Members?: (User & { WorkspaceUser: WorkspaceUser })[];
 }
 

@@ -4,13 +4,30 @@ import AppError from '../lib/AppError';
 import { WorkspaceUser } from '../models/workspaceUser.model';
 import { sequelize } from '../config/db';
 import User from '../models/user.model';
-import { Op, Sequelize } from 'sequelize';
-// ... or however you are importing other things from Sequelize
+import { Op } from 'sequelize';
+
 export const getAllWorkspace = async (req: Request, res: Response) => {
-  // Assuming you have the selected user's id
   const userId = req?.user?.id;
 
+  // 1. Find the IDs of all Workspaces the user belongs to (Subquery)
+  const memberWorkspaceIds = await WorkspaceUser.findAll({
+    attributes: ['WorkspaceId'],
+    where: {
+      UserId: userId,
+    },
+    raw: true,
+  });
+
+  // Convert the result to a simple array of IDs (e.g., [16, 22, 45])
+  const ids = memberWorkspaceIds.map((item) => item.WorkspaceId);
+
+  // 2. Fetch the Workspaces using Op.in and include ALL members (Main Query)
   const workspaces = await Workspace.findAll({
+    where: {
+      id: {
+        [Op.in]: ids,
+      },
+    },
     include: [
       {
         model: User,
@@ -19,19 +36,23 @@ export const getAllWorkspace = async (req: Request, res: Response) => {
         through: { attributes: ['role'] },
       },
     ],
-    where: {
-      id: {
-        [Op.in]: Sequelize.literal(`(
-        SELECT "WorkspaceId"
-        FROM "WorkspaceUsers"
-        WHERE "UserId" = ${userId}
-      )`),
-      },
-    },
     order: [['id', 'asc']],
   });
 
-  res.status(200).json({ status: 'success', results: workspaces.length, data: { workspaces } });
+  // Add memberCount to each workspace
+  const workspacesWithCounts = workspaces.map((workspace) => {
+    const workspaceJson = workspace.toJSON();
+    return {
+      memberCount: workspaceJson.AllMembers?.length,
+      ...workspaceJson,
+    };
+  });
+
+  res.status(200).json({
+    status: 'success',
+    results: workspacesWithCounts.length,
+    data: { workspaces: workspacesWithCounts },
+  });
 };
 
 export const createWorkspace = async (req: Request, res: Response, next: NextFunction) => {
@@ -42,7 +63,6 @@ export const createWorkspace = async (req: Request, res: Response, next: NextFun
     throw new AppError('Authentication required. User ID is missing', 401);
   }
 
-  // Check if workspace name is provided
   if (!name || name.trim() === '') {
     return next(new AppError('Workspace name is required', 400));
   }
