@@ -3,16 +3,8 @@
     "id": "4c7d5ced-d960-4eb7-ac2a-b7d3d1f36324"
   },
   "entities": {
-    "collections": [
-      "..\\postman\\collections\\Auth.postman_collection.json",
-      "..\\postman\\collections\\Tasks.postman_collection.json",
-      "..\\postman\\collections\\Users.postman_collection.json",
-      "..\\postman\\collections\\Workspaces.postman_collection.json",
-      "..\\postman\\collections\\Simple Task.postman_collection.json"
-    ],
-    "environments": [
-      "..\\postman\\environments\\Development.postman_environment.json"
-    ],
+    "collections": [],
+    "environments": [],
     "specs": [],
     "flows": [],
     "globals": []
