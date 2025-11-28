@@ -17,5 +17,5 @@ workspaceRouter.route('/join').post(protect, joinWorkspace);
 
 workspaceRouter
   .route('/:id')
-  .patch(protect, updateWorkspace)
+  .patch(protect, restrictTo('admin'), updateWorkspace)
   .delete(protect, restrictTo('admin'), deleteWorkspace);

@@ -12,9 +12,7 @@ export const getAllWorkspace = async (req: Request, res: Response) => {
   // 1. Find the IDs of all Workspaces the user belongs to (Subquery)
   const memberWorkspaceIds = await WorkspaceUser.findAll({
     attributes: ['WorkspaceId'],
-    where: {
-      UserId: userId,
-    },
+    where: { UserId: userId },
     raw: true,
   });
 
@@ -23,11 +21,7 @@ export const getAllWorkspace = async (req: Request, res: Response) => {
 
   // 2. Fetch the Workspaces using Op.in and include ALL members (Main Query)
   const workspaces = await Workspace.findAll({
-    where: {
-      id: {
-        [Op.in]: ids,
-      },
-    },
+    where: { id: { [Op.in]: ids } },
     include: [
       {
         model: User,
@@ -60,9 +54,7 @@ export const createWorkspace = async (req: Request, res: Response, next: NextFun
   const creatorId = req.user?.dataValues?.id;
   const name = rawName ? rawName.trim() : '';
 
-  if (!creatorId) {
-    throw new AppError('Authentication required. User ID is missing', 401);
-  }
+  if (!creatorId) return next(new AppError('Authentication required. User ID is missing', 401));
 
   if (!name || name === '') {
     return next(new AppError('Workspace name is required', 400));
@@ -106,9 +98,7 @@ export const createWorkspace = async (req: Request, res: Response, next: NextFun
     { transaction: t },
   );
 
-  if (!workspaceUser) {
-    throw new AppError('Failed to add user to workspace.', 500);
-  }
+  if (!workspaceUser) return next(new AppError('Failed to add user to workspace.', 500));
 
   if (req.user) {
     req.user.currentWorkspaceRole = 'admin';
@@ -128,10 +118,13 @@ export const updateWorkspace = async (req: Request, res: Response, next: NextFun
   const { name } = req.body;
   const workspace = await Workspace.findByPk(id);
 
-  if (!workspace) {
-    return next(new AppError('Workspace with this ID does not exist', 404));
-  }
+  if (!workspace) return next(new AppError('Workspace with this ID does not exist', 404));
 
+  const existingWorkspace = await Workspace.findOne({ where: { name } });
+
+  if (existingWorkspace && existingWorkspace.id !== workspace.id) {
+    return next(new AppError('A workspace with this name already exists', 400));
+  }
   const updatedWorkspace = await workspace.update({ name });
 
   res.status(200).json({
@@ -144,15 +137,13 @@ export const joinWorkspace = async (req: Request, res: Response, next: NextFunct
   const { inviteCode } = req.body;
   const userId = req.user?.dataValues.id;
 
-  if (!userId) {
-    return next(new AppError('Authentication required. User ID is missing.', 401));
-  }
+  if (!userId) return next(new AppError('Authentication required. User ID is missing.', 401));
 
   // 1. Find the workspace by invite code
   const workspace = await Workspace.findOne({ where: { inviteCode } });
-  if (!workspace) {
+  if (!workspace)
     return next(new AppError('Workspace not found with the provided invite code.', 404));
-  }
+
   // 2. Check if the user is already a member
   const existingMember = await WorkspaceUser.findOne({
     where: {
@@ -161,14 +152,7 @@ export const joinWorkspace = async (req: Request, res: Response, next: NextFunct
     },
   });
 
-  if (existingMember) {
-    return next(
-      new AppError(
-        `You are already a member of this workspace with the role: ${existingMember.role}.`,
-        400,
-      ),
-    );
-  }
+  if (existingMember) return next(new AppError('You are already a member of this workspace ', 400));
 
   // 3. Add the user to the WorkspaceUser join table with 'user' role
   await WorkspaceUser.create({
@@ -190,10 +174,8 @@ export const deleteWorkspace = async (req: Request, res: Response, next: NextFun
 
   // Find the workspace first
   const workspace = await Workspace.findOne({ where: { id }, raw: true });
-  console.log(workspace);
-  if (!workspace) {
-    return next(new AppError('This workspace does not exist', 404));
-  }
+  if (!workspace) return next(new AppError('This workspace does not exist', 404));
+
   // Delete the workspace
   await Workspace.destroy({ where: { id } });
 
