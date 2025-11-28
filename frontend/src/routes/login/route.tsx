@@ -9,15 +9,15 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
 	const [login, setLogin] = useState(true);
 	return (
-		<div className="min-h-screen flex flex-col items-center justify-center">
-			<div className="w-full">
+		<div className='min-h-screen flex flex-col items-center justify-center'>
+			<div className='w-full'>
 				{/* banner */}
-				<div className="text-center">
-					<h1 className="text-3xl">Welcome to Collabrium</h1>
-					<p className="text-lg">Project Collaboration Space</p>
+				<div className='text-center'>
+					<h1 className='text-3xl'>Welcome to Collabrium</h1>
+					<p className='text-lg'>Project Collaboration Space</p>
 				</div>
 				{/* Auth Container */}
-				<div className="flex flex-col place-self-center">
+				<div className='flex flex-col place-self-center'>
 					{/* Login Section */}
 					{login && <LoginComponent setLogin={() => setLogin(false)} />}
 
@@ -60,32 +60,32 @@ function RegisterComponent() {
 	}
 
 	return (
-		<div className="outline w-96">
-			<h2 className="text-center">Register</h2>
+		<div className='outline w-96'>
+			<h2 className='text-center'>Register</h2>
 			<div>
 				<input
-					type="text"
+					type='text'
 					value={username}
 					onChange={(e) => setUserName(e.currentTarget.value)}
-					placeholder="Username"
-					className="w-full border border-gray"
+					placeholder='Username'
+					className='w-full border border-gray'
 				/>
 				<input
-					type="email"
+					type='email'
 					value={email}
 					onChange={(e) => setEmail(e.currentTarget.value)}
-					placeholder="Email"
-					className="w-full border border-gray"
+					placeholder='Email'
+					className='w-full border border-gray'
 				/>
 				<input
-					type="password"
+					type='password'
 					value={password}
 					onChange={(e) => setPassword(e.currentTarget.value)}
-					placeholder="Password"
-					className="w-full border border-gray"
+					placeholder='Password'
+					className='w-full border border-gray'
 				/>
 				<button
-					className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+					className='w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
 					onClick={Register}>
 					Create Account
 				</button>
@@ -109,48 +109,49 @@ function LoginComponent({ setLogin }: { setLogin: () => void }) {
 			email: email,
 			password: password,
 		} as LoginForm;
-		const response = await fetch(
-			`${import.meta.env.VITE_BASE_API}users/login`,
-			{
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(detials),
-			}
-		);
+		const response = await fetch(`${import.meta.env.VITE_BASE_API}users/login`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(detials),
+		});
 		if (!response || response.status != 200) {
 			console.log("failed");
 			return;
 		}
+
+		console.log(response);
 	}
 
 	return (
 		<div>
-			<h2 className="bold">Login</h2>
+			<h2 className='bold'>Login</h2>
 			<div>
 				<input
-					type="email"
+					type='email'
 					value={email}
 					onChange={(e) => setEmail(e.currentTarget.value)}
-					placeholder="Email"
-					className="w-full border border-gray"
+					placeholder='Email'
+					className='w-full border border-gray'
 				/>
 				<input
-					type="password"
+					type='password'
 					onChange={(e) => setPassword(e.currentTarget.value)}
-					placeholder="Password"
-					className="w-full border border-gray"
+					placeholder='Password'
+					className='w-full border border-gray'
 				/>
-				<button onClick={Login} className="w-full border bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+				<button
+					onClick={Login}
+					className='w-full border bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
 					Sign In
 				</button>
 			</div>
 
 			{/* Forgot Password */}
 			<div>
-				<a href="#">Forgot your password?</a>
+				<a href='#'>Forgot your password?</a>
 			</div>
 			<button
-				className="w-full border bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+				className='w-full border bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
 				onClick={setLogin}>
 				sign up
 			</button>
