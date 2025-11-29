@@ -35,6 +35,9 @@ export interface TimeLogResponse {
 	/** UUID of the task the time log is under */
 	parentId: string;
 
+	/** Date the time log was created */
+	createdAt: Date;
+
 	/** Account that created the time log */
 	createdBy: AccountResponse;
 

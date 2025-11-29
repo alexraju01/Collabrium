@@ -1,15 +1,12 @@
-import {
-	Priority,
-	TaskStatus,
-	type Activity,
-	type Task,
-	type TimeLog,
-} from "@/lib/interfaces/types";
+import { Priority, TaskStatus } from "@/lib/interfaces/types";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { Button } from "./Button";
 import { cn } from "@/lib/classCombine";
 import { PlusIcon } from "./svgs";
 import { useOnClickOutside } from "usehooks-ts";
+import type { TaskResponse } from "@/lib/interfaces/ITask";
+import type { ActivityResponse } from "@/lib/interfaces/IActivity";
+import type { TimeLogResponse } from "@/lib/interfaces/ITimeLog";
 
 /*
 
@@ -30,16 +27,13 @@ USER = READ ALL (CAN COMMENT AND TIME LOG ON TASKS)
 
 */
 
-
-
-
-export function TaskWindow({ task }: { task?: Task }) {
+export function TaskWindow({ task }: { task?: TaskResponse }) {
 	const [title, setTitle] = useState(task?.title ?? "Default Title");
 	const [description, setDescription] = useState(task?.description ?? "");
 	const [tags, setTags] = useState(task?.tags ?? ["tag 1", "tag 2"]);
 	const [status, setStatus] = useState(task?.status ?? 2);
 	const [dueDate, setDueDate] = useState(task?.dueDate ?? "??/??/????");
-	const [createdBy] = useState(task?.createdBy.displayName ?? "unknown");
+	const [createdBy] = useState(task?.createdBy.displayname ?? "unknown");
 	const [createdAt] = useState(task?.createdAt ?? "unknown");
 	const [assignedTo, setAssignedTo] = useState(task?.assignedTo);
 	const [activity, setActivity] = useState(task?.activity ?? []);
@@ -106,7 +100,7 @@ export function TaskWindow({ task }: { task?: Task }) {
 								{Priority[priority]}
 							</div>
 						</div>
-						<p>created: {createdAt}</p>
+						<p>created: {createdAt.toLocaleString()}</p>
 						<div className="flex flex-wrap gap-2">
 							{tags.map((tag, index) => (
 								<li key={index}>{tag}</li>
@@ -155,8 +149,8 @@ export function TaskWindow({ task }: { task?: Task }) {
 								{/* Assigned to */}
 								<div className="flex flex-row">
 									<p>Assigned to:</p>
-									{assignedTo?.map(({ displayName }, index) => (
-										<p key={index}>{displayName}</p>
+									{assignedTo?.map(({ displayname }, index) => (
+										<p key={index}>{displayname}</p>
 									))}
 								</div>
 								{/* Time log */}
@@ -185,7 +179,7 @@ export function TaskWindow({ task }: { task?: Task }) {
 					</div>
 				</div>
 			</div>
-			{/* <TimeLogPanel /> */}
+			<TimeLogPanel />
 		</>
 	);
 }
@@ -262,16 +256,16 @@ function TimeLogPanel() {
 	);
 }
 
-function TaskActivity({ activity }: { activity: Activity }) {
+function TaskActivity({ activity }: { activity: ActivityResponse }) {
 	return (
 		<div className="outline flex flex-row gap-2">
 			<div className="place-self-center">10/10/2025</div>
-			<div className="outline w-full text-wrap">{activity.content}</div>
+			<div className="outline w-full text-wrap">{activity.message}</div>
 		</div>
 	);
 }
 
-function TimeLog({ timelog }: { timelog: TimeLog }) {
+function TimeLog({ timelog }: { timelog: TimeLogResponse }) {
 	return (
 		<div className="grid grid-cols-[4fr_auto_2fr] gap-2 outline px-2 p-1">
 			{/* Can click on to edit and view details */}
@@ -280,7 +274,7 @@ function TimeLog({ timelog }: { timelog: TimeLog }) {
 			</p>
 			<p className="text-center outline">{timelog.timeSpent}H</p>
 			<p className="text-end outline">
-				On - {timelog.createAt.toLocaleTimeString()}
+				On - {timelog.createdAt.toLocaleTimeString()}
 			</p>
 		</div>
 	);
