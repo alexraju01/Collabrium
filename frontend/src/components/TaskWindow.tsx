@@ -4,7 +4,7 @@ import {
 	type Activity,
 	type Task,
 	type TimeLog,
-} from "@/lib/types";
+} from "@/lib/interfaces/types";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { Button } from "./Button";
 import { cn } from "@/lib/classCombine";
