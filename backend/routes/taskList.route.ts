@@ -1,10 +1,14 @@
 import { Router } from 'express';
 import { protect } from '../controllers/auth.controller';
-import { getAllTaskLists, updateTaskList } from '../controllers/taskList.controller';
+import {
+  createTaskList,
+  getAllTaskLists,
+  updateTaskList,
+} from '../controllers/taskList.controller';
 
 export const taskListRouter = Router({ mergeParams: true });
 
 taskListRouter.use(protect);
 
-taskListRouter.route('/').get(getAllTaskLists);
+taskListRouter.route('/').get(getAllTaskLists).post(createTaskList);
 taskListRouter.route('/:taskListId').patch(updateTaskList);
