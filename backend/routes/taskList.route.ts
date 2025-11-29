@@ -4,6 +4,7 @@ import {
   createTaskList,
   deleteTaskList,
   getAllTaskLists,
+  getOneTaskList,
   updateTaskList,
 } from '../controllers/taskList.controller';
 
@@ -12,4 +13,8 @@ export const taskListRouter = Router({ mergeParams: true });
 taskListRouter.use(protect);
 
 taskListRouter.route('/').get(getAllTaskLists).post(createTaskList);
-taskListRouter.route('/:taskListId').patch(updateTaskList).delete(deleteTaskList);
+taskListRouter
+  .route('/:taskListId')
+  .get(getOneTaskList)
+  .patch(updateTaskList)
+  .delete(deleteTaskList);

@@ -33,6 +33,35 @@ export const getAllTaskLists = async (req: Request, res: Response, next: NextFun
   });
 };
 
+export const getOneTaskList = async (req: Request, res: Response, next: NextFunction) => {
+  const { workspaceId, taskListId } = req.params;
+  const userId = req.user?.id; // Assuming user info is attached to req.user
+
+  // 2. Check if the user is a member of the workspace
+  const isMember = await WorkspaceUser.findOne({
+    where: { userId, workspaceId },
+  });
+
+  if (!isMember) {
+    return next(
+      new AppError('You do not have permission to view task lists in this workspace', 403),
+    );
+  }
+
+  const taskList = await TaskList.findOne({
+    where: { id: taskListId, workspaceId },
+  });
+
+  if (!taskList) return next(new AppError('Task list not found', 404));
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      taskList,
+    },
+  });
+};
+
 export const createTaskList = async (req: Request, res: Response, next: NextFunction) => {
   const { workspaceId } = req.params;
   const { title: rawTitle } = req.body;
