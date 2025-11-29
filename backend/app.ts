@@ -33,7 +33,7 @@ app.use('/api/v1/task', taskRouter);
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/workspace', workspaceRouter);
 
-app.get('/*splat', async (req, res, next) => {
+app.get('/{*splat/}', async (req, res, next) => {
   next(new AppError(`can't find the ${req.originalUrl} on the this server`, 404));
 });
 
