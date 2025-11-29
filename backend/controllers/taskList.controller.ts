@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import TaskList from '../models/taskList.model';
 import { WorkspaceUser } from '../models/workspaceUser.model';
 import AppError from '../lib/AppError';
+import Workspace from '../models/workspace.model';
 
 export const getAllTaskLists = async (req: Request, res: Response, next: NextFunction) => {
   const { workspaceId } = req.params;
@@ -87,4 +88,35 @@ export const updateTaskList = async (req: Request, res: Response, next: NextFunc
   await taskList.update({ title });
 
   res.status(200).json({ status: 'success', data: { taskList: taskList } });
+};
+
+export const deleteTaskList = async (req: Request, res: Response, next: NextFunction) => {
+  const { workspaceId, taskListId } = req.params;
+  const userId = req.user?.id;
+
+  const workspace = await Workspace.findByPk(workspaceId);
+  if (!workspace) return next(new AppError('Workspace not found', 404));
+
+  const isMember = await WorkspaceUser.findOne({
+    where: { userId, workspaceId },
+  });
+
+  if (!isMember) {
+    return next(
+      new AppError('You do not have permission to delete task lists in this workspace', 403),
+    );
+  }
+
+  const taskList = await TaskList.findOne({
+    where: { id: taskListId, workspaceId },
+  });
+
+  if (!taskList) return next(new AppError('Task list not found', 404));
+
+  await taskList.destroy();
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
 };
