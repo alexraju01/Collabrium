@@ -3,6 +3,7 @@ import TaskList from '../models/taskList.model';
 import { WorkspaceUser } from '../models/workspaceUser.model';
 import AppError from '../lib/AppError';
 import Workspace from '../models/workspace.model';
+import Task from '../models/task.model';
 
 export const getAllTaskLists = async (req: Request, res: Response, next: NextFunction) => {
   const { workspaceId } = req.params;
@@ -50,6 +51,12 @@ export const getOneTaskList = async (req: Request, res: Response, next: NextFunc
 
   const taskList = await TaskList.findOne({
     where: { id: taskListId, workspaceId },
+    include: [
+      {
+        model: Task,
+        as: 'tasks',
+      },
+    ],
   });
 
   if (!taskList) return next(new AppError('Task list not found', 404));
@@ -65,7 +72,7 @@ export const getOneTaskList = async (req: Request, res: Response, next: NextFunc
 export const createTaskList = async (req: Request, res: Response, next: NextFunction) => {
   const { workspaceId } = req.params;
   const { title: rawTitle } = req.body;
-  const userId = req.user?.id; // Assuming user info is attached to req.user
+  const userId = req.user?.id;
 
   if (typeof rawTitle !== 'string') return next(new AppError('title must be string', 400));
   const title = rawTitle.trim();
