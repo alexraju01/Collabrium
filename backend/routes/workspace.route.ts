@@ -12,8 +12,7 @@ import { taskListRouter } from './taskList.route';
 
 export const workspaceRouter = Router();
 
-workspaceRouter.use('/:id/tasklists', taskListRouter);
-
+workspaceRouter.use('/:workspaceId/tasklists', taskListRouter);
 
 workspaceRouter.route('/').get(protect, getAllWorkspace);
 
