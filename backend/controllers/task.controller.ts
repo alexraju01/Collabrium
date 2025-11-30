@@ -2,17 +2,64 @@ import { NextFunction, Request, Response } from 'express';
 import Task from '../models/task.model';
 import AppError from '../lib/AppError';
 import APIFeatures, { QueryString } from '../lib/APIFearure';
+import { checkMembership, requireAuth } from './taskList.controller';
+import TaskList from '../models/taskList.model';
+import { Op } from 'sequelize';
+import { WorkspaceUser } from '../models/workspaceUser.model';
 
-export const getAllTasks = async (req: Request, res: Response) => {
-  const features = new APIFeatures(Task, req.query as QueryString).filter().sort().exec(); // execute query here
-  const { count, rows } = await features.query;
-  res.status(200).json({
-    status: 'success',
-    results: count,
-    data: {
-      tasks: rows,
-    },
+export const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = requireAuth(req);
+  const { workspaceId, taskListId } = req.body;
+  //   const features = new APIFeatures(Task, req.query as QueryString).filter().sort().exec(); // execute query here
+  //   const { count, rows } = await features.query;
+  //   res.status(200).json({
+  //     status: 'success',
+  //     results: count,
+  //     data: {
+  //       tasks: rows,
+  //     },
+  //   });
+
+  if (!workspaceId) return next(new AppError('Workspace ID is required to fetch tasks', 400));
+  const workspaceIdNumber = Number(workspaceId);
+  if (isNaN(workspaceIdNumber)) return next(new AppError('Invalid Workspace ID format', 400));
+
+  // Authorization check
+  await checkMembership(
+    userId,
+    workspaceIdNumber,
+    'You are not a member of this workspace or it does not exist.',
+  );
+
+  // Fetch task lists
+  const taskLists = taskListId
+    ? await TaskList.findAll({
+        where: { id: taskListId, workspaceId: workspaceIdNumber },
+        attributes: ['id'],
+      })
+    : await TaskList.findAll({
+        where: { workspaceId: workspaceIdNumber },
+        attributes: ['id'],
+        group: ['TaskList.id'],
+      });
+
+  if (taskLists.length === 0) {
+    return res.status(200).json({ status: 'success', results: 0, data: { tasks: [] } });
+  }
+
+  const taskListIds = taskLists.map((tl) => tl.id);
+
+  // Fetch tasks
+  const tasks = await Task.findAll({
+    where: { taskListId: { [Op.in]: taskListIds } },
+    include: [{ model: TaskList, as: 'taskList', attributes: ['id', 'title', 'workspaceId'] }],
+    order: [
+      ['taskListId', 'ASC'],
+      ['id', 'ASC'],
+    ],
   });
+
+  res.status(200).json({ status: 'success', results: tasks.length, data: { tasks } });
 };
 
 export const getOneTask = async (req: Request, res: Response, next: NextFunction) => {
@@ -41,9 +88,52 @@ export const updateTask = async (req: Request, res: Response, next: NextFunction
   });
 };
 
-export const createTask = async (req: Request, res: Response) => {
+export const createTask = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = requireAuth(req);
+  const { workspaceId, taskListId, title } = req.body;
   const taskData = req.body;
 
+  if (!taskListId || !workspaceId)
+    return next(new AppError('taskListId and workspaceId are required', 400));
+
+  if (!title) {
+    return next(new AppError('Task title is required', 400));
+  }
+
+  await checkMembership(
+    userId,
+    workspaceId,
+    'You do not have permission to create a task in this workspace',
+  );
+
+  const taskListExists = await TaskList.findOne({
+    where: {
+      id: taskListId,
+      workspaceId: workspaceId,
+    },
+  });
+
+  if (!taskListExists) {
+    return next(
+      new AppError(
+        'The specified Task List does not exist or is not in the provided workspace.',
+        404,
+      ),
+    ); // 404 Not Found
+  }
+
+  const existingTask = await Task.findOne({
+    where: {
+      title: title,
+      taskListId: taskListId, // Crucial: Scope the check to the specific TaskList
+    },
+  });
+
+  if (existingTask) {
+    return next(
+      new AppError(`A task with the title "${title}" already exists in this task list.`, 409),
+    ); // 409 Conflict
+  }
   const newTask = await Task.create(taskData);
 
   res.status(201).json({
