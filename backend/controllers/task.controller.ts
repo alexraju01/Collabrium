@@ -67,10 +67,42 @@ export const getOneTask = async (req: Request, res: Response, next: NextFunction
 };
 
 export const updateTask = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = requireAuth(req);
   const { id } = req.params;
-  const updateData = req.body;
+  const { workspaceId, taskListId, title: rawTitle } = req.body;
+  const updatedData = req.body;
 
-  const [updatedCount, updatedTask] = await Task.update(updateData, {
+  if (!taskListId || !workspaceId)
+    return next(new AppError('taskListId and workspaceId are required', 400));
+  const title = rawTitle.trim();
+
+  if (!title) {
+    return next(new AppError('Task title is required', 400));
+  }
+  updatedData.title = title;
+  await checkMembership(
+    userId,
+    workspaceId,
+    'You do not have permission to create a task in this workspace',
+  );
+
+  const taskListExists = await TaskList.findOne({
+    where: {
+      id: taskListId,
+      workspaceId: workspaceId,
+    },
+  });
+
+  if (!taskListExists) {
+    return next(
+      new AppError(
+        'The specified Task List does not exist or is not in the provided workspace.',
+        404,
+      ),
+    ); // 404 Not Found
+  }
+
+  const [updatedCount, updatedTask] = await Task.update(updatedData, {
     where: { id },
     returning: true,
   });
