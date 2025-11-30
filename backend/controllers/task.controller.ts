@@ -55,7 +55,7 @@ export const getAllTasks = async (req: Request, res: Response, next: NextFunctio
     include: [{ model: TaskList, as: 'taskList', attributes: ['id', 'title', 'workspaceId'] }],
     order: [
       ['taskListId', 'ASC'],
-      ['id', 'ASC'],
+      ['due', 'ASC'],
     ],
   });
 
