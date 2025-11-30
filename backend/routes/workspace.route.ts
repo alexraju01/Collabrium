@@ -8,11 +8,8 @@ import {
   updateWorkspace,
 } from '../controllers/workspace.controller';
 import { protect, restrictTo } from '../controllers/auth.controller';
-import { taskListRouter } from './taskList.route';
 
 export const workspaceRouter = Router();
-
-workspaceRouter.use('/:workspaceId/tasklists', taskListRouter);
 
 workspaceRouter.route('/').get(protect, getAllWorkspace);
 

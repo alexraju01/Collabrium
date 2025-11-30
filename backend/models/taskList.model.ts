@@ -26,11 +26,13 @@ TaskList.init(
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
+      unique: true,
       primaryKey: true,
     },
     title: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      unique: true,
       validate: {
         notEmpty: {
           msg: 'Task List title is required',
