@@ -179,10 +179,7 @@ User.prototype.changedPasswordAfter = function (JWTTimestamp: number) {
 
 User.prototype.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString('hex');
-  console.log(resetToken);
   this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-  console.log('resetToken', resetToken);
-  console.log('passwordResetToken', this.passwordResetToken);
 
   this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
   return resetToken;
