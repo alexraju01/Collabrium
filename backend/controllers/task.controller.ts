@@ -5,22 +5,13 @@ import APIFeatures, { QueryString } from '../lib/APIFearure';
 import { checkMembership, requireAuth } from './taskList.controller';
 import TaskList from '../models/taskList.model';
 import { Op } from 'sequelize';
-import { WorkspaceUser } from '../models/workspaceUser.model';
 
 export const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
   const userId = requireAuth(req);
   const { workspaceId, taskListId } = req.body;
-  //   const features = new APIFeatures(Task, req.query as QueryString).filter().sort().exec(); // execute query here
-  //   const { count, rows } = await features.query;
-  //   res.status(200).json({
-  //     status: 'success',
-  //     results: count,
-  //     data: {
-  //       tasks: rows,
-  //     },
-  //   });
 
   if (!workspaceId) return next(new AppError('Workspace ID is required to fetch tasks', 400));
+
   const workspaceIdNumber = Number(workspaceId);
   if (isNaN(workspaceIdNumber)) return next(new AppError('Invalid Workspace ID format', 400));
 
@@ -49,14 +40,18 @@ export const getAllTasks = async (req: Request, res: Response, next: NextFunctio
 
   const taskListIds = taskLists.map((tl) => tl.id);
 
+  // Build query options
+  const features = new APIFeatures(Task, req.query as QueryString).filter().sort();
+  const queryOptions = features.options;
+
   // Fetch tasks
   const tasks = await Task.findAll({
-    where: { taskListId: { [Op.in]: taskListIds } },
+    ...queryOptions,
+    where: {
+      ...(queryOptions.where as object),
+      taskListId: { [Op.in]: taskListIds },
+    },
     include: [{ model: TaskList, as: 'taskList', attributes: ['id', 'title', 'workspaceId'] }],
-    order: [
-      ['taskListId', 'ASC'],
-      ['due', 'ASC'],
-    ],
   });
 
   res.status(200).json({ status: 'success', results: tasks.length, data: { tasks } });
