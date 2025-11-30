@@ -3,7 +3,6 @@ import type { AccountResponse } from "./IAccount";
 import type { ActivityResponse } from "./IActivity";
 import type { TimeLogResponse } from "./ITimeLog";
 
-
 export interface TaskRequest {
 	/** Task UUID */
 	id?: string;
@@ -71,31 +70,33 @@ export interface TaskResponse {
 	activity: ActivityResponse[];
 }
 
-export interface SimpleTaskResponse {
-	/** UUID of the task */
-	id: string;
+export interface SimpleTaskResponse extends BaseResponse {
+	data: {
+		/** UUID of the task */
+		id: string;
 
-	/** parent tasklist UUID  */
-	parentId: string;
+		/** parent tasklist UUID  */
+		parentId: string;
 
-	/** Task title */
-	title: string;
+		/** Task title */
+		title: string;
 
-	/** list of accounts the task is assigned to */
-	assignedTo: AccountResponse[];
+		/** list of accounts the task is assigned to */
+		assignedTo: AccountResponse[];
 
-	/** Task due date */
-	dueDate?: Date;
+		/** Task due date */
+		dueDate?: Date;
 
-	/** Task status */
-	status: TaskStatus;
+		/** Task status */
+		status: TaskStatus;
 
-	/** Task priority  */
-	prioity: Priority;
+		/** Task priority  */
+		prioity: Priority;
 
-	/** Task tags */
-	tags: string[];
+		/** Task tags */
+		tags: string[];
 
-	/** Total time spent in seconds on the task, sum of time logs */
-	timeSpend: number;
+		/** Total time spent in seconds on the task, sum of time logs */
+		timeSpend: number;
+	};
 }

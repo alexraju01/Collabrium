@@ -44,6 +44,6 @@ export interface TimeLogResponse {
 	/** Date the time log was created for */
 	logDate: Date;
 
-	/** Time spent in seconds logged against the time */
+	/** Time spent in seconds logged against the task */
 	timeSpent: number;
 }

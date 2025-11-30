@@ -1,6 +1,6 @@
 export interface CreateAccountRequest {
 	/** Public display name of the account */
-	displayname: string;
+	displayName: string;
 
 	/** Email the account is linked to */
 	email: string;
@@ -11,7 +11,7 @@ export interface CreateAccountRequest {
 
 export interface EditAccountRequest {
 	/** Display name to update to */
-	displayname: string;
+	displayName: string;
 }
 
 export interface AccountResponse {
@@ -19,7 +19,7 @@ export interface AccountResponse {
 	id: string;
 
 	/** Account display name */
-	displayname: string;
+	displayName: string;
 
 	/** Account email */
 	email: string;

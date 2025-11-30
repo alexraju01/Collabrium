@@ -1,4 +1,5 @@
-import type { Role, TaskList } from "./types";
+import type { TaskListResponse } from "./ITaskList";
+import type { Role } from "./types";
 
 /** Create or edit request */
 export interface WorkspaceRequest {
@@ -29,7 +30,7 @@ export interface WorkspaceResponse {
 	memberCount: number;
 
 	/** Array of task lists inside of this workspace */
-	taskLists: TaskList[];
+	taskLists: TaskListResponse[];
 
 	/** My role in this workspace */
 	myRole: Role;
@@ -40,7 +41,7 @@ export interface WorkspaceResponse {
 		id: number;
 
 		/** Users display name */
-		displayname: string;
+		displayName: string;
 
 		/** Users email */
 		email: string;

@@ -1,12 +1,13 @@
-import { Priority, TaskStatus } from "@/lib/interfaces/types";
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { Priority, TaskStatus, type Role } from "@/lib/interfaces/types";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "./Button";
 import { cn } from "@/lib/classCombine";
 import { PlusIcon } from "./svgs";
 import { useOnClickOutside } from "usehooks-ts";
-import type { TaskResponse } from "@/lib/interfaces/ITask";
+import type { TaskRequest, TaskResponse } from "@/lib/interfaces/ITask";
 import type { ActivityResponse } from "@/lib/interfaces/IActivity";
 import type { TimeLogResponse } from "@/lib/interfaces/ITimeLog";
+import { useGetTask } from "@/lib/queries/GetTask";
 
 /*
 
@@ -23,22 +24,33 @@ ADMIN = FULL CRUD ACCESS (BELOW WORKSPACE LEVEL) CANT EDIT WORKSPACE NAME OR DEL
 USER = READ ALL (CAN COMMENT AND TIME LOG ON TASKS)
 
 
-
-
 */
 
-export function TaskWindow({ task }: { task?: TaskResponse }) {
+export function TaskWindow({
+	id,
+	closeTask,
+	role,
+}: {
+	id: string;
+	closeTask: (e: string) => void;
+	role: Role;
+}) {
+	const { data, isError, isPending } = useGetTask(id);
+	const [task, setTask] = useState<TaskResponse | null>(data ?? null);
+	const windowRef = useRef<any>(null);
 	const [title, setTitle] = useState(task?.title ?? "Default Title");
 	const [description, setDescription] = useState(task?.description ?? "");
 	const [tags, setTags] = useState(task?.tags ?? ["tag 1", "tag 2"]);
 	const [status, setStatus] = useState(task?.status ?? 2);
 	const [dueDate, setDueDate] = useState(task?.dueDate ?? "??/??/????");
-	const [createdBy] = useState(task?.createdBy.displayname ?? "unknown");
+	const [createdBy] = useState(task?.createdBy.displayName ?? "unknown");
 	const [createdAt] = useState(task?.createdAt ?? "unknown");
 	const [assignedTo, setAssignedTo] = useState(task?.assignedTo);
 	const [activity, setActivity] = useState(task?.activity ?? []);
 	const [timeLogs, setTimeLogs] = useState(task?.timeLogs ?? []);
 	const [priority, setPriority] = useState(task?.prioity ?? 0);
+
+	const [timeLogOpen, setTimeLogOpen] = useState(false);
 
 	function submitComment(e: string) {
 		//api call to add comment
@@ -50,6 +62,8 @@ export function TaskWindow({ task }: { task?: TaskResponse }) {
 		//add it to the current comment list
 		// setActivity([...activity, newcomment])
 	}
+
+
 
 	function handleSaveTask() {
 		console.log("Save task");
@@ -65,25 +79,34 @@ export function TaskWindow({ task }: { task?: TaskResponse }) {
 		console.log("Handle Close");
 		//if have edit permission, save,
 		//close
+		if (!timeLogOpen) closeTask("");
 	}
 
 	function openNewTimeLog() {
 		console.log("openingNewTimeLog");
+		setTimeLogOpen(true);
 	}
 
+	// useOnClickOutside(windowRef, handleCloseTask);
+
 	/**@summary IF FALSE, CAN EDIT */
-	const canEdit = false; // true if admin+ or task owner	//SET THIS TO !FALSE !!!!!!!!
+	const [canEdit] = useState(role == "Admin" || role == "Owner" ? true : false); // true if admin+ or task owner	//SET THIS TO !FALSE !!!!!!!!
 
 	return (
 		<>
-			<div className="absolute w-11/12 divide-y-2 max-h-11/12 border top-[calc(1/24*100%)] left-1/2 -translate-x-1/2">
+			<div
+				ref={windowRef}
+				className="absolute w-11/12 divide-y-2 max-h-11/12 top-[calc(1/24*100%)] left-1/2 -translate-x-1/2">
 				{/* Top bar */}
 				<section className="flex bg-neutral-400 place-content-between pl-2">
 					{/* Make this a dropdown button to change which list its under */}
-					<h3>Task List Name</h3>
-					<div className="gap-2 flex ">
+					<div className="flex gap-2 items-baseline">
+						<h3>Task List Name</h3>
+						<p className="text-xs text-black/50">id:{id}</p>
+					</div>
+					<div className="gap-2 flex">
 						<button>Actions</button>
-						<Button onClick={handleCloseTask}>
+						<Button className="aspect-square" onClick={handleCloseTask}>
 							<PlusIcon classname="rotate-45" />
 						</Button>
 					</div>
@@ -94,9 +117,9 @@ export function TaskWindow({ task }: { task?: TaskResponse }) {
 					<section className="bg-neutral-400 p-2">
 						<div className="flex flex-row place-content-between">
 							{/* Title */}
-							<TitleBox title={title} setTitle={setTitle} />
+							<TitleBox canEdit={canEdit} title={title} setTitle={setTitle} />
 							{/* Prio */}
-							<div className="outline place-self-start self-center p-1 px-4 bg-amber-300">
+							<div className="place-self-start self-center p-1 px-4 bg-amber-300">
 								{Priority[priority]}
 							</div>
 						</div>
@@ -110,6 +133,7 @@ export function TaskWindow({ task }: { task?: TaskResponse }) {
 						<h3>Description</h3>
 						{/* requires markdown editor */}
 						<DescriptionBox
+							canEdit={canEdit}
 							loadedContent={description}
 							setLoadedContent={setDescription}
 						/>
@@ -133,7 +157,7 @@ export function TaskWindow({ task }: { task?: TaskResponse }) {
 							<h2>Task info</h2>
 							<div className="grid gap-4 grid-cols-2">
 								{/* Status */}
-								<div className="outline place-self-start p-1 px-4 bg-amber-300">
+								<div className="place-self-start p-1 px-4 bg-amber-300">
 									{TaskStatus[status]}
 								</div>
 								{/* Due date */}
@@ -149,8 +173,8 @@ export function TaskWindow({ task }: { task?: TaskResponse }) {
 								{/* Assigned to */}
 								<div className="flex flex-row">
 									<p>Assigned to:</p>
-									{assignedTo?.map(({ displayname }, index) => (
-										<p key={index}>{displayname}</p>
+									{assignedTo?.map(({ displayName }, index) => (
+										<p key={index}>{displayName}</p>
 									))}
 								</div>
 								{/* Time log */}
@@ -178,13 +202,14 @@ export function TaskWindow({ task }: { task?: TaskResponse }) {
 						</Button>
 					</div>
 				</div>
+
+				{timeLogOpen && <TimeLogPanel setOpen={setTimeLogOpen} />}
 			</div>
-			<TimeLogPanel />
 		</>
 	);
 }
 
-function TimeLogPanel() {
+function TimeLogPanel({ setOpen }: { setOpen: (e: boolean) => void }) {
 	const [logContent, setLogContent] = useState("");
 	const pannelRef = useRef<any>(null);
 	const maxLength = 255;
@@ -199,12 +224,13 @@ function TimeLogPanel() {
 
 	function handleCloseTimeLog() {
 		console.log("Close time log");
+		setOpen(false);
 	}
 
 	useOnClickOutside(pannelRef, handleCloseTimeLog);
 
 	return (
-		<div className="absolute bg-black/20 w-full h-full grid place-items-center">
+		<div className="absolute z-10 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-black/20 w-full h-full grid place-items-center">
 			<div
 				ref={pannelRef}
 				className="grid grid-rows-[auto_1fr_auto] max-w-xl w-11/12 h-64 bg-neutral-500 outline divide-y-2">
@@ -281,9 +307,11 @@ function TimeLog({ timelog }: { timelog: TimeLogResponse }) {
 }
 
 function TitleBox({
+	canEdit,
 	title,
 	setTitle,
 }: {
+	canEdit: boolean;
 	title: string;
 	setTitle: (title: string) => void;
 }) {
@@ -305,6 +333,7 @@ function TitleBox({
 
 	return (
 		<input
+			disabled={!canEdit}
 			className="text-4xl"
 			ref={ref}
 			maxLength={maxLength}
@@ -317,9 +346,11 @@ function TitleBox({
  * Value is set on blur
  */
 function DescriptionBox({
+	canEdit,
 	loadedContent,
 	setLoadedContent,
 }: {
+	canEdit: boolean;
 	loadedContent: string;
 	setLoadedContent: (e: string) => void;
 }) {
@@ -333,6 +364,7 @@ function DescriptionBox({
 	return (
 		<div className="w-full relative ">
 			<textarea
+				disabled={!canEdit}
 				ref={ref}
 				onBlur={(e) => setLoadedContent(e.currentTarget.value)}
 				placeholder="start typing your comment..."
@@ -379,6 +411,7 @@ function NewComment({ submit }: { submit: (e: string) => void }) {
 			<Button
 				onClick={() => {
 					if (commentMsg.trim().length > 0) submit(commentMsg);
+					setCommentMsg("");
 				}}
 				className="aspect-square h-max self-center">
 				<PlusIcon />
