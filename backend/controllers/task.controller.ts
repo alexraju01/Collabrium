@@ -106,11 +106,10 @@ export const searchTasks = async (req: Request, res: Response, next: NextFunctio
 
   try {
     // Search tasks by title and description (case-insensitive, partial matching)
-    // TODO: Add user authorization filter when Task-User relationship is implemented
     // Filter by userId to ensure users only see their own tasks
     const tasks = await Task.findAll({
       where: {
-        // userId: user.id, // Uncomment when Task model has userId field
+        userId: user.id,
         [Op.or]: [
           { title: { [Op.iLike]: `%${trimmedQuery}%` } },
           {
