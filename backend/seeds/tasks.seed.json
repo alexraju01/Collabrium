@@ -6,7 +6,8 @@
     "priority": "high",
     "tags": ["backend", "sequelize", "model"],
     "dueBy": "2025-12-01T12:00:00Z",
-    "taskListId": 2
+    "taskListId": 2,
+    "workspaceId": 1
   },
   {
     "title": "Configure Database Connection",
@@ -15,7 +16,8 @@
     "priority": "medium",
     "tags": ["config", "database"],
     "dueBy": "2025-11-20T10:00:00Z",
-    "taskListId": 5
+    "taskListId": 5,
+    "workspaceId": 1
   },
   {
     "title": "Implement API Route for Tasks",
@@ -24,7 +26,8 @@
     "priority": "high",
     "tags": ["api", "routes", "crud"],
     "dueBy": "2025-12-02T09:00:00Z",
-    "taskListId": 2
+    "taskListId": 2,
+    "workspaceId": 1
   },
   {
     "title": "Write Unit Tests for Model",
@@ -33,7 +36,8 @@
     "priority": "low",
     "tags": ["testing", "backend"],
     "dueBy": "2025-12-05T14:00:00Z",
-    "taskListId": 1
+    "taskListId": 1,
+    "workspaceId": 1
   },
   {
     "title": "Design Front-End Task List",
@@ -42,7 +46,8 @@
     "priority": "medium",
     "tags": ["frontend", "react", "ui"],
     "dueBy": "2025-12-05T17:00:00Z",
-    "taskListId": 5
+    "taskListId": 5,
+    "workspaceId": 1
   },
   {
     "title": "Debug Task Creation Bug",
@@ -51,7 +56,8 @@
     "priority": "high",
     "tags": ["bug", "fix", "critical"],
     "dueBy": "2025-12-01T16:00:00Z",
-    "taskListId": 3
+    "taskListId": 3,
+    "workspaceId": 1
   },
   {
     "title": "Review PR #42: Database Seeding",
@@ -60,7 +66,8 @@
     "priority": "low",
     "tags": ["review", "database", "pr"],
     "dueBy": "2025-11-28T15:00:00Z",
-    "taskListId": 5
+    "taskListId": 5,
+    "workspaceId": 1
   },
   {
     "title": "Update Documentation",
@@ -69,7 +76,8 @@
     "priority": "low",
     "tags": ["docs", "cleanup"],
     "dueBy": "2025-12-10T11:00:00Z",
-    "taskListId": 1
+    "taskListId": 1,
+    "workspaceId": 1
   },
   {
     "title": "Refactor Task Controller Logic",
@@ -78,7 +86,8 @@
     "priority": "medium",
     "tags": ["refactor", "backend", "performance"],
     "dueBy": "2025-12-03T10:30:00Z",
-    "taskListId": 4
+    "taskListId": 4,
+    "workspaceId": 1
   },
   {
     "title": "Plan Next Sprint Features",
@@ -87,6 +96,7 @@
     "priority": "low",
     "tags": ["planning", "meeting"],
     "dueBy": "2025-12-04T18:00:00Z",
-    "taskListId": 1
+    "taskListId": 1,
+    "workspaceId": 1
   }
 ]
