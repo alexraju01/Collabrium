@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import Task from '../models/task.model';
 import AppError from '../lib/AppError';
+import { Op } from 'sequelize';
 import APIFeatures, { QueryString } from '../lib/APIFearure';
 import { checkMembership, requireAuth } from './taskList.controller';
 import TaskList from '../models/taskList.model';
-import { Op } from 'sequelize';
+import { WorkspaceUser } from '../models/workspaceUser.model';
 
 export const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
   const userId = requireAuth(req);
@@ -224,4 +225,61 @@ export const getAllSimpleTask = async (_: Request, res: Response) => {
     },
   });
   res.status(200).json({ status: 'success', results: simpleTasks.length, data: { simpleTasks } });
+};
+
+//  ====================== Search Task =====================
+
+export const searchTasks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // 1. Get the authenticated user's ID
+  const userId = requireAuth(req);
+  // 2. Get the search query string from the request query parameters
+  const query = req.query.q as string;
+  if (!query || query.trim() === "") {
+    return res.status(400).json({
+      status: "fail",
+      message: "Search query (q) is required.",
+    });
+  }
+  // 3. Find all Workspace IDs the user is a member of
+  const userWorkspaces = await WorkspaceUser.findAll({
+    where: { userId },
+    attributes: ["workspaceId"], // We only need the IDs
+  });
+  const workspaceIds = userWorkspaces.map((wu) => wu.workspaceId);
+  if (workspaceIds.length === 0) {
+    return res.status(200).json({
+      status: "success",
+      results: 0,
+      data: {
+        tasks: [],
+      },
+      message: "You are not a member of any workspace.",
+    });
+  }
+  // 4. Search for Tasks within those Workspaces matching the title query
+  const tasks = await Task.findAll({
+    where: {
+      workspaceId: {
+        [Op.in]: workspaceIds, // Task belongs to one of the user's workspaces
+      },
+      title: {
+        [Op.iLike]: `%${query}%`, // Case-insensitive partial match
+      },
+    },
+    order: [
+      ["createdAt", "DESC"], // Order results, e.g., by creation date
+    ],
+  });
+  // 5. Send the response
+  res.status(200).json({
+    status: "success",
+    results: tasks.length,
+    data: {
+      tasks,
+    },
+  });
 };
