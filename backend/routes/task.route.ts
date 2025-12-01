@@ -11,7 +11,11 @@ import { protect } from '../controllers/auth.controller';
 
 export const taskRouter = Router();
 
-taskRouter.route('/').get(protect, getAllTasks).post(createTask);
+taskRouter.route('/').get(protect, getAllTasks).post(protect, createTask);
 taskRouter.route('/simple').get(getAllSimpleTask);
 
-taskRouter.route('/:id').get(getOneTask).patch(updateTask).delete(deleteTask);
+taskRouter
+  .route('/:id')
+  .get(protect, getOneTask)
+  .patch(protect, updateTask)
+  .delete(protect, deleteTask);

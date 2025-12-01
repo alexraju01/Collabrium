@@ -9,6 +9,7 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from 'cookie-parser';
+import { taskListRouter } from './routes/taskList.route';
 
 const app = express();
 
@@ -31,9 +32,10 @@ app.use((req, res, next) => {
 });
 
 // Resouces Routing
-app.use("/api/v1/task", taskRouter);
-app.use("/api/v1/user", userRouter);
-app.use("/api/v1/workspace", workspaceRouter);
+app.use('/api/v1/task', taskRouter);
+app.use('/api/v1/user', userRouter);
+app.use('/api/v1/workspace', workspaceRouter);
+app.use('/api/v1/tasklist', taskListRouter);
 
 app.get('/{*splat/}', async (req, res, next) => {
   next(new AppError(`can't find the ${req.originalUrl} on the this server`, 404));

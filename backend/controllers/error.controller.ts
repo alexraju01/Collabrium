@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import AppError from '../lib/AppError';
+import { UniqueConstraintError } from 'sequelize';
 
 interface ErrorMiddleware extends Error {
   statusCode: number;
@@ -9,6 +10,12 @@ interface ErrorMiddleware extends Error {
   name: string;
   isOperational?: boolean;
 }
+
+const handleSequelizeUniqueConstraintErrorDB = (err: UniqueConstraintError) => {
+  const fields = Object.keys(err.fields || {});
+  const message = `The value provided for the '${fields.join(', ')}' field is already in use. Please choose another value.`;
+  return new AppError(message, 400);
+};
 
 const handleJWTError = () => new AppError('Invalid Token! Please log in again', 401);
 
@@ -53,6 +60,8 @@ export const globalErrorHandler = (
     let error = { ...err };
     error.message = err.message;
 
+    if (error.name === 'SequelizeUniqueConstraintError')
+      error = handleSequelizeUniqueConstraintErrorDB(error as unknown as UniqueConstraintError);
     if (error.name === 'JsonWebTokenError') error = handleJWTError();
 
     sendErrorProd(error, res);
