@@ -19,10 +19,14 @@ export interface TaskAttributes {
 	createdAt?: Date;
 	updatedAt?: Date;
 	workspaceId: number;
+	assignedTo?: number[];
 }
 
 // 2. Define the attributes required for creation (ID is optional)
-export type TaskCreationAttributes = Optional<TaskAttributes, "id" | "createdAt" | "updatedAt">;
+export type TaskCreationAttributes = Optional<
+	TaskAttributes,
+	"id" | "createdAt" | "updatedAt" | "assignedTo"
+>;
 
 // 3. Define the Model Class extending Sequelize.Model
 class Task extends Model<TaskAttributes, TaskCreationAttributes> {
@@ -33,7 +37,7 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> {
 	declare priority: Priority;
 	declare tags: string[];
 	declare dueBy: Date | null;
-
+	declare assignedTo: number[];
 	declare taskListId: number;
 	declare createdAt: Date;
 	declare workspaceId: number;
@@ -109,6 +113,11 @@ Task.init(
 					}
 				},
 			},
+		},
+
+		assignedTo: {
+			type: DataTypes.ARRAY(DataTypes.INTEGER),
+			defaultValue: [],
 		},
 
 		taskListId: {

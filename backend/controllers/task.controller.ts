@@ -6,6 +6,9 @@ import APIFeatures, { QueryString } from "../lib/APIFearure";
 import { checkMembership, requireAuth } from "./taskList.controller";
 import TaskList from "../models/taskList.model";
 import { WorkspaceUser } from "../models/workspaceUser.model";
+import { checkWorkspaceAdmin } from "../lib/checkWorkspaceAdmin";
+
+import { sequelize } from "../config/db";
 
 export const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
 	const userId = requireAuth(req);
@@ -82,7 +85,7 @@ export const getOneTask = async (req: Request, res: Response, next: NextFunction
 		},
 	});
 
-	// 5. Handle Not Found: Task ID is missing OR context is invalid
+	// 5. Task ID is missing OR context is invalid
 	if (!task) {
 		return next(
 			new AppError("Task not found or does not belong to the specified Task List/Workspace.", 404)
@@ -97,6 +100,7 @@ export const getOneTask = async (req: Request, res: Response, next: NextFunction
 		},
 	});
 };
+
 export const updateTask = async (req: Request, res: Response, next: NextFunction) => {
 	const userId = requireAuth(req);
 	const { id } = req.params;
@@ -278,5 +282,62 @@ export const searchTasks = async (req: Request, res: Response, next: NextFunctio
 		data: {
 			tasks,
 		},
+	});
+};
+
+export const assignUsersToTask = async (req: Request, res: Response, next: NextFunction) => {
+	const userId = requireAuth(req);
+	const { taskId } = req.params;
+
+	const { workspaceId, assignedUserIds } = req.body as {
+		// taskId: number;
+		workspaceId: number;
+		assignedUserIds: number[];
+	};
+
+	if (!assignedUserIds || !workspaceId) {
+		return next(new AppError("assignedUserIds and workspaceId are required", 400));
+	}
+
+	if (!Array.isArray(assignedUserIds) || assignedUserIds.length === 0) {
+		return next(new AppError("assignedUserIds must be a non-empty array", 400));
+	}
+
+	await checkWorkspaceAdmin(userId, workspaceId);
+
+	await sequelize.transaction(async (t) => {
+		const task = await Task.findOne({
+			where: { id: taskId, workspaceId },
+			transaction: t,
+		});
+
+		if (!task) {
+			throw new AppError("Task not found in the specified workspace", 404);
+		}
+
+		// b. Validate all assigned users exist in workspace
+		const workspaceUsers = await WorkspaceUser.findAll({
+			where: {
+				userId: assignedUserIds,
+				workspaceId,
+			},
+			transaction: t,
+		});
+
+		if (workspaceUsers.length !== assignedUserIds.length) {
+			return next(new AppError("One or more users do not exist in this workspace", 404));
+		}
+
+		// c. Merge with existing assigned users
+		const existingAssigned: number[] = task.assignedTo || [];
+		const updatedAssigned = Array.from(new Set([...existingAssigned, ...assignedUserIds]));
+		task.assignedTo = updatedAssigned;
+
+		await task.save({ transaction: t });
+
+		res.status(200).json({
+			status: "success",
+			data: { task },
+		});
 	});
 };
