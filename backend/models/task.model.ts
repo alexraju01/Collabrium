@@ -13,6 +13,7 @@ export interface TaskAttributes {
   tags: string[];
   priority: Priority;
   dueBy: Date;
+  userId: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -29,6 +30,7 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> {
   declare priority: Priority;
   declare tags: string[];
   declare dueBy: Date | null;
+  declare userId: number;
   declare createdAt: Date;
   declare updatedAt: Date;
 }
@@ -100,6 +102,20 @@ Task.init(
           if (value && value < new Date()) {
             throw new Error('Due date cannot be in the past');
           }
+        },
+      },
+    },
+
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Users',
+        key: 'id',
+      },
+      validate: {
+        notEmpty: {
+          msg: 'User ID is required.',
         },
       },
     },
