@@ -6,13 +6,17 @@ import Workspace from '../models/workspace.model';
 import Task from '../models/task.model';
 import { sequelize } from '../config/db';
 
-const requireAuth = (req: Request) => {
+export const requireAuth = (req: Request) => {
   const userId = req.user?.id;
   if (!userId) throw new AppError('User not authenticated', 401);
   return userId;
 };
 
-const checkMembership = async (userId: number, workspaceId: number, errorMessage?: string) => {
+export const checkMembership = async (
+  userId: number,
+  workspaceId: number,
+  errorMessage?: string,
+) => {
   const isMember = await WorkspaceUser.findOne({ where: { userId, workspaceId } });
   if (!isMember)
     throw new AppError(errorMessage || 'You do not have permission for this workspace', 403);
@@ -20,14 +24,20 @@ const checkMembership = async (userId: number, workspaceId: number, errorMessage
 
 export const getAllTaskLists = async (req: Request, res: Response, next: NextFunction) => {
   const userId = requireAuth(req);
-
   const { workspaceId } = req.body;
+
+  await checkMembership(
+    userId,
+    workspaceId,
+    'You do not have permission to view task lists in this workspace',
+  );
 
   if (!workspaceId) return next(new AppError('workspaceId is required', 400));
 
   const memberships = await WorkspaceUser.findAll({
     where: { workspaceId },
     attributes: ['workspaceId'],
+    order: [['id', 'ASC']],
   });
 
   if (memberships.length === 0) {

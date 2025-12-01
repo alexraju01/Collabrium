@@ -6,7 +6,8 @@
     "priority": "high",
     "tags": ["backend", "sequelize", "model"],
     "dueBy": "2025-12-01T12:00:00Z",
-    "taskListId": 2
+    "taskListId": 2,
+    "workspaceId": 1
   },
   {
     "title": "Configure Database Connection",
@@ -15,7 +16,8 @@
     "priority": "medium",
     "tags": ["config", "database"],
     "dueBy": "2025-11-20T10:00:00Z",
-    "taskListId": 5
+    "taskListId": 5,
+    "workspaceId": 1
   },
   {
     "title": "Implement API Route for Tasks",
@@ -24,7 +26,8 @@
     "priority": "high",
     "tags": ["api", "routes", "crud"],
     "dueBy": "2025-12-02T09:00:00Z",
-    "taskListId": 2
+    "taskListId": 2,
+    "workspaceId": 1
   },
   {
     "title": "Write Unit Tests for Model",
@@ -33,7 +36,8 @@
     "priority": "low",
     "tags": ["testing", "backend"],
     "dueBy": "2025-12-05T14:00:00Z",
-    "taskListId": 1
+    "taskListId": 1,
+    "workspaceId": 1
   },
   {
     "title": "Design Front-End Task List",
@@ -42,7 +46,8 @@
     "priority": "medium",
     "tags": ["frontend", "react", "ui"],
     "dueBy": "2025-12-05T17:00:00Z",
-    "taskListId": 5
+    "taskListId": 5,
+    "workspaceId": 1
   },
   {
     "title": "Debug Task Creation Bug",
@@ -51,7 +56,8 @@
     "priority": "high",
     "tags": ["bug", "fix", "critical"],
     "dueBy": "2025-12-01T16:00:00Z",
-    "taskListId": 3
+    "taskListId": 3,
+    "workspaceId": 1
   },
   {
     "title": "Review PR #42: Database Seeding",
@@ -60,7 +66,8 @@
     "priority": "low",
     "tags": ["review", "database", "pr"],
     "dueBy": "2025-11-28T15:00:00Z",
-    "taskListId": 5
+    "taskListId": 5,
+    "workspaceId": 1
   },
   {
     "title": "Update Documentation",
@@ -69,7 +76,8 @@
     "priority": "low",
     "tags": ["docs", "cleanup"],
     "dueBy": "2025-12-10T11:00:00Z",
-    "taskListId": 1
+    "taskListId": 1,
+    "workspaceId": 1
   },
   {
     "title": "Refactor Task Controller Logic",
@@ -78,7 +86,8 @@
     "priority": "medium",
     "tags": ["refactor", "backend", "performance"],
     "dueBy": "2025-12-03T10:30:00Z",
-    "taskListId": 4
+    "taskListId": 4,
+    "workspaceId": 1
   },
   {
     "title": "Plan Next Sprint Features",
@@ -87,186 +96,7 @@
     "priority": "low",
     "tags": ["planning", "meeting"],
     "dueBy": "2025-12-04T18:00:00Z",
-    "taskListId": 1
-  },
-  {
-    "title": "Optimize Database Indexes",
-    "description": "Review and improve indexing strategy for faster query performance.",
-    "status": "not started",
-    "priority": "high",
-    "tags": ["database", "optimization"],
-    "dueBy": "2026-01-10T09:00:00Z",
-    "taskListId": 4
-  },
-  {
-    "title": "Add Task Archive Feature",
-    "description": "Implement the ability to archive completed tasks.",
-    "status": "not started",
-    "priority": "medium",
-    "tags": ["feature", "backend"],
-    "dueBy": "2026-01-20T12:30:00Z",
-    "taskListId": 2
-  },
-  {
-    "title": "Create Task Filter UI",
-    "description": "Add UI controls for filtering tasks by tags and priority.",
-    "status": "in progress",
-    "priority": "high",
-    "tags": ["frontend", "react", "ui"],
-    "dueBy": "2026-02-02T14:00:00Z",
-    "taskListId": 5
-  },
-  {
-    "title": "Improve API Error Handling",
-    "description": "Enhance API routes with better error messages and validation.",
-    "status": "in progress",
-    "priority": "medium",
-    "tags": ["api", "backend"],
-    "dueBy": "2026-01-05T09:00:00Z",
-    "taskListId": 2
-  },
-  {
-    "title": "Integrate Logging Library",
-    "description": "Add a centralized logging solution using Winston or Pino.",
-    "status": "not started",
-    "priority": "medium",
-    "tags": ["backend", "logging"],
-    "dueBy": "2026-03-01T11:00:00Z",
-    "taskListId": 3
-  },
-  {
-    "title": "Add Task Comments Feature",
-    "description": "Allow users to add and view comments on tasks.",
-    "status": "not started",
-    "priority": "high",
-    "tags": ["feature", "api", "frontend"],
-    "dueBy": "2026-03-15T12:00:00Z",
-    "taskListId": 5
-  },
-  {
-    "title": "Set Up CI/CD Pipeline",
-    "description": "Configure automatic testing and deployment pipeline with GitHub Actions.",
-    "status": "not started",
-    "priority": "high",
-    "tags": ["devops", "ci", "cd"],
-    "dueBy": "2026-02-25T16:00:00Z",
-    "taskListId": 1
-  },
-  {
-    "title": "Accessibility Audit",
-    "description": "Review front-end components for WCAG compliance.",
-    "status": "in review",
-    "priority": "low",
-    "tags": ["frontend", "accessibility"],
-    "dueBy": "2026-02-12T10:00:00Z",
-    "taskListId": 5
-  },
-  {
-    "title": "Add Dark Mode",
-    "description": "Implement a dark mode toggle for the UI.",
-    "status": "not started",
-    "priority": "medium",
-    "tags": ["frontend", "ui", "feature"],
-    "dueBy": "2026-04-05T13:30:00Z",
-    "taskListId": 4
-  },
-  {
-    "title": "Implement Rate Limiting",
-    "description": "Add rate limiting to prevent API abuse.",
-    "status": "not started",
-    "priority": "high",
-    "tags": ["security", "backend"],
-    "dueBy": "2026-02-18T15:15:00Z",
-    "taskListId": 3
-  },
-  {
-    "title": "Research OAuth Providers",
-    "description": "Evaluate Google and GitHub OAuth for user authentication.",
-    "status": "completed",
-    "priority": "low",
-    "tags": ["auth", "research"],
-    "dueBy": "2025-12-20T09:00:00Z",
-    "taskListId": 1
-  },
-  {
-    "title": "Implement User Authentication",
-    "description": "Add authentication and authorization layers to the API.",
-    "status": "not started",
-    "priority": "high",
-    "tags": ["auth", "api", "security"],
-    "dueBy": "2026-03-22T18:00:00Z",
-    "taskListId": 2
-  },
-  {
-    "title": "Create Task Activity Log",
-    "description": "Track updates, deletions, and status changes for each task.",
-    "status": "not started",
-    "priority": "medium",
-    "tags": ["backend", "feature"],
-    "dueBy": "2026-04-12T17:00:00Z",
-    "taskListId": 3
-  },
-  {
-    "title": "Add Pagination to Task API",
-    "description": "Improve performance by paginating responses.",
-    "status": "in progress",
-    "priority": "medium",
-    "tags": ["api", "performance"],
-    "dueBy": "2026-01-28T08:45:00Z",
-    "taskListId": 2
-  },
-  {
-    "title": "Build Task Analytics Dashboard",
-    "description": "Provide visual statistics on completed vs pending tasks.",
-    "status": "not started",
-    "priority": "low",
-    "tags": ["frontend", "charts", "analytics"],
-    "dueBy": "2026-05-20T10:00:00Z",
-    "taskListId": 5
-  },
-  {
-    "title": "Write Integration Tests",
-    "description": "Ensure the API endpoints behave correctly with real database operations.",
-    "status": "not started",
-    "priority": "high",
-    "tags": ["testing", "integration"],
-    "dueBy": "2026-03-10T15:45:00Z",
-    "taskListId": 1
-  },
-  {
-    "title": "Add Webhooks Support",
-    "description": "Trigger webhooks when tasks are created or completed.",
-    "status": "not started",
-    "priority": "medium",
-    "tags": ["backend", "feature", "webhooks"],
-    "dueBy": "2026-04-25T09:30:00Z",
-    "taskListId": 4
-  },
-  {
-    "title": "Implement Caching Layer",
-    "description": "Use Redis to cache frequent API responses.",
-    "status": "not started",
-    "priority": "high",
-    "tags": ["backend", "performance", "cache"],
-    "dueBy": "2026-02-08T11:15:00Z",
-    "taskListId": 3
-  },
-  {
-    "title": "Update README with Deployment Steps",
-    "description": "Add documentation for running the app in production.",
-    "status": "not started",
-    "priority": "low",
-    "tags": ["docs", "deployment"],
-    "dueBy": "2026-01-30T09:00:00Z",
-    "taskListId": 1
-  },
-  {
-    "title": "Perform Security Audit",
-    "description": "Analyze the system for potential vulnerabilities and apply patches.",
-    "status": "not started",
-    "priority": "high",
-    "tags": ["security", "audit"],
-    "dueBy": "2026-05-01T14:00:00Z",
-    "taskListId": 3
+    "taskListId": 1,
+    "workspaceId": 1
   }
 ]

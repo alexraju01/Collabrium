@@ -1,12 +1,13 @@
-require('dotenv').config({ quiet: true });
-import express from 'express';
-import { taskRouter } from './routes/task.route';
-import { globalErrorHandler } from './controllers/error.controller';
-import AppError from './lib/AppError';
-import { userRouter } from './routes/user.route';
-import { workspaceRouter } from './routes/workspace.route';
-import rateLimit from 'express-rate-limit';
-import helmet from 'helmet';
+require("dotenv").config({ quiet: true });
+import express from "express";
+import { taskRouter } from "./routes/task.route";
+import { globalErrorHandler } from "./controllers/error.controller";
+import AppError from "./lib/AppError";
+import { userRouter } from "./routes/user.route";
+import { workspaceRouter } from "./routes/workspace.route";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import cors from "cors";
 import cookieParser from 'cookie-parser';
 import { taskListRouter } from './routes/taskList.route';
 import { dashboardRouter } from './routes/dashboard.route';
@@ -14,14 +15,15 @@ import { dashboardRouter } from './routes/dashboard.route';
 const app = express();
 
 const limiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  limit: 200,
-  message: 'Too many request from this IP Address, Please try again in an hour!',
+	windowMs: 60 * 60 * 1000,
+	limit: 200,
+	message: "Too many request from this IP Address, Please try again in an hour!",
 });
 
 // Helemt sets HTTP security headers
 app.use(helmet());
-app.use('/api', limiter);
+app.use(cors());
+app.use("/api", limiter);
 app.use(express.json());
 app.use(cookieParser());
 
