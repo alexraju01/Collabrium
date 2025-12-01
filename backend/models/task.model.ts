@@ -1,6 +1,7 @@
 import { CreationOptional, DataTypes, Model, Optional } from 'sequelize';
 import { sequelize } from '../config/db';
 import TaskList from './taskList.model';
+import Workspace from './workspace.model';
 
 type Status = 'not started' | 'in progress' | 'completed' | 'in review';
 type Priority = 'low' | 'medium' | 'high';
@@ -18,6 +19,7 @@ export interface TaskAttributes {
   taskListId: number; // Forgein key
   createdAt?: Date;
   updatedAt?: Date;
+  workspaceId: number;
 }
 
 // 2. Define the attributes required for creation (ID is optional)
@@ -35,6 +37,7 @@ class Task extends Model<TaskAttributes, TaskCreationAttributes> {
   declare userId: number;
   declare taskListId: number;
   declare createdAt: Date;
+  declare workspaceId: number;
   declare updatedAt: Date;
 }
 
@@ -132,7 +135,18 @@ Task.init(
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
+    workspaceId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Workspace, // Reference the Workspace model (assumed imported)
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    },
   },
+
   {
     sequelize,
   },
@@ -151,4 +165,8 @@ Task.belongsTo(TaskList, {
   as: 'taskList',
 });
 
+Task.belongsTo(Workspace, {
+  foreignKey: 'workspaceId',
+  as: 'workspace', // Use a meaningful alias
+});
 export default Task;
