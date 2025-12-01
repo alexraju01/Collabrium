@@ -11,7 +11,7 @@ export function Button({ children, className, ...props }: buttonProps) {
 		<button
 			{...props}
 			className={cn(
-				"rounded-md px-2 p-1 bg-blue-500 hover:brightness-90 transition-all duration-150 cursor-pointer",
+				"rounded-md px-2 p-1 bg-primary hover:brightness-90 transition-all duration-150 cursor-pointer",
 				className
 			)}>
 			{children}

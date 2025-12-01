@@ -1,8 +1,8 @@
 import { Priority, TaskStatus, type Role } from "@/lib/interfaces/types";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./Button";
 import { cn } from "@/lib/classCombine";
-import { PlusIcon } from "./svgs";
+import { ChevronIcon, PlusIcon } from "./svgs";
 import { useOnClickOutside } from "usehooks-ts";
 import type { TaskRequest, TaskResponse } from "@/lib/interfaces/ITask";
 import type {
@@ -13,6 +13,7 @@ import type { TimeLogResponse } from "@/lib/interfaces/ITimeLog";
 import { useGetTask } from "@/lib/queries/GetTask";
 import axios from "axios";
 import type { AccountResponse } from "@/lib/interfaces/IAccount";
+import { DateFormatter } from "@/lib/dateFormatter";
 
 /*
 
@@ -99,8 +100,11 @@ export function TaskWindow({
 				id: "123",
 			} as AccountResponse;
 
+			const date = new Date();
+			date.setMonth(10);
+
 			const PLACEHOLDER = {
-				createdAt: new Date(),
+				createdAt: date,
 				parentId: "123",
 				createdBy: FAKEACC, //could get from
 				id: "1",
@@ -129,23 +133,34 @@ export function TaskWindow({
 		console.log("Save task");
 
 		if (!edited) {
+			closeTask("");
 		}
 		//then close task
 	}
 
 	function handleCancelTask() {
-		console.log("Cancel task edit");
-		//do not save, close window
-	}
-
-	function handleCloseTask() {
+		// console.log("Cancel task edit");
 		closeTask("");
 	}
 
+	function handleCloseTask() {
+		if (!edited) {
+			closeTask("");
+		}
+
+		//open a warning saying cancel or save
+	}
+
+	function handleOpenTaskInfo() {
+		console.log("Toggle accordian");
+	}
+
+	/* NOT USED
 	function openNewTimeLog() {
 		console.log("openingNewTimeLog");
 		setTimeLogOpen(true);
 	}
+	*/
 
 	// useOnClickOutside(windowRef, handleCloseTask);
 
@@ -155,6 +170,30 @@ export function TaskWindow({
 	/**
 	 * Make a loading skeleton
 	 */
+
+	return (
+		<div className="absolute p-2 bg-base-200 rounded-box h-full flex flex-col w-11/12 max-w-3xl max-h-11/12 top-[calc(1/24*100%)] left-1/2 -translate-x-1/2">
+			{/* Task title */}
+			<div className="flex rounded-box bg-base-100 h-min place-content-between px-2 items-center">
+				<h1 className="font-bold">{title}</h1>
+				<div className="flex">
+					<Button className="rounded-full p-2" onClick={handleCloseTask}>
+						<PlusIcon classname={"rotate-45"} />
+					</Button>
+				</div>
+			</div>
+			{/* Task Info Dropdown */}
+			<details className="collapse collapse-arrow bg-base-100 border-base-300 border">
+				<summary className="collapse-title font-semibold text-3xl px-2">
+					Task Info
+				</summary>
+				<div className="collapse-content text-sm">
+					Click the "Sign Up" button in the top right corner and follow the
+					registration process.
+				</div>
+			</details>
+		</div>
+	);
 
 	return (
 		<>
@@ -307,7 +346,7 @@ function TaskActivity({ activity }: { activity: ActivityResponse }) {
 		<div className="outline flex flex-row gap-2">
 			<div className="place-self-center">
 				{/* This should show a time if the date is today, otherwise date, maybe on hover shows full tooltip */}
-				{activity.createdAt.toDateString()}
+				{DateFormatter(activity.createdAt)}
 			</div>
 			<div className="outline w-full text-wrap">{activity.message}</div>
 		</div>
@@ -383,8 +422,10 @@ function DescriptionBox({
 				disabled={!canEdit}
 				ref={ref}
 				onBlur={(e) => {
-					setEdited(true);
-					setLoadedContent(e.currentTarget.value);
+					if (loadedContent !== e.currentTarget.value) {
+						setEdited(true);
+						setLoadedContent(e.currentTarget.value);
+					}
 				}}
 				placeholder="start typing your comment..."
 				maxLength={maxLength}
