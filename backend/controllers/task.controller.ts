@@ -58,14 +58,43 @@ export const getAllTasks = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const getOneTask = async (req: Request, res: Response, next: NextFunction) => {
+  // 1. Authentication: Get user ID and resource ID from request
+  const userId = requireAuth(req);
+  const { workspaceId, taskListId } = req.body;
   const { id } = req.params;
 
-  const task = await Task.findByPk(id);
-  if (!task) return next(new AppError('No Task with this id', 404));
+  if (!taskListId || !workspaceId)
+    return next(new AppError('taskListId and workspaceId are required', 400));
 
-  res.status(200).json({ status: 'success', data: { task } });
+  await checkMembership(
+    userId,
+    Number(workspaceId),
+    'You do not have permission to view tasks in this workspace',
+  );
+
+  const task = await Task.findOne({
+    where: {
+      id: id,
+      taskListId: taskListId,
+      workspaceId: workspaceId,
+    },
+  });
+
+  // 5. Handle Not Found: Task ID is missing OR context is invalid
+  if (!task) {
+    return next(
+      new AppError('Task not found or does not belong to the specified Task List/Workspace.', 404),
+    );
+  }
+
+  // 6. Success: Return the found task
+  res.status(200).json({
+    status: 'success',
+    data: {
+      task,
+    },
+  });
 };
-
 export const updateTask = async (req: Request, res: Response, next: NextFunction) => {
   const userId = requireAuth(req);
   const { id } = req.params;
