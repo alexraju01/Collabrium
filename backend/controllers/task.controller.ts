@@ -121,10 +121,9 @@ export const searchTasks = async (req: Request, res: Response, next: NextFunctio
         [Op.or]: [
           { title: { [Op.iLike]: `%${trimmedQuery}%` } },
           {
-            [Op.and]: [
-              { description: { [Op.ne]: null } },
-              { description: { [Op.iLike]: `%${trimmedQuery}%` } },
-            ],
+            description: {
+              [Op.and]: [{ [Op.ne]: null }, { [Op.iLike]: `%${trimmedQuery}%` }],
+            },
           },
         ],
       },
