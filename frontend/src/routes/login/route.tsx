@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 export const Route = createFileRoute("/login")({
-  component: LoginPage,
+	component: LoginPage,
 });
 
 function LoginPage() {
@@ -52,33 +52,33 @@ function LoginPage() {
 }
 
 interface RegisterForm {
-  displayname: string;
-  email: string;
-  password: string;
+	displayname: string;
+	email: string;
+	password: string;
 }
 
 function RegisterComponent() {
-  const [username, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+	const [username, setUserName] = useState("");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 
-  async function Register() {
-    console.log(`register ${username} ${email} ${password} button`);
-    const detials = {
-      displayname: username,
-      email: email,
-      password: password,
-    } as RegisterForm;
-    const response = await fetch("http://localhost:3001/api/users/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(detials),
-    });
-    if (!response || response.status != 200) {
-      console.log("failed");
-      return;
-    }
-  }
+	async function Register() {
+		console.log(`register ${username} ${email} ${password} button`);
+		const detials = {
+			displayname: username,
+			email: email,
+			password: password,
+		} as RegisterForm;
+		const response = await fetch("http://localhost:3001/api/users/register", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(detials),
+		});
+		if (!response || response.status != 200) {
+			console.log("failed");
+			return;
+		}
+	}
 
   return (
       <div>
@@ -126,30 +126,36 @@ function RegisterComponent() {
 }
 
 interface LoginForm {
-  email: string;
-  password: string;
+	email: string;
+	password: string;
 }
 
 function LoginComponent({ setLogin }: { setLogin: () => void }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 
-  async function Login() {
-    console.log(`login ${email} ${password} button`);
-    const detials = {
-      email: email,
-      password: password,
-    } as LoginForm;
-    const response = await fetch("http://localhost:3001/api/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(detials),
-    });
-    if (!response || response.status != 200) {
-      console.log("failed");
-      return;
-    }
-  }
+	async function Login() {
+		const detials = {
+			email: email,
+			password: password,
+		} as LoginForm;
+		try {
+			const response = await fetch(`${import.meta.env.VITE_BASE_API}/user/login`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(detials),
+			});
+			if (!response || response.status != 200) {
+				console.log("failed");
+				return;
+			}
+			const { data } = await response.json();
+
+			console.log(data);
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
   return (
     <div>
