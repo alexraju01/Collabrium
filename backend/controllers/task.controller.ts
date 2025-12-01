@@ -91,15 +91,6 @@ export const searchTasks = async (req: Request, res: Response, next: NextFunctio
     return next(new AppError('Search query cannot be empty or contain only whitespace', 400));
   }
 
-  // Validate length (2-50 characters)
-  if (trimmedQuery.length < 2) {
-    return next(new AppError('Search query must be at least 2 characters', 400));
-  }
-
-  if (trimmedQuery.length > 50) {
-    return next(new AppError('Search query must not exceed 50 characters', 400));
-  }
-
   // Validate alphabetic characters and spaces only
   const alphabeticRegex = /^[a-zA-Z\s]+$/;
   if (!alphabeticRegex.test(trimmedQuery)) {
