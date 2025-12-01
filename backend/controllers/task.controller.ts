@@ -5,6 +5,7 @@ import { Op } from 'sequelize';
 import APIFeatures, { QueryString } from '../lib/APIFearure';
 import { checkMembership, requireAuth } from './taskList.controller';
 import TaskList from '../models/taskList.model';
+import { WorkspaceUser } from '../models/workspaceUser.model';
 
 export const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
   const userId = requireAuth(req);
@@ -228,71 +229,57 @@ export const getAllSimpleTask = async (_: Request, res: Response) => {
 
 //  ====================== Search Task =====================
 
-export const searchTasks = async (req: Request, res: Response, next: NextFunction) => {
-  // Authentication
+export const searchTasks = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // 1. Get the authenticated user's ID
   const userId = requireAuth(req);
-  const { q, workspaceId } = req.query;
-
-  // Validate workspace ID
-  if (!workspaceId) {
-    return next(new AppError('Workspace ID is required to search tasks', 400));
+  // 2. Get the search query string from the request query parameters
+  const query = req.query.q as string;
+  if (!query || query.trim() === "") {
+    return res.status(400).json({
+      status: "fail",
+      message: "Search query (q) is required.",
+    });
   }
-
-  const workspaceIdNumber = Number(workspaceId);
-  if (isNaN(workspaceIdNumber)) {
-    return next(new AppError('Invalid Workspace ID format', 400));
-  }
-
-  // Validate query parameter exists
-  if (!q || typeof q !== 'string') {
-    return next(new AppError('Search query is required', 400));
-  }
-
-  // Trim whitespace
-  const trimmedQuery = q.trim();
-
-  // Check if empty after trimming
-  if (!trimmedQuery) {
-    return next(new AppError('Search query cannot be empty or contain only whitespace', 400));
-  }
-
-  // Validate alphabetic characters and spaces only
-  const alphabeticRegex = /^[a-zA-Z\s]+$/;
-  if (!alphabeticRegex.test(trimmedQuery)) {
-    return next(new AppError('Search query can only contain alphabetic characters and spaces', 400));
-  }
-
-  // Authorization check - ensure user is member of workspace
-  await checkMembership(
-    userId,
-    workspaceIdNumber,
-    'You are not a member of this workspace or it does not exist.',
-  );
-
-  try {
-    // Search tasks by title and description (case-insensitive, partial matching)
-    // Filter by workspaceId to ensure users only see tasks in their workspace
-    const tasks = await Task.findAll({
-      where: {
-        workspaceId: workspaceIdNumber,
-        [Op.or]: [
-          { title: { [Op.iLike]: `%${trimmedQuery}%` } },
-          {
-            description: {
-              [Op.and]: [{ [Op.ne]: null }, { [Op.iLike]: `%${trimmedQuery}%` }],
-            },
-          },
-        ],
+  // 3. Find all Workspace IDs the user is a member of
+  const userWorkspaces = await WorkspaceUser.findAll({
+    where: { userId },
+    attributes: ["workspaceId"], // We only need the IDs
+  });
+  const workspaceIds = userWorkspaces.map((wu) => wu.workspaceId);
+  if (workspaceIds.length === 0) {
+    return res.status(200).json({
+      status: "success",
+      results: 0,
+      data: {
+        tasks: [],
       },
-      include: [{ model: TaskList, as: 'taskList', attributes: ['id', 'title', 'workspaceId'] }],
+      message: "You are not a member of any workspace.",
     });
-
-    res.status(200).json({
-      status: 'success',
-      results: tasks.length,
-      data: { tasks },
-    });
-  } catch (error) {
-    return next(new AppError('An error occurred while searching tasks', 500));
   }
+  // 4. Search for Tasks within those Workspaces matching the title query
+  const tasks = await Task.findAll({
+    where: {
+      workspaceId: {
+        [Op.in]: workspaceIds, // Task belongs to one of the user's workspaces
+      },
+      title: {
+        [Op.iLike]: `%${query}%`, // Case-insensitive partial match
+      },
+    },
+    order: [
+      ["createdAt", "DESC"], // Order results, e.g., by creation date
+    ],
+  });
+  // 5. Send the response
+  res.status(200).json({
+    status: "success",
+    results: tasks.length,
+    data: {
+      tasks,
+    },
+  });
 };
