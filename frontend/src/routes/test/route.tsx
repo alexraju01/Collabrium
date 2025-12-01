@@ -21,7 +21,7 @@ function RouteComponent() {
 				<Button onClick={() => setCurrentTaskId("5")}>Open Task</Button>
 			</div>
 			{currentTaskId && (
-				<TaskWindow role="User" id={currentTaskId} closeTask={setCurrentTaskId} />
+				<TaskWindow role="Admin" id={currentTaskId} closeTask={setCurrentTaskId} />
 			)}
 		</div>
 	);

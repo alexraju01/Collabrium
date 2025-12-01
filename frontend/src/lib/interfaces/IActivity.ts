@@ -2,7 +2,7 @@ import type { AccountResponse } from "./IAccount";
 
 export interface ActivityRequest {
 	/** Parent Task UUID */
-	parentId: number;
+	parentId: string;
 
 	/** UUID of the account creating the task */
 	createdBy: string;

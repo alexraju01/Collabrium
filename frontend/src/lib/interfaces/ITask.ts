@@ -30,6 +30,12 @@ export interface TaskResponse {
 	/** Task UUID */
 	id: string;
 
+	/** ID of the tasklist this is under */
+	parentId: string;
+
+	/** Name of the tasklist this is under */
+	taskListName: string;
+
 	/** Task creation date */
 	createdAt: Date;
 
