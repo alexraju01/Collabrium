@@ -5,7 +5,6 @@ import { Op } from 'sequelize';
 import APIFeatures, { QueryString } from '../lib/APIFearure';
 import { checkMembership, requireAuth } from './taskList.controller';
 import TaskList from '../models/taskList.model';
-import { Op } from 'sequelize';
 
 export const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
   const userId = requireAuth(req);
@@ -230,7 +229,19 @@ export const getAllSimpleTask = async (_: Request, res: Response) => {
 //  ====================== Search Task =====================
 
 export const searchTasks = async (req: Request, res: Response, next: NextFunction) => {
-  const { q } = req.query;
+  // Authentication
+  const userId = requireAuth(req);
+  const { q, workspaceId } = req.query;
+
+  // Validate workspace ID
+  if (!workspaceId) {
+    return next(new AppError('Workspace ID is required to search tasks', 400));
+  }
+
+  const workspaceIdNumber = Number(workspaceId);
+  if (isNaN(workspaceIdNumber)) {
+    return next(new AppError('Invalid Workspace ID format', 400));
+  }
 
   // Validate query parameter exists
   if (!q || typeof q !== 'string') {
@@ -251,19 +262,19 @@ export const searchTasks = async (req: Request, res: Response, next: NextFunctio
     return next(new AppError('Search query can only contain alphabetic characters and spaces', 400));
   }
 
-  // Get authenticated user (set by protect middleware)
-  const user = req.user;
-
-  if (!user) {
-    return next(new AppError('User not authenticated', 401));
-  }
+  // Authorization check - ensure user is member of workspace
+  await checkMembership(
+    userId,
+    workspaceIdNumber,
+    'You are not a member of this workspace or it does not exist.',
+  );
 
   try {
     // Search tasks by title and description (case-insensitive, partial matching)
-    // Filter by userId to ensure users only see their own tasks
+    // Filter by workspaceId to ensure users only see tasks in their workspace
     const tasks = await Task.findAll({
       where: {
-        userId: user.id,
+        workspaceId: workspaceIdNumber,
         [Op.or]: [
           { title: { [Op.iLike]: `%${trimmedQuery}%` } },
           {
@@ -273,6 +284,7 @@ export const searchTasks = async (req: Request, res: Response, next: NextFunctio
           },
         ],
       },
+      include: [{ model: TaskList, as: 'taskList', attributes: ['id', 'title', 'workspaceId'] }],
     });
 
     res.status(200).json({
