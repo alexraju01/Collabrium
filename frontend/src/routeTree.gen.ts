@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TestRouteRouteImport } from './routes/test/route'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as WorkspaceWorkspaceIdRouteRouteImport } from './routes/workspace/$workspaceId/route'
+import { Route as DashboardTasksRouteRouteImport } from './routes/dashboard/tasks/route'
 
 const TestRouteRoute = TestRouteRouteImport.update({
   id: '/test',
@@ -29,43 +31,76 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 const WorkspaceWorkspaceIdRouteRoute =
   WorkspaceWorkspaceIdRouteRouteImport.update({
     id: '/workspace/$workspaceId',
     path: '/workspace/$workspaceId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DashboardTasksRouteRoute = DashboardTasksRouteRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/test': typeof TestRouteRoute
+  '/dashboard/tasks': typeof DashboardTasksRouteRoute
   '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRoute
   '/test': typeof TestRouteRoute
+  '/dashboard/tasks': typeof DashboardTasksRouteRoute
   '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteRoute
+  '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/test': typeof TestRouteRoute
+  '/dashboard/tasks': typeof DashboardTasksRouteRoute
   '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/test' | '/workspace/$workspaceId'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/test'
+    | '/dashboard/tasks'
+    | '/workspace/$workspaceId'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/test' | '/workspace/$workspaceId'
-  id: '__root__' | '/' | '/dashboard' | '/test' | '/workspace/$workspaceId'
+  to:
+    | '/'
+    | '/test'
+    | '/dashboard/tasks'
+    | '/workspace/$workspaceId'
+    | '/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/test'
+    | '/dashboard/tasks'
+    | '/workspace/$workspaceId'
+    | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRouteRoute: typeof DashboardRouteRoute
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   TestRouteRoute: typeof TestRouteRoute
   WorkspaceWorkspaceIdRouteRoute: typeof WorkspaceWorkspaceIdRouteRoute
 }
@@ -93,6 +128,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/workspace/$workspaceId': {
       id: '/workspace/$workspaceId'
       path: '/workspace/$workspaceId'
@@ -100,12 +142,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceWorkspaceIdRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/tasks': {
+      id: '/dashboard/tasks'
+      path: '/tasks'
+      fullPath: '/dashboard/tasks'
+      preLoaderRoute: typeof DashboardTasksRouteRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
   }
 }
 
+interface DashboardRouteRouteChildren {
+  DashboardTasksRouteRoute: typeof DashboardTasksRouteRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardTasksRouteRoute: DashboardTasksRouteRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
+  DashboardRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRouteRoute: DashboardRouteRoute,
+  DashboardRouteRoute: DashboardRouteRouteWithChildren,
   TestRouteRoute: TestRouteRoute,
   WorkspaceWorkspaceIdRouteRoute: WorkspaceWorkspaceIdRouteRoute,
 }
