@@ -164,7 +164,7 @@ function LoginComponent({ setLogin }: { setLogin: () => void }) {
 
   return (
     <div>
-      <h2 className="bold">Login</h2>
+      <h2 className="bold text-center">Login</h2>
       <div>
         <input
           type="email"
