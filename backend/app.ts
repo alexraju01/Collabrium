@@ -8,9 +8,9 @@ import { workspaceRouter } from "./routes/workspace.route";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import cors from "cors";
-import cookieParser from 'cookie-parser';
-import { taskListRouter } from './routes/taskList.route';
-import { dashboardRouter } from './routes/dashboard.route';
+import cookieParser from "cookie-parser";
+import { taskListRouter } from "./routes/taskList.route";
+import { dashboardRouter } from "./routes/dashboard.route";
 
 const app = express();
 
@@ -28,19 +28,19 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use((req, res, next) => {
-  //   console.log(req.cookies);
-  next();
+	//   console.log(req.cookies);
+	next();
 });
 
 // Resouces Routing
-app.use('/api/v1/task', taskRouter);
-app.use('/api/v1/user', userRouter);
-app.use('/api/v1/workspace', workspaceRouter);
-app.use('/api/v1/tasklist', taskListRouter);
-app.use('/api/v1/dashboard', dashboardRouter);
+app.use("/api/v1/task", taskRouter);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/workspace", workspaceRouter);
+app.use("/api/v1/tasklist", taskListRouter);
+app.use("/api/v1/dashboard", dashboardRouter);
 
-app.get('/{*splat/}', async (req, res, next) => {
-  next(new AppError(`can't find the ${req.originalUrl} on the this server`, 404));
+app.get("/{*splat/}", async (req, res, next) => {
+	next(new AppError(`can't find the ${req.originalUrl} on the this server`, 404));
 });
 
 app.use(globalErrorHandler);

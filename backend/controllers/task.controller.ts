@@ -11,7 +11,7 @@ import { checkWorkspaceAdmin } from "../lib/checkWorkspaceAdmin";
 import { sequelize } from "../config/db";
 
 export const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
-	const userId = requireAuth(req);
+	const { userId } = requireAuth(req);
 	const { workspaceId, taskListId } = req.body;
 
 	if (!workspaceId) return next(new AppError("Workspace ID is required to fetch tasks", 400));
@@ -64,7 +64,7 @@ export const getAllTasks = async (req: Request, res: Response, next: NextFunctio
 
 export const getOneTask = async (req: Request, res: Response, next: NextFunction) => {
 	// 1. Authentication: Get user ID and resource ID from request
-	const userId = requireAuth(req);
+	const { userId } = requireAuth(req);
 	const { workspaceId, taskListId } = req.body;
 	const { id } = req.params;
 
@@ -102,39 +102,57 @@ export const getOneTask = async (req: Request, res: Response, next: NextFunction
 };
 
 export const updateTask = async (req: Request, res: Response, next: NextFunction) => {
-	const userId = requireAuth(req);
+	const { userId, userRole } = requireAuth(req);
+
 	const { id } = req.params;
-	const { workspaceId, taskListId, title: rawTitle } = req.body;
 	const updatedData = req.body;
 
-	if (!taskListId || !workspaceId)
-		return next(new AppError("taskListId and workspaceId are required", 400));
-	const title = rawTitle.trim();
+	const { workspaceId, taskListId, title: rawTitle } = updatedData;
 
-	if (!title) {
-		return next(new AppError("Task title is required", 400));
+	if (userRole === "user") {
+		if (!workspaceId || !taskListId) {
+			return next(new AppError("workspaceId and taskListId are required", 400));
+		}
+
+		const allowedUserFields = ["status", "workspaceId", "taskListId"];
+
+		const invalidField = Object.keys(updatedData).find(
+			(field) => !allowedUserFields.includes(field)
+		);
+
+		if (invalidField) {
+			return next(new AppError("Users can only update the status of a task", 403));
+		}
 	}
-	updatedData.title = title;
+
+	if (userRole === "admin") {
+		if (!workspaceId || !taskListId) {
+			return next(new AppError("workspaceId and taskListId are required", 400));
+		}
+
+		if (!rawTitle?.trim()) {
+			return next(new AppError("Task title is required", 400));
+		}
+
+		updatedData.title = rawTitle.trim();
+	}
+
+	// membership check applies to both
 	await checkMembership(
 		userId,
 		workspaceId,
-		"You do not have permission to create a task in this workspace"
+		"You do not have permission to modify tasks in this workspace"
 	);
 
-	const taskListExists = await TaskList.findOne({
-		where: {
-			id: taskListId,
-			workspaceId: workspaceId,
-		},
-	});
+	// only admins need to validate taskList
+	if (userRole === "admin") {
+		const taskListExists = await TaskList.findOne({
+			where: { id: taskListId, workspaceId },
+		});
 
-	if (!taskListExists) {
-		return next(
-			new AppError(
-				"The specified Task List does not exist or is not in the provided workspace.",
-				404
-			)
-		); // 404 Not Found
+		if (!taskListExists) {
+			return next(new AppError("TaskList not found in this workspace", 404));
+		}
 	}
 
 	const [updatedCount, updatedTask] = await Task.update(updatedData, {
@@ -142,7 +160,9 @@ export const updateTask = async (req: Request, res: Response, next: NextFunction
 		returning: true,
 	});
 
-	if (!updatedCount) return next(new AppError("ID with this task does not exist", 404));
+	if (!updatedCount) {
+		return next(new AppError("Task ID does not exist", 404));
+	}
 
 	res.status(200).json({
 		message: "success",
@@ -151,7 +171,7 @@ export const updateTask = async (req: Request, res: Response, next: NextFunction
 };
 
 export const createTask = async (req: Request, res: Response, next: NextFunction) => {
-	const userId = requireAuth(req);
+	const { userId } = requireAuth(req);
 	const { workspaceId, taskListId, title } = req.body;
 	const taskData = req.body;
 
@@ -286,7 +306,7 @@ export const searchTasks = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const assignUsersToTask = async (req: Request, res: Response, next: NextFunction) => {
-	const userId = requireAuth(req);
+	const { userId } = requireAuth(req);
 	const { taskId } = req.params;
 
 	const { workspaceId, assignedUserIds } = req.body as {
@@ -339,36 +359,5 @@ export const assignUsersToTask = async (req: Request, res: Response, next: NextF
 			status: "success",
 			data: { task },
 		});
-	});
-};
-
-export const updateTaskStatus = async (req: Request, res: Response, next: NextFunction) => {
-	const taskId = req.params.id;
-	const { status } = req.body; // Extract ONLY the status from the body
-
-	// 1. **Input Validation:** Ensure the status is a valid value
-	if (!status) {
-		return next(new AppError("Please provide a new status for the task.", 400));
-	}
-
-	// **(Crucial Step):** You'll need to fetch the task and check if the task
-	// belongs to the user's current workspace before updating.
-
-	// 2. **Update ONLY the status field in the database**
-	const updatedTask = await Task.update(
-		{ status: status }, // Use the extracted status
-		{ where: { id: taskId } }
-	);
-
-	if (!updatedTask[0]) {
-		// Assuming Task.update returns [affectedCount, affectedRows]
-		return next(new AppError("No task found with that ID or no changes made.", 404));
-	}
-
-	res.status(200).json({
-		status: "success",
-		message: "Task status updated successfully.",
-		// It's often better to send back the updated resource,
-		// but this is a minimum working example.
 	});
 };

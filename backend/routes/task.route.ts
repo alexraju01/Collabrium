@@ -8,7 +8,6 @@ import {
 	getOneTask,
 	searchTasks,
 	updateTask,
-	updateTaskStatus,
 } from "../controllers/task.controller";
 import { protect, restrictTo } from "../controllers/auth.controller";
 
@@ -19,10 +18,8 @@ taskRouter.route("/simple").get(getAllSimpleTask);
 taskRouter.route("/search").get(protect, searchTasks);
 taskRouter.route("/:taskId/assign").patch(protect, restrictTo("admin"), assignUsersToTask);
 
-taskRouter.route("/:id/status").patch(protect, restrictTo("admin", "user"), updateTaskStatus);
-
 taskRouter
 	.route("/:id")
 	.get(protect, getOneTask)
-	.patch(protect, restrictTo("admin"), updateTask)
+	.patch(protect, restrictTo("admin", "user"), updateTask)
 	.delete(protect, restrictTo("admin"), deleteTask);
