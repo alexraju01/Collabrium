@@ -341,3 +341,34 @@ export const assignUsersToTask = async (req: Request, res: Response, next: NextF
 		});
 	});
 };
+
+export const updateTaskStatus = async (req: Request, res: Response, next: NextFunction) => {
+	const taskId = req.params.id;
+	const { status } = req.body; // Extract ONLY the status from the body
+
+	// 1. **Input Validation:** Ensure the status is a valid value
+	if (!status) {
+		return next(new AppError("Please provide a new status for the task.", 400));
+	}
+
+	// **(Crucial Step):** You'll need to fetch the task and check if the task
+	// belongs to the user's current workspace before updating.
+
+	// 2. **Update ONLY the status field in the database**
+	const updatedTask = await Task.update(
+		{ status: status }, // Use the extracted status
+		{ where: { id: taskId } }
+	);
+
+	if (!updatedTask[0]) {
+		// Assuming Task.update returns [affectedCount, affectedRows]
+		return next(new AppError("No task found with that ID or no changes made.", 404));
+	}
+
+	res.status(200).json({
+		status: "success",
+		message: "Task status updated successfully.",
+		// It's often better to send back the updated resource,
+		// but this is a minimum working example.
+	});
+};
