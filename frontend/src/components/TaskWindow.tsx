@@ -1,8 +1,14 @@
-import { Priority, TaskStatus, type Role } from "@/lib/interfaces/types";
+import {
+	PrioBg,
+	Priority,
+	StatusBg,
+	TaskStatus,
+	type Role,
+} from "@/lib/interfaces/types";
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./Button";
 import { cn } from "@/lib/classCombine";
-import { ChevronIcon, PlusIcon } from "./svgs";
+import { ChevronIcon, Divider, PlusIcon } from "./svgs";
 import { useOnClickOutside } from "usehooks-ts";
 import type { TaskRequest, TaskResponse } from "@/lib/interfaces/ITask";
 import type {
@@ -53,22 +59,23 @@ export function TaskWindow({
 	const windowRef = useRef<any>(null);
 	const [title, setTitle] = useState(task?.title ?? "Default Title");
 	const [description, setDescription] = useState(
-		task?.description ??
-			"\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na"
+		task?.description ?? "No description"
 	);
 	const [tags, setTags] = useState(task?.tags ?? ["tag 1", "tag 2"]);
 	const [status, setStatus] = useState(task?.status ?? 2);
-	const [dueDate, setDueDate] = useState(task?.dueDate ?? "??/??/????");
+	const [dueDate, setDueDate] = useState(task?.dueDate ?? new Date());
 	const [createdBy] = useState(task?.createdBy.displayName ?? "unknown");
-	const [createdAt] = useState(task?.createdAt ?? "unknown");
+	const [createdAt] = useState(task?.createdAt ?? new Date());
 	const [assignedTo, setAssignedTo] = useState(task?.assignedTo);
 	const [activity, setActivity] = useState(task?.activity ?? []);
 	const [priority, setPriority] = useState(task?.prioity ?? 0);
 
 	const [edited, setEdited] = useState(false);
-	// const [timeLogs, setTimeLogs] = useState(task?.timeLogs ?? []);
 
-	const [timeLogOpen, setTimeLogOpen] = useState(false);
+	const [openSave, setOpenSave] = useState(false);
+
+	// const [timeLogs, setTimeLogs] = useState(task?.timeLogs ?? []);
+	// const [timeLogOpen, setTimeLogOpen] = useState(false);
 
 	async function submitComment(e: string) {
 		//api call to add comment
@@ -111,7 +118,7 @@ export function TaskWindow({
 				message: e,
 			} as ActivityResponse;
 
-			setActivity([...activity, PLACEHOLDER]);
+			setActivity([PLACEHOLDER, ...activity]);
 			// }
 
 			//didnt work
@@ -132,9 +139,10 @@ export function TaskWindow({
 	function handleSaveTask() {
 		console.log("Save task");
 
-		if (!edited) {
-			closeTask("");
-		}
+		//save task, then close
+
+		closeTask("");
+
 		//then close task
 	}
 
@@ -148,11 +156,9 @@ export function TaskWindow({
 			closeTask("");
 		}
 
-		//open a warning saying cancel or save
-	}
+		setOpenSave(true);
 
-	function handleOpenTaskInfo() {
-		console.log("Toggle accordian");
+		//open a warning saying cancel or save
 	}
 
 	/* NOT USED
@@ -173,182 +179,242 @@ export function TaskWindow({
 
 	return (
 		<div className="absolute p-2 bg-base-200 rounded-box h-full flex flex-col w-11/12 max-w-3xl max-h-11/12 top-[calc(1/24*100%)] left-1/2 -translate-x-1/2">
-			{/* Task title */}
-			<div className="flex rounded-box bg-base-100 h-min place-content-between px-2 items-center">
-				<h1 className="font-bold">{title}</h1>
-				<div className="flex">
-					<Button className="rounded-full p-2" onClick={handleCloseTask}>
-						<PlusIcon classname={"rotate-45"} />
-					</Button>
-				</div>
-			</div>
-			{/* Task Info Dropdown */}
-			<details className="collapse collapse-arrow bg-base-100 border-base-300 border">
-				<summary className="collapse-title font-semibold text-3xl px-2">
-					Task Info
-				</summary>
-				<div className="collapse-content text-sm">
-					Click the "Sign Up" button in the top right corner and follow the
-					registration process.
-				</div>
-			</details>
-		</div>
-	);
-
-	return (
-		<>
-			<div
-				ref={windowRef}
-				className="absolute outline-4 outline-amber-500 flex flex-col w-11/12 max-w-7xl divide-y-2 max-h-11/12 top-[calc(1/24*100%)] left-1/2 -translate-x-1/2">
-				{/* Top bar */}
-				<section className="flex h-min bg-neutral-400 place-content-between pl-2">
-					{/* Make this a dropdown button to change which list its under */}
-					<div className="flex gap-2 items-baseline">
-						<h3>Task List Name</h3>
-						<p className="text-xs text-black/50">
-							id:{id} : {edited ? "True" : "False"}
-						</p>
-					</div>
-					<div className="gap-2 flex">
-						<button>Actions</button>
-						<Button className="aspect-square" onClick={handleCloseTask}>
-							<PlusIcon classname="rotate-45" />
-						</Button>
-					</div>
-				</section>
-				{/* Content */}
-				<div className="grid grid-cols-[3fr_2fr] divide-y-2 divide-x-2 h-full outline-red-600 outline-8">
-					{/* Left side */}
-					<section className="bg-neutral-400 p-2 outline-4 outline-purple-500 h-full flex flex-col">
-						<div className="flex flex-row place-content-between">
-							{/* Title */}
-							<TitleBox
-								canEdit={!canEdit}
-								title={title}
-								setTitle={setTitle}
-								setEdited={setEdited}
-							/>
-							{/* Prio */}
-							<select
-								disabled={!canEdit}
-								value={Priority[priority]}
-								className="flex place-self-start self-center p-1 px-4 bg-amber-300"
-								onChange={(e) => {
-									setEdited(true);
-									setPriority(Priority[e.currentTarget.value]);
-								}}>
-								<option value={Priority[0]}>{Priority[0]}</option>
-								<option value={Priority[1]}>{Priority[1]}</option>
-								<option value={Priority[2]}>{Priority[2]}</option>
-							</select>
-						</div>
-						<p className="flex">created: {createdAt.toLocaleString()}</p>
-						<div className="flex flex-wrap gap-2">
-							{tags.map((tag, index) => (
-								<li key={index}>{tag}</li>
-							))}
-							<button>Add tag</button>
-						</div>
-						<h3 className="flex">Description</h3>
-						{/* requires markdown editor */}
-						<DescriptionBox
-							canEdit={canEdit}
-							loadedContent={description}
-							setLoadedContent={setDescription}
+			{/* Task title Box */}
+			<div className="overflow-y-scroll flex flex-col h-full">
+				<div className="flex flex-col rounded-box bg-base-100 border-base-300 border h-min p-2 py-4">
+					<div className="flex place-content-between h-min items-center">
+						<TitleBox
+							canEdit={!canEdit}
+							title={title}
+							setTitle={setTitle}
 							setEdited={setEdited}
 						/>
-						{/* Comment section */}
-						<div className="outline-2 outline-blue-700 flex flex-col">
-							<h2>Comments / Activity</h2>
-							{/* Input activity text area */}
-							<NewComment submit={submitComment} />
-							<ol className="overflow-y-scroll h-64 flex flex-col">
-								{activity.map((activity, index) => (
-									<TaskActivity key={index} activity={activity} />
-								))}
-							</ol>
+						<div className="flex">
+							<Button className="rounded-full p-2" onClick={handleCloseTask}>
+								<PlusIcon classname={"rotate-45"} />
+							</Button>
 						</div>
-					</section>
-
-					{/* Right side */}
-					<section className="bg-neutral-500 p-2 flex">
-						{/* task info */}
-						<div>
-							<h2>Task info</h2>
-							<div className="grid gap-4 grid-cols-2">
+					</div>
+					<p className="flex">
+						Created: {DateFormatter(createdAt).toLocaleString()}
+						{edited ? "*" : ""}
+					</p>
+				</div>
+				{/* Task Info Dropdown */}
+				<details
+					open={true}
+					className="collapse min-h-fit collapse-arrow bg-base-100 border-base-300 border">
+					<summary className="collapse-title font-semibold text-3xl px-2">
+						Task Info
+					</summary>
+					<div className="collapse-content text-sm">
+						<div className="grid">
+							<div className="flex flex-col gap-1">
+								{/* Prio */}
+								<h4>Priority</h4>
+								<PriorityComponent
+									canEdit={canEdit}
+									setEdited={setEdited}
+									priority={priority}
+									setPriority={setPriority}
+								/>
+							</div>
+							<Divider />
+							<div>
 								{/* Status */}
-								<select
-									disabled={!canEdit}
-									value={TaskStatus[status]}
-									className="place-self-start p-1 px-4 bg-amber-300"
-									onChange={(e) => {
-										setEdited(true);
-										setStatus(TaskStatus[e.currentTarget.value]);
-									}}>
-									<option value={TaskStatus[0]}>Not Started</option>
-									<option value={TaskStatus[1]}>In Progress</option>
-									<option value={TaskStatus[2]}>Completed</option>
-									<option value={TaskStatus[3]}>In Review</option>
-								</select>
+								<h4>Status</h4>
+								<StatusComponent
+									setEdited={setEdited}
+									status={status}
+									setStatus={setStatus}
+								/>
+							</div>
+							<Divider />
+							{/* Due date */}
+							<div className="flex flex-col">
+								<h4>Due Date:</h4>
+								<p>{DateFormatter(dueDate)}</p>
+							</div>
+							<Divider />
 
-								{/* Due date */}
-								<div className="flex flex-row">
-									<p>Due Date:</p>
-									<p>{dueDate.toString()}</p>
-								</div>
-								{/* Created by */}
-								<div className="flex flex-row">
-									<p>Created by:</p>
-									<p>{createdBy}</p>
-								</div>
-								{/* Assigned to */}
-								<div className="flex flex-row">
-									<p>Assigned to:</p>
+							{/* Created by */}
+							<div className="flex flex-col">
+								<h4>Created by:</h4>
+								<p>{createdBy}</p>
+							</div>
+							<Divider />
+
+							{/* Assigned to */}
+							<div className="flex flex-col">
+								<h4>Assigned to:</h4>
+								<div className="flex flex-row gap-4 flex-wrap">
+									{!assignedTo && <p>No one</p>}
 									{assignedTo?.map(({ displayName }, index) => (
 										<p key={index}>{displayName}</p>
 									))}
 								</div>
-								{/* Time log
-								<div>
-									<h2>Time log</h2>
-									<Button onClick={openNewTimeLog}>Add time log</Button>
-									{/* List of time logs *\/}
-									<ol>
-										{timeLogs.map((log, index) => (
-											<TimeLog key={index} timelog={log} />
-										))}
-									</ol>
-								</div>
-										*/}
 							</div>
 						</div>
-					</section>
-				</div>
-				{/* Window Buttons */}
-				{/* Only show if they have edit permissions */}
-				<div className="bg-neutral-400 col-span-2 flex justify-end h-min gap-4 p-1">
-					<Button onClick={handleCancelTask} className="w-20">
-						Cancel
-					</Button>
-					<Button onClick={handleSaveTask} className="w-20">
-						Save
-					</Button>
+					</div>
+				</details>
+
+				{/* Task Description */}
+				<div className="flex flex-col rounded-box bg-base-100 border-base-300 border grow p-2 py-4">
+					<h3 className="font-semibold">Description</h3>
+					<DescriptionBox
+						canEdit={canEdit}
+						loadedContent={description}
+						setLoadedContent={setDescription}
+						setEdited={setEdited}
+					/>
 				</div>
 
-				{/* {timeLogOpen && <TimeLogPanel setOpen={setTimeLogOpen} />} */}
+				<div className="flex flex-col rounded-box bg-base-100 duration-300 transition-all border-base-300 border p-2 py-4">
+					<h3 className="font-semibold">Activity / Logs</h3>
+					{/* Input activity text area */}
+					<NewComment submit={submitComment} />
+					<ol className="overflow-y-scroll h-full max-h-64 flex flex-col p-2">
+						{activity.map((activity, index) => (
+							<>
+								<TaskActivity key={index} activity={activity} />
+								<Divider />
+							</>
+						))}
+					</ol>
+				</div>
 			</div>
-		</>
+			{openSave && (
+				<SaveWindow
+					commitSave={handleSaveTask}
+					dontSave={handleCancelTask}
+					setOpen={setOpenSave}
+				/>
+			)}
+		</div>
 	);
 }
 
 function TaskActivity({ activity }: { activity: ActivityResponse }) {
 	return (
-		<div className="outline flex flex-row gap-2">
-			<div className="place-self-center">
+		<div className="flex flex-col p-1">
+			<div className="text-sm">
 				{/* This should show a time if the date is today, otherwise date, maybe on hover shows full tooltip */}
-				{DateFormatter(activity.createdAt)}
+				{`${activity.createdBy.displayName} | ${DateFormatter(activity.createdAt)}`}
 			</div>
-			<div className="outline w-full text-wrap">{activity.message}</div>
+			<div className="w-full text-wrap">{activity.message}</div>
+		</div>
+	);
+}
+
+function SaveWindow({
+	commitSave,
+	dontSave,
+	setOpen,
+}: {
+	commitSave: () => void;
+	dontSave: () => void;
+	setOpen: (b: boolean) => void;
+}) {
+	return (
+		<div className="absolute p-2 bg-base-300 shadow-md rounded-box h-fit flex flex-col w-11/12 max-w-3xl max-h-11/12 top-1/2 -translate-y-1/2  left-1/2 -translate-x-1/2">
+			<div className="flex place-content-between items-center">
+				<h2>Save Task?</h2>
+				<div className="flex">
+					<Button className="rounded-full p-2" onClick={() => setOpen(false)}>
+						<PlusIcon classname={"rotate-45"} />
+					</Button>
+				</div>
+			</div>
+			<div>Do you want to save any changes made to this task?</div>
+			<div className="flex justify-end items-center gap-4">
+				<Button onClick={dontSave} className="w-24 bg-error text-error-content">
+					Don't Save
+				</Button>
+				<Button
+					onClick={commitSave}
+					className="w-24 bg-success text-success-content">
+					Save
+				</Button>
+			</div>
+		</div>
+	);
+}
+
+function StatusComponent({
+	setEdited,
+	status,
+	setStatus,
+}: {
+	setEdited: (e: boolean) => void;
+	status: TaskStatus;
+	setStatus: (e: TaskStatus) => void;
+}) {
+	return (
+		<select
+			value={TaskStatus[status]}
+			className={cn(
+				"place-self-start p-1 px-4 rounded-field",
+				StatusBg[status]
+			)}
+			onChange={(e) => {
+				setEdited(true);
+				setStatus(TaskStatus[e.currentTarget.value]);
+			}}>
+			<option className="bg-base-100" value={TaskStatus[0]}>
+				Not Started
+			</option>
+			<option className="bg-base-100" value={TaskStatus[1]}>
+				In Progress
+			</option>
+			<option className="bg-base-100" value={TaskStatus[2]}>
+				Completed
+			</option>
+			<option className="bg-base-100" value={TaskStatus[3]}>
+				In Review
+			</option>
+		</select>
+	);
+}
+
+function PriorityComponent({
+	canEdit,
+	setEdited,
+	priority,
+	setPriority,
+}: {
+	canEdit: boolean;
+	setEdited: (e: boolean) => void;
+	priority: Priority;
+	setPriority: (e: Priority) => void;
+}) {
+	return canEdit ? (
+		// Can edit, return select
+		<select
+			disabled={!canEdit}
+			value={Priority[priority]}
+			className={cn(
+				"flex rounded-field place-self-start p-1 px-4",
+				PrioBg[priority]
+			)}
+			onChange={(e) => {
+				setEdited(true);
+				setPriority(Priority[e.currentTarget.value]);
+			}}>
+			<option className={"bg-base-100"} value={Priority[0]}>
+				{Priority[0]}
+			</option>
+			<option className={"bg-base-100"} value={Priority[1]}>
+				{Priority[1]}
+			</option>
+			<option className={"bg-base-100"} value={Priority[2]}>
+				{Priority[2]}
+			</option>
+		</select>
+	) : (
+		// Can not edit, return icon
+		<div
+			className={cn(PrioBg[priority], "rounded-field w-fit text-lg p-1 px-4")}>
+			{Priority[priority]}
 		</div>
 	);
 }
@@ -387,7 +453,7 @@ function TitleBox({
 	return (
 		<input
 			disabled={canEdit}
-			className="text-4xl flex"
+			className="text-4xl font-bold w-full flex line-clamp-1 text-ellipsis"
 			ref={ref}
 			maxLength={maxLength}
 			onBlur={(e) => validateTitle(e.currentTarget.value)}
@@ -410,14 +476,14 @@ function DescriptionBox({
 	setEdited: (v: boolean) => void;
 }) {
 	const ref = useRef<HTMLTextAreaElement | null>(null);
-	const maxLength = 255;
+	const maxLength = 2048;
 
 	useEffect(() => {
 		if (ref.current) ref.current.value = loadedContent;
 	}, [loadedContent]);
 
 	return (
-		<div className="w-full relative flex h-full overflow-visible outline-4 outline-pink-700">
+		<div className="w-full relative flex h-full overflow-visible">
 			<textarea
 				disabled={!canEdit}
 				ref={ref}
@@ -429,22 +495,19 @@ function DescriptionBox({
 				}}
 				placeholder="start typing your comment..."
 				maxLength={maxLength}
-				// style={{fieldSizing: "content"}}
-				// onInput={(e) => {
-				// 	e.target.style.height = "auto";
-				// 	e.target.style.height = `${e.target.scrollHeight}px`;
-				// }}
-				className="outline w-full max-h-128 min-h-36 px-1 resize-none field-sizing-content"
+				className="bg-base-200 outline-base-300 rounded-field p-4 w-full min-h-64 resize-none"
 			/>
-			<p
-				className={cn(
-					"absolute text-sm bottom-1 right-5",
-					maxLength - (ref.current?.value.length ?? 0) == 0
-						? "text-red-500"
-						: "text-inherit"
-				)}>
-				{maxLength - (ref.current?.value.length ?? 0)}
-			</p>
+			{canEdit && (
+				<p
+					className={cn(
+						"absolute text-sm bottom-1 right-5",
+						maxLength - (ref.current?.value.length ?? 0) == 0
+							? "text-red-500"
+							: "text-inherit"
+					)}>
+					{maxLength - (ref.current?.value.length ?? 0)}
+				</p>
+			)}
 		</div>
 	);
 }
@@ -454,7 +517,7 @@ function NewComment({ submit }: { submit: (e: string) => void }) {
 	const maxLength = 255;
 
 	return (
-		<div className="flex flex-row w-full gap-2">
+		<div className="flex flex-row w-full gap-2 bg-base-200 p-2 rounded-box focus-within:outline-1 outline-base-300">
 			<div className="w-full relative ">
 				<textarea
 					value={commentMsg}
@@ -462,7 +525,7 @@ function NewComment({ submit }: { submit: (e: string) => void }) {
 					placeholder="start typing your comment..."
 					maxLength={maxLength}
 					rows={3}
-					className="outline w-full px-1 resize-none"
+					className="w-full px-1 resize-none focus-within:outline-none"
 				/>
 				<p
 					className={cn(
@@ -477,7 +540,7 @@ function NewComment({ submit }: { submit: (e: string) => void }) {
 					if (commentMsg.trim().length > 0) submit(commentMsg);
 					setCommentMsg("");
 				}}
-				className="aspect-square h-max self-center">
+				className="aspect-square rounded-selector h-max self-center">
 				<PlusIcon />
 			</Button>
 		</div>

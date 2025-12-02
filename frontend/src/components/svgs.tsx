@@ -31,3 +31,7 @@ export function ChevronIcon({ className }: { className?: string }) {
 		</svg>
 	);
 }
+
+export function Divider({ className }: { className?: string }) {
+	return <div className={cn("divider", className)} />;
+}
