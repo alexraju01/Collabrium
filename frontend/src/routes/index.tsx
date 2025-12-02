@@ -5,16 +5,13 @@ export const Route = createFileRoute('/')({
   component: App,
 })
 
+
 function App() {
   return (
   
-    <div className="bg-red-500">
+    <div className="bg-white-500">
       <Layout>
-        <h1>text</h1>
       </Layout>
-
-     
-            
     </div>
       
   

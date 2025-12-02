@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 export const Route = createFileRoute("/login")({
-	component: LoginPage,
+  component: LoginPage,
 });
 
 function LoginPage() {
@@ -34,7 +34,7 @@ function LoginPage() {
           </div>
 
           {/* Login Section */}
-          <div className="bg-white rounded shadow-lg p-8 md:p-10">
+          <div className="bg-white rounded shadow-lg p-8 md:p-10 w-3/4">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-gray-800">Welcome</h2>
             </div>
@@ -42,7 +42,7 @@ function LoginPage() {
             {login && <LoginComponent setLogin={() => setLogin(false)} />}
 
             {/* Register Section */}
-            {!login && <RegisterComponent />}
+            {!login && <RegisterComponent setLogin={setLogin} />}
           </div>
         </div>
       </div>
@@ -52,36 +52,38 @@ function LoginPage() {
 }
 
 interface RegisterForm {
-	displayname: string;
-	email: string;
-	password: string;
+  displayname: string;
+  email: string;
+  password: string;
 }
 
-function RegisterComponent() {
-	const [username, setUserName] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+function RegisterComponent({ setLogin }: { setLogin: () => void }) {
+  const [username, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-	async function Register() {
-		console.log(`register ${username} ${email} ${password} button`);
-		const detials = {
-			displayname: username,
-			email: email,
-			password: password,
-		} as RegisterForm;
-		const response = await fetch("http://localhost:3001/api/users/register", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(detials),
-		});
-		if (!response || response.status != 200) {
-			console.log("failed");
-			return;
-		}
-	}
-
+  async function Register() {
+    console.log(`register ${username} ${email} ${password} button`);
+    const detials = {
+      displayname: username,
+      email: email,
+      password: password,
+    } as RegisterForm;
+    const response = await fetch("http://localhost:3001/api/users/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(detials),
+    });
+    if (!response || response.status != 200) {
+      console.log("failed");
+      return;
+    }
+  }
+  function returnSignIn() {
+    setLogin(true);
+  }
   return (
-      <div>
+    <div>
       <h2 className="text-center">Register</h2>
       <div>
         <input
@@ -109,14 +111,14 @@ function RegisterComponent() {
           className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2"
           onClick={Register}
         >
-          Create Account
+          Create an Account
         </button>
       </div>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between my-2">
         <p>Already have an account?</p>
         <button
           className="border bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 md:mt-0"
-          onClick={Register}
+          onClick={returnSignIn}
         >
           Sign In
         </button>
@@ -126,36 +128,39 @@ function RegisterComponent() {
 }
 
 interface LoginForm {
-	email: string;
-	password: string;
+  email: string;
+  password: string;
 }
 
 function LoginComponent({ setLogin }: { setLogin: () => void }) {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-	async function Login() {
-		const detials = {
-			email: email,
-			password: password,
-		} as LoginForm;
-		try {
-			const response = await fetch(`${import.meta.env.VITE_BASE_API}/user/login`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(detials),
-			});
-			if (!response || response.status != 200) {
-				console.log("failed");
-				return;
-			}
-			const { data } = await response.json();
+  async function Login() {
+    const detials = {
+      email: email,
+      password: password,
+    } as LoginForm;
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_API}/user/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(detials),
+        }
+      );
+      if (!response || response.status != 200) {
+        console.log("failed");
+        return;
+      }
+      const { data } = await response.json();
 
-			console.log(data);
-		} catch (error) {
-			console.log(error);
-		}
-	}
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div>
@@ -174,7 +179,10 @@ function LoginComponent({ setLogin }: { setLogin: () => void }) {
           placeholder="Password"
           className="w-full border border-gray rounded px-4 py-3 my-2"
         />
-        <button className="w-full border bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2">
+        <button
+          className="w-full border bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2"
+          onClick={Login}
+        >
           Sign In
         </button>
       </div>
