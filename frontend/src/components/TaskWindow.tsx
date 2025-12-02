@@ -74,9 +74,6 @@ export function TaskWindow({
 
 	const [openSave, setOpenSave] = useState(false);
 
-	// const [timeLogs, setTimeLogs] = useState(task?.timeLogs ?? []);
-	// const [timeLogOpen, setTimeLogOpen] = useState(false);
-
 	async function submitComment(e: string) {
 		//api call to add comment
 		console.log("Comment: ", e);
@@ -161,21 +158,8 @@ export function TaskWindow({
 		//open a warning saying cancel or save
 	}
 
-	/* NOT USED
-	function openNewTimeLog() {
-		console.log("openingNewTimeLog");
-		setTimeLogOpen(true);
-	}
-	*/
-
-	// useOnClickOutside(windowRef, handleCloseTask);
-
 	/**@summary IF FALSE, CAN EDIT */
 	const [canEdit] = useState(role == "Admin" || role == "Owner" ? true : false); // true if admin+ or task owner	//SET THIS TO !FALSE !!!!!!!!
-
-	/**
-	 * Make a loading skeleton
-	 */
 
 	return (
 		<div className="absolute p-2 bg-base-200 rounded-box h-full flex flex-col w-11/12 max-w-3xl max-h-11/12 top-[calc(1/24*100%)] left-1/2 -translate-x-1/2">
@@ -546,98 +530,3 @@ function NewComment({ submit }: { submit: (e: string) => void }) {
 		</div>
 	);
 }
-
-/** UNUSED 
-
-
-function TimeLogPanel({ setOpen }: { setOpen: (e: boolean) => void }) {
-	const [logContent, setLogContent] = useState("");
-	const pannelRef = useRef<any>(null);
-	const maxLength = 255;
-
-	function handleCancel() {
-		console.log("Cancel Time log");
-	}
-
-	function handleSave() {
-		console.log("Save time log");
-	}
-
-	function handleCloseTimeLog() {
-		console.log("Close time log");
-		setOpen(false);
-	}
-
-	useOnClickOutside(pannelRef, handleCloseTimeLog);
-
-	return (
-		<div className="absolute z-10 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-black/20 w-full h-full grid place-items-center">
-			<div
-				ref={pannelRef}
-				className="grid grid-rows-[auto_1fr_auto] max-w-xl w-11/12 h-64 bg-neutral-500 outline divide-y-2">
-				<div className="h-12  place-items-center place-content-between gap-4 flex px-1">
-					<h2>Log Time</h2>
-					<Button onClick={handleCloseTimeLog}>
-						<PlusIcon classname="rotate-45" />
-					</Button>
-				</div>
-				<form className="grid grid-cols-2 h-full items-center p-2">
-					{/* Set Date *\/}
-					<div>
-						<label>Date:</label>
-					</div>
-					{/* Set hours + mins spent *\/}
-					<div>Time Spent</div>
-					{/* Comment log box *\/}
-					<div className="col-span-2 h-full">
-						<div className="w-full relative h-full">
-							<textarea
-								value={logContent}
-								onChange={(e) => setLogContent(e.currentTarget.value)}
-								placeholder="start typing your comment..."
-								maxLength={maxLength}
-								className="outline w-full h-full px-1 resize-none"
-							/>
-							<p
-								className={cn(
-									"absolute text-sm bottom-1 right-5",
-									maxLength - (logContent.length ?? 0) == 0
-										? "text-red-500"
-										: "text-inherit"
-								)}>
-								{maxLength - (logContent.length ?? 0)}
-							</p>
-						</div>
-					</div>
-				</form>
-				<div className="h-12 place-items-center place-content-end gap-4 flex px-1">
-					<Button onClick={handleCancel} className="w-20">
-						Cancel
-					</Button>
-					<Button onClick={handleSave} className="w-20">
-						Save
-					</Button>
-				</div>
-			</div>
-		</div>
-	);
-}
-
-
-
-function TimeLog({ timelog }: { timelog: TimeLogResponse }) {
-	return (
-		<div className="grid grid-cols-[4fr_auto_2fr] gap-2 outline px-2 p-1">
-			{/* Can click on to edit and view details *\/}
-			<p className="text-nowrap text-ellipsis overflow-hidden outline">
-				brief description about the timelog
-			</p>
-			<p className="text-center outline">{timelog.timeSpent}H</p>
-			<p className="text-end outline">
-				On - {timelog.createdAt.toLocaleTimeString()}
-			</p>
-		</div>
-	);
-}
-
- */
