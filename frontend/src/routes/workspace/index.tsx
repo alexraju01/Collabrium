@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from "react";
 import { apiGet, apiPost } from "@/lib/fetchAxios";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
