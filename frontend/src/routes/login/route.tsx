@@ -49,7 +49,7 @@ function LoginPage() {
 }
 
 interface RegisterForm {
-	displayname: string;
+	displayName: string;
 	email: string;
 	password: string;
 }
@@ -62,7 +62,7 @@ function RegisterComponent({ setLogin }: { setLogin: () => void }) {
 	async function Register() {
 		console.log(`register ${username} ${email} ${password} button`);
 		const detials = {
-			displayname: username,
+			displayName: username,
 			email: email,
 			password: password,
 		} as RegisterForm;

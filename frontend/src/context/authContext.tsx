@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { apiGet } from "@/lib/fetchAxios";
 
 interface User {
-	displayname: string;
+	displayName: string;
 	email: string;
 }
 

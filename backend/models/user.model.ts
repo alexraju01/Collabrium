@@ -8,7 +8,7 @@ export type Roles = "admin" | "user";
 // User attributes interface
 export interface UserAttributes {
 	id: number;
-	displayname: string;
+	displayName: string;
 	email: string;
 	password: string;
 	confirmPassword: string;
@@ -26,7 +26,7 @@ export type UserCreationAttributes = Optional<UserAttributes, "id" | "currentWor
 // User model class
 class User extends Model<UserAttributes, UserCreationAttributes> {
 	declare id: number;
-	declare displayname: string;
+	declare displayName: string;
 	declare email: string;
 	declare password: string;
 	declare confirmPassword: string;
@@ -57,7 +57,7 @@ User.init(
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		displayname: {
+		displayName: {
 			type: DataTypes.STRING(100),
 			allowNull: false,
 			unique: false,

@@ -32,7 +32,7 @@ const Navbar = () => {
 	};
 
 	const initials = user
-		? user.displayname
+		? user.displayName
 				.split(" ")
 				.map((n) => n[0])
 				.join("")
@@ -147,7 +147,7 @@ const UserMenuContent = ({
 	const { user } = useAuth();
 	if (!user) return null;
 
-	const initials = user.displayname
+	const initials = user.displayName
 		.split(" ")
 		.map((n) => n[0])
 		.join("");
@@ -163,7 +163,7 @@ const UserMenuContent = ({
 				</div>
 
 				<div className='flex flex-col'>
-					<p className='text-gray-900 font-semibold leading-tight'>{user.displayname}</p>
+					<p className='text-gray-900 font-semibold leading-tight'>{user.displayName}</p>
 					<p className={`text-gray-500 leading-tight ${textSize}`}>{user.email}</p>
 				</div>
 			</div>

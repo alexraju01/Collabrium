@@ -28,7 +28,6 @@ const signToken = (id: string): string => {
 const createSendToken = (user: User, statusCode: number, res: Response) => {
 	const token = signToken(String(user.id));
 
-
 	const isProduction = process.env.NODE_ENV === "production";
 
 	const cookieOptions = {
@@ -38,8 +37,8 @@ const createSendToken = (user: User, statusCode: number, res: Response) => {
 		httpOnly: true,
 
 		secure: isProduction,
-		
-		sameSite: isProduction ? "none" : ("lax" as const), 
+
+		sameSite: isProduction ? "none" : ("lax" as const),
 	} as CookieOptions;
 
 	res.cookie("JWT", token, cookieOptions);
@@ -58,10 +57,10 @@ const createSendToken = (user: User, statusCode: number, res: Response) => {
 };
 
 export const signUp = async (req: Request, res: Response) => {
-	const { displayname, email, password, confirmPassword, passwordChangedAt } = req.body;
+	const { displayName, email, password, confirmPassword, passwordChangedAt } = req.body;
 
 	const newUser = await User.create({
-		displayname,
+		displayName,
 		email,
 		password,
 		confirmPassword,

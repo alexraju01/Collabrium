@@ -15,7 +15,7 @@ userRouter.post("/login", login);
 userRouter.get("/logout", logout);
 
 // Protected routes - require authentication (must be before /:id routes)
-userRouter.patch("/me/displayname", protect, updateDisplayName);
+userRouter.patch("/me/displayName", protect, updateDisplayName);
 userRouter.delete("/me", protect, deleteAccount);
 userRouter.get("/me", protect, (req, res) => {
 	// `protect` middleware should attach the user to req.user
@@ -26,7 +26,7 @@ userRouter.get("/me", protect, (req, res) => {
 
 	res.json({
 		email: req.user.email,
-		displayname: req.user.displayname, // whatever fields you want
+		displayName: req.user.displayName, // whatever fields you want
 	});
 });
 
