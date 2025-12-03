@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-6 mt-8 w-full h-32">
+    <footer className="bg-gray-800 text-white py-6 mt-8 w-full shrink-0">
       <div className="mw-full px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:justify-between md:items-start">
           {/* left side - socail media link */}

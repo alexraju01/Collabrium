@@ -54,9 +54,9 @@ export default function Layout ({ children }: LayoutProps) {
             {/* header */}
             <Header />
 
-            <div className="flex flex-col md:flex-row flex-1">
+            <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
                 {/* Sidebar */}
-                <aside className="w-full md:w-64 bg-white border-b md:border-r border-gray-200 shadow-sm p-4 md:h-[calc(100vh-4rem)]">
+                <aside className="w-full md:w-64 bg-white border-b md:border-r border-gray-200 shadow-sm p-4 overflow-y-auto">
                     <ul className="flex flex-row md:flex-col md:space-y-1">
                         <Sidebar 
                             label="dashboard" 
@@ -77,7 +77,7 @@ export default function Layout ({ children }: LayoutProps) {
                 </aside>
 
                 {/* maincontent */}
-                <section className="flex-1 bg-gray-50 overflow-auto md:h-[calc(100vh-4rem)]">
+                <section className="flex-1 bg-gray-50 overflow-auto">
                     {renderContent()}
                 </section>
             </div>

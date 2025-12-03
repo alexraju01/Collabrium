@@ -50,7 +50,7 @@ function SettingComponent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-full bg-gray-50 p-6 overflow-auto">
       <div className="mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Settings</h1>
       </div>

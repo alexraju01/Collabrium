@@ -45,7 +45,7 @@ const Header = () => {
   const currentDate = new Date();
 
   return (
-    <header className="bg-white shadow-sm w-full h-16">
+    <header className="bg-white shadow-sm w-full h-16 shrink-0">
       <div className="flex items-center justify-between px-6 py-4">
         <div>
           <h1 className="text-xl font-bold text-gray-900">Collabrium</h1>
