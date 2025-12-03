@@ -22,13 +22,19 @@ const limiter = rateLimit({
 
 // Helemt sets HTTP security headers
 app.use(helmet());
-app.use(cors());
+app.use(
+	cors({
+		origin: "http://localhost:5173",
+		credentials: true,
+	})
+);
+
 app.use("/api", limiter);
 app.use(express.json());
 app.use(cookieParser());
 
 app.use((req, res, next) => {
-	//   console.log(req.cookies);
+	console.log(req.cookies);
 	next();
 });
 
