@@ -14,9 +14,7 @@ export default defineConfig({
 			target: "react",
 			autoCodeSplitting: true,
 		}),
-		viteReact({
-			tsCheck: false, // <-- disables type checking
-		}),
+
 		viteReact(),
 		tailwindcss(),
 	],
