@@ -10,6 +10,17 @@ interface Props {
 	textSize?: string;
 }
 
+// Helper function to get initials with a fallback
+const getInitials = (displayName: string | null | undefined): string => {
+	if (!displayName) {
+		return "U"; // Default initial if no displayName
+	}
+	return displayName
+		.split(" ")
+		.map((n) => n[0])
+		.join("");
+};
+
 const Navbar = () => {
 	const matchRoute = useMatchRoute();
 	const { user, logout } = useAuth();
@@ -31,12 +42,8 @@ const Navbar = () => {
 		}
 	};
 
-	const initials = user
-		? user.displayName
-				.split(" ")
-				.map((n) => n[0])
-				.join("")
-		: "";
+	// Use the helper function here
+	const initials = getInitials(user?.displayName);
 
 	return (
 		<header className='w-full bg-white shadow-sm border-b border-blue-100'>
@@ -140,10 +147,11 @@ const UserMenuContent = ({
 	const { user } = useAuth();
 	if (!user) return null;
 
-	const initials = user.displayName
-		.split(" ")
-		.map((n) => n[0])
-		.join("");
+	// Use the helper function here
+	const initials = getInitials(user.displayName);
+
+	// Fallback display name for the text
+	const displayUserName = user.displayName || "User";
 
 	return (
 		<div className={`space-y-4 ${className || ""}`}>
@@ -155,7 +163,7 @@ const UserMenuContent = ({
 				</div>
 
 				<div className='flex flex-col min-w-0'>
-					<p className='text-gray-900 font-semibold leading-tight'>{user.displayName}</p>
+					<p className='text-gray-900 font-semibold leading-tight'>{displayUserName}</p>
 					<p
 						className={`
                         text-gray-500 leading-tight ${textSize}
