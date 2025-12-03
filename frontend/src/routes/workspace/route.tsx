@@ -9,7 +9,6 @@ export const Route = createFileRoute("/workspace")({
 	},
 	loader: async () => {
 		const { data: workspace, results: totalWorkspace } = await apiGet("workspace");
-
 		return { workspace, totalWorkspace };
 	},
 	component: WorkspacePage,

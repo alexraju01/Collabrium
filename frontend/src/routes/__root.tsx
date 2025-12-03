@@ -1,12 +1,9 @@
 import { Outlet, createRootRoute } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+// import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { AuthProvider } from "@/context/authContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-// import Navbar from "../Navbar";
-// import Footer from "../Footer";
-// import { AuthProvider } from "../authContext";
 
 export const Route = createRootRoute({
 	component: () => (
@@ -20,17 +17,7 @@ export const Route = createRootRoute({
 				<Footer />
 
 				{/* Devtools */}
-				<TanStackDevtools
-					config={{
-						position: "bottom-right",
-					}}
-					plugins={[
-						{
-							name: "Tanstack Router",
-							render: <TanStackRouterDevtoolsPanel />,
-						},
-					]}
-				/>
+				<TanStackDevtools />
 			</div>
 		</AuthProvider>
 	),
