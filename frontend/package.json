@@ -16,6 +16,7 @@
 		"@tanstack/react-router-devtools": "^1.132.0",
 		"@tanstack/router-plugin": "^1.132.0",
 		"axios": "^1.13.2",
+		"daisyui": "^5.5.8",
 		"dotenv": "^17.2.3",
 		"js-cookie": "^3.0.5",
 		"lucide-react": "^0.555.0",
