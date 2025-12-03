@@ -27,7 +27,7 @@ const Navbar = () => {
 					Workspace
 				</Link>
 				<Link
-					to='/workspace'
+					to='/login'
 					className={`hover:text-blue-600 transition duration-150 ${isActive("/account")}`}>
 					account
 				</Link>
