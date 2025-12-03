@@ -4,7 +4,7 @@ dotenv.config({ quiet: true });
 import { Sequelize } from "sequelize";
 
 // Use the full connection URI from the environment variable
-const connectionUri = process.env.DB_UIR;
+const connectionUri = process.env.DB_URI;
 
 if (!connectionUri) {
 	throw new Error("DB_UIR environment variable is not set.");
