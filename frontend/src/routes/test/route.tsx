@@ -11,7 +11,7 @@ function RouteComponent() {
 	const [currentTaskId, setCurrentTaskId] = useState("");
 
 	return (
-		<div className="w-full min-w-screen min-h-screen h-full bg-neutral-300 relative">
+		<div className="w-full flex flex-col bg-red-300 relative">
 			<div className="flex flex-col">
 				{/* Simple tasks, id */}
 				<Button onClick={() => setCurrentTaskId("1")}>Open Task</Button>
@@ -21,8 +21,12 @@ function RouteComponent() {
 				<Button onClick={() => setCurrentTaskId("5")}>Open Task</Button>
 			</div>
 			{currentTaskId && (
-				<TaskWindow role="Admin" id={currentTaskId} closeTask={setCurrentTaskId} />
+				<TaskWindow
+					role="Admin"
+					id={currentTaskId}
+					closeTask={setCurrentTaskId}
+				/>
 			)}
 		</div>
-	);
+	)
 }

@@ -9,8 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TestRouteRouteImport } from './routes/test/route'
 import { Route as WorkspaceRouteRouteImport } from './routes/workspace/route'
+import { Route as TestRouteRouteImport } from './routes/test/route'
 import { Route as SettingRouteRouteImport } from './routes/setting/route'
 import { Route as LoginRouteRouteImport } from './routes/login/route'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
@@ -20,6 +20,11 @@ import { Route as WorkspaceWorkspaceIdRouteRouteImport } from './routes/workspac
 const WorkspaceRouteRoute = WorkspaceRouteRouteImport.update({
   id: '/workspace',
   path: '/workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestRouteRoute = TestRouteRouteImport.update({
+  id: '/test',
+  path: '/test',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingRouteRoute = SettingRouteRouteImport.update({
@@ -54,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteRoute
   '/login': typeof LoginRouteRoute
   '/setting': typeof SettingRouteRoute
+  '/test': typeof TestRouteRoute
   '/workspace': typeof WorkspaceRouteRouteWithChildren
   '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteRoute
 }
@@ -62,6 +68,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRouteRoute
   '/login': typeof LoginRouteRoute
   '/setting': typeof SettingRouteRoute
+  '/test': typeof TestRouteRoute
   '/workspace': typeof WorkspaceRouteRouteWithChildren
   '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteRoute
 }
@@ -71,6 +78,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteRoute
   '/login': typeof LoginRouteRoute
   '/setting': typeof SettingRouteRoute
+  '/test': typeof TestRouteRoute
   '/workspace': typeof WorkspaceRouteRouteWithChildren
   '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteRoute
 }
@@ -81,6 +89,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/setting'
+    | '/test'
     | '/workspace'
     | '/workspace/$workspaceId'
   fileRoutesByTo: FileRoutesByTo
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/setting'
+    | '/test'
     | '/workspace'
     | '/workspace/$workspaceId'
   id:
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/setting'
+    | '/test'
     | '/workspace'
     | '/workspace/$workspaceId'
   fileRoutesById: FileRoutesById
@@ -106,6 +117,7 @@ export interface RootRouteChildren {
   DashboardRouteRoute: typeof DashboardRouteRoute
   LoginRouteRoute: typeof LoginRouteRoute
   SettingRouteRoute: typeof SettingRouteRoute
+  TestRouteRoute: typeof TestRouteRoute
   WorkspaceRouteRoute: typeof WorkspaceRouteRouteWithChildren
 }
 
@@ -116,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/workspace'
       fullPath: '/workspace'
       preLoaderRoute: typeof WorkspaceRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/setting': {
@@ -173,6 +192,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRouteRoute: DashboardRouteRoute,
   LoginRouteRoute: LoginRouteRoute,
   SettingRouteRoute: SettingRouteRoute,
+  TestRouteRoute: TestRouteRoute,
   WorkspaceRouteRoute: WorkspaceRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport

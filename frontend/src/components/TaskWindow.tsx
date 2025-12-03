@@ -164,7 +164,7 @@ export function TaskWindow({
 	return (
 		<div className="absolute p-2 bg-base-200 rounded-box h-full flex flex-col w-11/12 max-w-3xl max-h-11/12 top-[calc(1/24*100%)] left-1/2 -translate-x-1/2">
 			{/* Task title Box */}
-			<div className="overflow-y-scroll flex flex-col h-full">
+			<div className="overflow-y-scroll scrollbar-thin flex flex-col h-full">
 				<div className="flex flex-col rounded-box bg-base-100 border-base-300 border h-min p-2 py-4">
 					<div className="flex place-content-between h-min items-center">
 						<TitleBox
@@ -257,7 +257,7 @@ export function TaskWindow({
 					<h3 className="font-semibold">Activity / Logs</h3>
 					{/* Input activity text area */}
 					<NewComment submit={submitComment} />
-					<ol className="overflow-y-scroll h-full max-h-64 flex flex-col p-2">
+					<ol className="overflow-y-scroll scrollbar-thin min-h-8 h-full max-h-64 flex flex-col p-2">
 						{activity.map((activity, index) => (
 							<>
 								<TaskActivity key={index} activity={activity} />
