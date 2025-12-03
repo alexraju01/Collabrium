@@ -1,43 +1,79 @@
 [
-  {
-    "role": "admin",
-    "UserId": 1,
-    "WorkspaceId": 1
-  },
-  {
-    "role": "user",
-    "UserId": 2,
-    "WorkspaceId": 1
-  },
-  {
-    "role": "user",
-    "UserId": 3,
-    "WorkspaceId": 1
-  },
-  {
-    "role": "user",
-    "UserId": 4,
-    "WorkspaceId": 1
-  },
-  {
-    "role": "user",
-    "UserId": 5,
-    "WorkspaceId": 1
-  },
+	{
+		"role": "admin",
+		"userId": 1,
+		"workspaceId": 1
+	},
+	{
+		"role": "user",
+		"userId": 2,
+		"workspaceId": 1
+	},
+	{
+		"role": "user",
+		"userId": 3,
+		"workspaceId": 1
+	},
+	{
+		"role": "user",
+		"userId": 4,
+		"workspaceId": 1
+	},
+	{
+		"role": "user",
+		"userId": 5,
+		"workspaceId": 1
+	},
 
-  {
-    "role": "admin",
-    "UserId": 1,
-    "WorkspaceId": 2
-  },
-  {
-    "role": "user",
-    "UserId": 2,
-    "WorkspaceId": 2
-  },
-  {
-    "role": "user",
-    "UserId": 3,
-    "WorkspaceId": 2
-  }
+	{
+		"role": "admin",
+		"userId": 2,
+		"workspaceId": 2
+	},
+	{
+		"role": "user",
+		"userId": 1,
+		"workspaceId": 2
+	},
+	{
+		"role": "user",
+		"userId": 3,
+		"workspaceId": 2
+	},
+	{
+		"role": "user",
+		"userId": 4,
+		"workspaceId": 2
+	},
+	{
+		"role": "user",
+		"userId": 5,
+		"workspaceId": 2
+	},
+
+	{
+		"role": "admin",
+		"userId": 3,
+		"workspaceId": 3
+	},
+	{
+		"role": "user",
+		"userId": 1,
+		"workspaceId": 3
+	},
+	{
+		"role": "user",
+		"userId": 2,
+		"workspaceId": 3
+	},
+	{
+		"role": "user",
+		"userId": 4,
+		"workspaceId": 3
+	},
+	{
+		"role": "user",
+		"userId": 5,
+		"workspaceId": 3
+	}
 ]
