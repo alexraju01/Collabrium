@@ -25,7 +25,7 @@ const limiter = rateLimit({
 app.use(helmet());
 app.use(
 	cors({
-		origin: "http://localhost:5173",
+		origin: ["http://localhost:5173", "https://alert-curiosity-production.up.railway.app"],
 		credentials: true,
 	})
 );
