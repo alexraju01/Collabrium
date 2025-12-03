@@ -41,10 +41,8 @@ const Navbar = () => {
 	return (
 		<header className='w-full bg-white shadow-sm border-b border-blue-100'>
 			<div className='py-4 px-6 flex justify-between items-center'>
-				{/* Logo */}
 				<h1 className='text-xl font-bold text-gray-800'>Collabrium</h1>
 
-				{/* Desktop Navigation */}
 				<nav className='hidden md:flex items-center space-x-6 text-gray-600'>
 					<Link to='/' className={`hover:text-blue-600 ${isActive("/home")}`}>
 						Home
@@ -58,18 +56,16 @@ const Navbar = () => {
 						Workspace
 					</Link>
 
-					{/* User Avatar and Dropdown */}
 					{user ? (
 						<div className='relative group'>
 							<button className='w-9 h-9 bg-blue-500 text-white rounded-full flex items-center justify-center font-semibold uppercase'>
 								{initials}
 							</button>
 
-							{/* Desktop Dropdown */}
 							<div
 								className='absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-lg 
-								opacity-0 group-hover:opacity-100 invisible group-hover:visible
-								transition-all duration-150 p-4'>
+                                opacity-0 group-hover:opacity-100 invisible group-hover:visible
+                                transition-all duration-150 p-4'>
 								<UserMenuContent onLogout={handleLogout} />
 							</div>
 						</div>
@@ -80,13 +76,11 @@ const Navbar = () => {
 					)}
 				</nav>
 
-				{/* Mobile Hamburger */}
 				<button className='md:hidden text-gray-700' onClick={() => setIsOpen(!isOpen)}>
 					{isOpen ? <X size={28} /> : <Menu size={28} />}
 				</button>
 			</div>
 
-			{/* Mobile Menu */}
 			{isOpen && (
 				<div className='md:hidden bg-white border-t px-6 py-5 shadow-md rounded-b-xl space-y-5 animate-fadeDown'>
 					<nav className='space-y-4'>
@@ -112,7 +106,6 @@ const Navbar = () => {
 						</Link>
 					</nav>
 
-					{/* Mobile User Menu */}
 					{user ? (
 						<div className='pt-4 border-t'>
 							<UserMenuContent
@@ -154,25 +147,28 @@ const UserMenuContent = ({
 
 	return (
 		<div className={`space-y-4 ${className || ""}`}>
-			{/* Avatar and User Info */}
 			<div className='flex items-center gap-3'>
 				<div
 					className={`${avatarSize} bg-blue-500 text-white rounded-full 
-					flex items-center justify-center font-semibold uppercase shadow-sm`}>
+                    flex items-center justify-center font-semibold uppercase shadow-sm`}>
 					{initials}
 				</div>
 
-				<div className='flex flex-col'>
+				<div className='flex flex-col min-w-0'>
 					<p className='text-gray-900 font-semibold leading-tight'>{user.displayName}</p>
-					<p className={`text-gray-500 leading-tight ${textSize}`}>{user.email}</p>
+					<p
+						className={`
+                        text-gray-500 leading-tight ${textSize}
+                        truncate whitespace-nowrap overflow-hidden text-ellipsis `}>
+						{user.email}
+					</p>
 				</div>
 			</div>
 
-			{/* Logout Button */}
 			<button
 				onClick={onLogout}
 				className='w-full flex items-center gap-2 px-4 py-2 rounded-lg 
-				cursor-pointer bg-gray-50 hover:bg-gray-100 text-gray-700 text-sm font-medium transition'>
+                cursor-pointer bg-gray-50 hover:bg-gray-100 text-gray-700 text-sm font-medium transition'>
 				<LogOut size={16} /> Log Out
 			</button>
 		</div>

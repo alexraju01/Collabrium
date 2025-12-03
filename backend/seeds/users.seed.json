@@ -1,31 +1,31 @@
 [
 	{
-		"displayName": "pm_lead",
-		"email": "pmlead@example.com",
+		"displayName": "Sarah Johnson",
+		"email": "sarah.johnson@example.com",
 		"password": "Password123!",
 		"confirmPassword": "Password123!"
 	},
 	{
-		"displayName": "line_manager_jane",
-		"email": "lmjane@example.com",
+		"displayName": "Jane Doe",
+		"email": "jane.doe@example.com",
 		"password": "Password123!",
 		"confirmPassword": "Password123!"
 	},
 	{
-		"displayName": "line_manager_john",
-		"email": "lmjohn@example.com",
+		"displayName": "John Smith",
+		"email": "john.smith@example.com",
 		"password": "Password123!",
 		"confirmPassword": "Password123!"
 	},
 	{
-		"displayName": "collab_user_1",
-		"email": "user1@example.com",
+		"displayName": "Alex Chen",
+		"email": "alex.chen@example.com",
 		"password": "Password123!",
 		"confirmPassword": "Password123!"
 	},
 	{
-		"displayName": "collab_user_2",
-		"email": "user2@example.com",
+		"displayName": "Maria Lopez",
+		"email": "maria.lopez@example.com",
 		"password": "Password123!",
 		"confirmPassword": "Password123!"
 	}
