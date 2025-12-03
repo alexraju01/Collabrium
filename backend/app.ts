@@ -37,7 +37,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
 	next();
 });
-// hs
+
 // Resouces Routing
 app.use("/api/v1/task", taskRouter);
 app.use("/api/v1/user", userRouter);
