@@ -1,14 +1,18 @@
-import { createFileRoute } from '@tanstack/react-router'
+import Layout from "@/components/Layout";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/dashboard')({
-  component: RouteComponent,
-})
-
+export const Route = createFileRoute("/dashboard")({
+	component: RouteComponent,
+});
 
 /**
  * @summary The users personalized dashboard
- * @returns 
+ * @returns
  */
 function RouteComponent() {
-  return <div className="">Hello "/dashboard"!</div>
+	return (
+		<Layout>
+			<div className=''>Hello "/dashboard"!</div>
+		</Layout>
+	);
 }

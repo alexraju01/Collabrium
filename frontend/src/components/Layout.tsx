@@ -48,7 +48,7 @@ export default function Layout({ children }: LayoutProps) {
             </aside> */}
 
 			{/* maincontent */}
-			<section className='flex-1 p-6'>{children}</section>
+			<section className='flex-1 p-2 md:p-4 lg:p-6'>{children}</section>
 
 			{/* Footer */}
 			<Footer />

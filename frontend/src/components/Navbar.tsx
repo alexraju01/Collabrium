@@ -16,7 +16,11 @@ const Navbar = () => {
 					className={`hover:text-blue-600 transition duration-150 ${isActive("/home")}`}>
 					Home
 				</Link>
-
+				<Link
+					to='/dashboard'
+					className={`hover:text-blue-600 transition duration-150 ${isActive("/dashboard")}`}>
+					Dashboard
+				</Link>
 				<Link
 					to='/workspace'
 					className={`hover:text-blue-600 transition duration-150 ${isActive("/workspace")}`}>
