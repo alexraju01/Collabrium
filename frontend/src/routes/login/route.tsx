@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/authContext";
 import { apiPost } from "@/lib/fetchAxios";
-import { createFileRoute, redirect, Router, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 
 export const Route = createFileRoute("/login")({
@@ -40,7 +40,7 @@ function LoginPage() {
 						{login && <LoginComponent setLogin={() => setLogin(false)} />}
 
 						{/* Register Section */}
-						{!login && <RegisterComponent />}
+						{!login && <RegisterComponent setLogin={setLogin} />}
 					</div>
 				</div>
 			</div>
@@ -54,7 +54,7 @@ interface RegisterForm {
 	password: string;
 }
 
-function RegisterComponent() {
+function RegisterComponent({ setLogin }: { setLogin: () => void }) {
 	const [username, setUserName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -66,7 +66,7 @@ function RegisterComponent() {
 			email: email,
 			password: password,
 		} as RegisterForm;
-		const response = await fetch("http://localhost:3001/api/user/register", {
+		const response = await fetch("http://localhost:3001/api/users/register", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(detials),
@@ -76,7 +76,9 @@ function RegisterComponent() {
 			return;
 		}
 	}
-
+	function returnSignIn() {
+		setLogin(true);
+	}
 	return (
 		<div>
 			<h2 className='text-center'>Register</h2>
@@ -105,14 +107,14 @@ function RegisterComponent() {
 				<button
 					className='w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2'
 					onClick={Register}>
-					Create Account
+					Create an Account
 				</button>
 			</div>
 			<div className='flex flex-col md:flex-row md:items-center md:justify-between my-2'>
 				<p>Already have an account?</p>
 				<button
 					className='border bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 md:mt-0'
-					onClick={Register}>
+					onClick={returnSignIn}>
 					Sign In
 				</button>
 			</div>

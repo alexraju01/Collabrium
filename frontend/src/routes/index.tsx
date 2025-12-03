@@ -7,9 +7,7 @@ export const Route = createFileRoute("/")({
 function App() {
 	return (
 		<div className='bg-red-500'>
-			{/* <Layout> */}
 			<h1>text</h1>
-			{/* </Layout> */}
 		</div>
 	);
 }
