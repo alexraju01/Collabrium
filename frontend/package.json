@@ -17,6 +17,7 @@
 		"@tanstack/router-plugin": "^1.132.0",
 		"axios": "^1.13.2",
 		"dotenv": "^17.2.3",
+		"js-cookie": "^3.0.5",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
 		"tailwindcss": "^4.1.17"

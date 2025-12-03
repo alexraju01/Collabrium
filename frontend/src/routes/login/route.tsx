@@ -1,8 +1,6 @@
-import Footer from "@/components/Footer";
-import Layout from "@/components/Layout";
+import { useAuth } from "@/context/authContext";
 import { apiPost } from "@/lib/fetchAxios";
 import { createFileRoute, redirect, Router, useRouter } from "@tanstack/react-router";
-import axios from "axios";
 import { useState } from "react";
 
 export const Route = createFileRoute("/login")({
@@ -12,42 +10,41 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
 	const [login, setLogin] = useState(true);
 	return (
-		<Layout>
-			<div className='min-h-screen flex flex-col bg-gray-50'>
-				<div className='flex flex-1'>
-					{/* left side - banner */}
-					<div className='hidden md:flex md:w-1/2 flex-col justify-center items-center p-12'>
-						<div>
+		// <Layout>
+		<div className='min-h-screen flex flex-col bg-gray-50'>
+			<div className='flex flex-1'>
+				{/* left side - banner */}
+				<div className='hidden md:flex md:w-1/2 flex-col justify-center items-center p-12'>
+					<div>
+						<h1 className='text-3xl font-bold mb-2'>Welcome to Collabrium</h1>
+						<p className='text-lg font-semibold mt-4'>Project Collaboration Space</p>
+					</div>
+				</div>
+
+				{/* right side - Auth Container */}
+				<div className='w-full md:w-1/2 flex flex-col justify-center items-center p-8'>
+					<div className='w-full max-w-md'>
+						{/* mobile banner */}
+						<div className='md:hidden text-center mb-10'>
 							<h1 className='text-3xl font-bold mb-2'>Welcome to Collabrium</h1>
-							<p className='text-lg font-semibold mt-4'>Project Collaboration Space</p>
+							<h2 className='text-2xl font-semibold'>Project Collaboration Space</h2>
 						</div>
 					</div>
 
-					{/* right side - Auth Container */}
-					<div className='w-full md:w-1/2 flex flex-col justify-center items-center p-8'>
-						<div className='w-full max-w-md'>
-							{/* mobile banner */}
-							<div className='md:hidden text-center mb-10'>
-								<h1 className='text-3xl font-bold mb-2'>Welcome to Collabrium</h1>
-								<h2 className='text-2xl font-semibold'>Project Collaboration Space</h2>
-							</div>
+					{/* Login Section */}
+					<div className='bg-white rounded shadow-lg p-8 md:p-10'>
+						<div className='text-center mb-8'>
+							<h2 className='text-2xl font-bold text-gray-800'>Welcome</h2>
 						</div>
 
-						{/* Login Section */}
-						<div className='bg-white rounded shadow-lg p-8 md:p-10'>
-							<div className='text-center mb-8'>
-								<h2 className='text-2xl font-bold text-gray-800'>Welcome</h2>
-							</div>
+						{login && <LoginComponent setLogin={() => setLogin(false)} />}
 
-							{login && <LoginComponent setLogin={() => setLogin(false)} />}
-
-							{/* Register Section */}
-							{!login && <RegisterComponent />}
-						</div>
+						{/* Register Section */}
+						{!login && <RegisterComponent />}
 					</div>
 				</div>
 			</div>
-		</Layout>
+		</div>
 	);
 }
 
@@ -69,7 +66,7 @@ function RegisterComponent() {
 			email: email,
 			password: password,
 		} as RegisterForm;
-		const response = await fetch("http://localhost:3001/api/users/register", {
+		const response = await fetch("http://localhost:3001/api/user/register", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(detials),
@@ -132,6 +129,7 @@ function LoginComponent({ setLogin }: { setLogin: () => void }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const router = useRouter();
+	const { setUser } = useAuth();
 
 	async function Login() {
 		const details: LoginForm = {
@@ -139,11 +137,13 @@ function LoginComponent({ setLogin }: { setLogin: () => void }) {
 			password: password,
 		};
 
-		const response = await apiPost("/user/login", details);
-		if (!response) {
+		const { data } = await apiPost("/user/login", details);
+		if (!data) {
 			console.log("Login failed");
 			return;
 		}
+		console.log(data);
+		setUser(data.user);
 
 		// Navigate to dashboard
 		router.navigate({ to: "/dashboard" });
