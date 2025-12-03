@@ -7,7 +7,7 @@ import User from "../models/user.model";
 import { requireAuth } from "./taskList.controller";
 
 export const getDashboardData = async (req: Request, res: Response, next: NextFunction) => {
-	const userId = requireAuth(req);
+	const { userId } = requireAuth(req);
 
 	const today = new Date();
 	const sixMonthsFromNow = new Date(today);
