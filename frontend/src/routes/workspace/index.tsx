@@ -3,7 +3,7 @@ import { apiGet, apiPost } from "@/lib/fetchAxios";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 
-export const Route = createFileRoute("/workspace")({
+export const Route = createFileRoute("/workspace/")({
 	beforeLoad: async () => {
 		const user = await apiGet("/user/me");
 		if (!user) throw redirect({ to: "/login" });
@@ -88,7 +88,8 @@ function WorkspacePage() {
 					{workspaces.map((workspace) => (
 						<Link
 							key={workspace.id}
-							to={`/workspace/${workspace.id}`}
+							to='/workspace/$workspaceId'
+							params={{ workspaceId: workspace.id }}
 							className='bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 p-6 border border-gray-200 flex flex-col justify-between hover:bg-indigo-50'>
 							<h3 className='text-lg font-semibold text-gray-900 truncate'>{workspace.name}</h3>
 							<div className='flex items-center gap-2 mt-4'>
@@ -115,6 +116,7 @@ function WorkspacePage() {
 						<p className='text-gray-500 col-span-full'>No workspaces found.</p>
 					)}
 				</div>
+				{/* <Outlet /> */}
 			</section>
 
 			{/* Modal from Daisy UI */}

@@ -149,7 +149,7 @@ const UserMenuContent = ({
 		<div className={`space-y-4 ${className || ""}`}>
 			<div className='flex items-center gap-3'>
 				<div
-					className={`${avatarSize} bg-blue-500 text-white rounded-full 
+					className={`${avatarSize} bg-blue-500 aspect-square h-full text-white rounded-full 
                     flex items-center justify-center font-semibold uppercase shadow-sm`}>
 					{initials}
 				</div>
