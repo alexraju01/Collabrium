@@ -1,8 +1,10 @@
-import { CookieOptions, NextFunction, Request, Response } from "express";
-import User from "../models/user.model";
-import jwt, { Secret } from "jsonwebtoken";
-import AppError from "../lib/AppError";
-import { WorkspaceUser } from "../models/workspaceUser.model";
+// import { CookieOptions, NextFunction, Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
+import User from "../models/user.model.ts";
+import jwt from "jsonwebtoken";
+import type { Secret } from "jsonwebtoken";
+import AppError from "../lib/AppError.ts";
+import { WorkspaceUser } from "../models/workspaceUser.model.ts";
 
 //#region globalRequest
 declare global {

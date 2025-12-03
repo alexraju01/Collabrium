@@ -8,8 +8,8 @@ import {
 	getOneTask,
 	searchTasks,
 	updateTask,
-} from "../controllers/task.controller";
-import { protect, restrictTo } from "../controllers/auth.controller";
+} from "../controllers/task.controller.ts";
+import { protect, restrictTo } from "../controllers/auth.controller.ts";
 
 export const taskRouter = Router();
 

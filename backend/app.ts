@@ -1,16 +1,17 @@
-require("dotenv").config({ quiet: true });
+import dotenv from "dotenv";
+dotenv.config({ quiet: true });
 import express from "express";
-import { taskRouter } from "./routes/task.route";
-import { globalErrorHandler } from "./controllers/error.controller";
-import AppError from "./lib/AppError";
-import { userRouter } from "./routes/user.route";
-import { workspaceRouter } from "./routes/workspace.route";
+import { taskRouter } from "./routes/task.route.ts";
+import { globalErrorHandler } from "./controllers/error.controller.ts";
+import AppError from "./lib/AppError.ts";
+import { userRouter } from "./routes/user.route.ts";
+import { workspaceRouter } from "./routes/workspace.route.ts";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { taskListRouter } from "./routes/taskList.route";
-import { dashboardRouter } from "./routes/dashboard.route";
+import { taskListRouter } from "./routes/taskList.route.ts";
+import { dashboardRouter } from "./routes/dashboard.route.ts";
 
 const app = express();
 

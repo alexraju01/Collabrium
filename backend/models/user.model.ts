@@ -1,5 +1,5 @@
-import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../config/db";
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "../config/db.ts";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
@@ -21,7 +21,7 @@ export interface UserAttributes {
 }
 
 // 2. Define the attributes required for creation (ID is optional)
-export type UserCreationAttributes = Optional<UserAttributes, "id" | "currentWorkspaceRole">;
+export type UserCreationAttributes = Omit<UserAttributes, "id" | "currentWorkspaceRole">;
 
 // User model class
 class User extends Model<UserAttributes, UserCreationAttributes> {
@@ -44,9 +44,24 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
 		return values;
 	}
 
-	correctPassword!: (candidatePassword: string) => Promise<boolean>;
-	changedPasswordAfter!: (JWTTimestamp: number) => boolean;
-	createPasswordResetToken!: () => string;
+	async correctPassword(candidatePassword: string): Promise<boolean> {
+		return await bcrypt.compare(candidatePassword, this.password);
+	}
+
+	changedPasswordAfter(JWTTimestamp: number): boolean {
+		if (this.passwordChangedAt instanceof Date && this.passwordChangedAt) {
+			const changedTimestamp = Math.floor(this.passwordChangedAt.getTime() / 1000);
+			return JWTTimestamp < changedTimestamp;
+		}
+		return false;
+	}
+
+	createPasswordResetToken(): string {
+		const resetToken = crypto.randomBytes(32).toString("hex");
+		this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+		this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
+		return resetToken;
+	}
 }
 
 // Initialize the User model
@@ -153,36 +168,5 @@ User.init(
 		},
 	}
 );
-
-User.beforeCreate(async (user, options) => {
-	user.password = await bcrypt.hash(user.password, 12);
-});
-// Hook to hash the password only if it has been changed before an existing user is updated.
-User.beforeUpdate(async (user) => {
-	if (!user.changed("password")) return;
-	user.password = await bcrypt.hash(user.password, 12);
-	//   user.passwordChangedAt = Date.now();
-});
-
-User.prototype.correctPassword = async function (candidatePassword: string) {
-	return await bcrypt.compare(candidatePassword, this.password);
-};
-
-User.prototype.changedPasswordAfter = function (JWTTimestamp: number) {
-	if (this.passwordChangedAt instanceof Date && this.passwordChangedAt) {
-		const changedTimestamp = Math.floor(this.passwordChangedAt.getTime() / 1000);
-
-		return JWTTimestamp < changedTimestamp;
-	}
-	return false;
-};
-
-User.prototype.createPasswordResetToken = function () {
-	const resetToken = crypto.randomBytes(32).toString("hex");
-	this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-
-	this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
-	return resetToken;
-};
 
 export default User;

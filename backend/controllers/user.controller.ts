@@ -1,6 +1,8 @@
-import { NextFunction, Request, Response } from "express";
-import User from "../models/user.model";
-import AppError from "../lib/AppError";
+// import { NextFunction, Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
+
+import User from "../models/user.model.ts";
+import AppError from "../lib/AppError.ts";
 
 export const getAllUsers = async (_: Request, res: Response) => {
 	const users = await User.findAll();

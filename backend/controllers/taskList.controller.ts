@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response } from "express";
-import TaskList from "../models/taskList.model";
-import { WorkspaceUser } from "../models/workspaceUser.model";
-import AppError from "../lib/AppError";
-import Workspace from "../models/workspace.model";
-import Task from "../models/task.model";
-import { sequelize } from "../config/db";
+// import { NextFunction, Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
+import TaskList from "../models/taskList.model.ts";
+import { WorkspaceUser } from "../models/workspaceUser.model.ts";
+import AppError from "../lib/AppError.ts";
+import Workspace from "../models/workspace.model.ts";
+import Task from "../models/task.model.ts";
+import { sequelize } from "../config/db.ts";
 
 export const requireAuth = (req: Request) => {
 	const userId = req.user?.id;

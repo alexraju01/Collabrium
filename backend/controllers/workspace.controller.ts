@@ -1,11 +1,13 @@
-import { NextFunction, Request, Response } from "express";
-import Workspace from "../models/workspace.model";
-import AppError from "../lib/AppError";
-import { WorkspaceUser } from "../models/workspaceUser.model";
-import { sequelize } from "../config/db";
-import User from "../models/user.model";
+// import { NextFunction, Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
+
+import Workspace from "../models/workspace.model.ts";
+import AppError from "../lib/AppError.ts";
+import { WorkspaceUser } from "../models/workspaceUser.model.ts";
+import { sequelize } from "../config/db.ts";
+import User from "../models/user.model.ts";
 import { Op } from "sequelize";
-import { formatWorkspace, formatWorkspaces } from "../lib/formatWorkspace";
+import { formatWorkspace, formatWorkspaces } from "../lib/formatWorkspace.ts";
 
 export const getAllWorkspace = async (req: Request, res: Response) => {
 	const userId = req?.user?.id;
