@@ -21,6 +21,8 @@ const limiter = rateLimit({
 	message: "Too many request from this IP Address, Please try again in an hour!",
 });
 
+app.set("trust proxy", 1);
+
 // Helemt sets HTTP security headers
 app.use(helmet());
 app.use(
