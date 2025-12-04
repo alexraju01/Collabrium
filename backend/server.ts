@@ -11,6 +11,7 @@ async function startServer() {
 		// check
 		const { PORT } = process.env;
 		app.listen(PORT, () => {
+			console.log(process.env.NODE_ENV);
 			console.log(`${ORANGE}Server listenings on ${process.env.URL} ${RESET}`);
 		});
 	} catch (error) {
