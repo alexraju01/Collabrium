@@ -162,7 +162,7 @@ function LandingPage() {
 					</div>
 				</section>
 
-				{/* PLACEHOLDER: CTA */}
+				{/* Placeholder: CTA */}
 				<section className='py-20 px-8 bg-white'>
 					<div className='max-w-6xl mx-auto'>
 						<div className='bg-gray-50 rounded-2xl p-16 text-center border-2 border-dashed border-gray-300'>
