@@ -1,20 +1,20 @@
 import { Router } from "express";
-import { protect, restrictTo } from "../controllers/auth.controller";
+import { protect, restrictTo } from "../controllers/auth.controller.ts";
 import {
 	createTaskList,
 	deleteTaskList,
 	getAllTaskLists,
 	getOneTaskList,
 	updateTaskList,
-} from "../controllers/taskList.controller";
+} from "../controllers/taskList.controller.ts";
 
 export const taskListRouter = Router({ mergeParams: true });
 
 taskListRouter.use(protect);
 
-taskListRouter.route("/").get(getAllTaskLists).post(restrictTo("admin"), createTaskList);
+taskListRouter.route("/").post(getAllTaskLists).post(restrictTo("admin"), createTaskList);
 taskListRouter
 	.route("/:taskListId")
-	.get(getOneTaskList)
+	.post(getOneTaskList)
 	.patch(restrictTo("admin"), updateTaskList)
 	.delete(restrictTo("admin"), deleteTaskList);

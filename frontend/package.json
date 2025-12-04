@@ -9,6 +9,7 @@
 		"test": "vitest run"
 	},
 	"dependencies": {
+		"@heroicons/react": "^2.2.0",
 		"@tailwindcss/vite": "^4.1.17",
 		"@tanstack/react-devtools": "^0.7.0",
 		"@tanstack/react-query": "^5.90.10",
@@ -18,6 +19,7 @@
 		"axios": "^1.13.2",
 		"daisyui": "^5.5.8",
 		"dotenv": "^17.2.3",
+		"group-project": "file:..",
 		"js-cookie": "^3.0.5",
 		"lucide-react": "^0.555.0",
 		"react": "^19.2.0",

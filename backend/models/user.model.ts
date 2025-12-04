@@ -1,17 +1,16 @@
-import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../config/db";
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "../config/db.ts";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
 export type Roles = "admin" | "user";
 
-// User attributes interface
 export interface UserAttributes {
 	id: number;
 	displayName: string;
 	email: string;
 	password: string;
-	confirmPassword: string;
+	confirmPassword: string; // Virtual field for validation
 	role?: Roles;
 	passwordChangedAt: Date | null;
 
@@ -20,10 +19,8 @@ export interface UserAttributes {
 	currentWorkspaceRole?: Roles;
 }
 
-// 2. Define the attributes required for creation (ID is optional)
-export type UserCreationAttributes = Optional<UserAttributes, "id" | "currentWorkspaceRole">;
+export type UserCreationAttributes = Omit<UserAttributes, "id" | "currentWorkspaceRole">;
 
-// User model class
 class User extends Model<UserAttributes, UserCreationAttributes> {
 	declare id: number;
 	declare displayName: string;
@@ -37,6 +34,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
 	declare passwordResetExpires: Date | null;
 	currentWorkspaceRole?: Roles;
 
+	// Method to strip sensitive data (passwords) when converting model instance to JSON
 	toJSON() {
 		const values: Partial<UserAttributes> = this.get();
 		delete values.password;
@@ -44,12 +42,32 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
 		return values;
 	}
 
-	correctPassword!: (candidatePassword: string) => Promise<boolean>;
-	changedPasswordAfter!: (JWTTimestamp: number) => boolean;
-	createPasswordResetToken!: () => string;
+	// Instance method: Compares candidate password with the stored hash
+	async correctPassword(candidatePassword: string): Promise<boolean> {
+		return await bcrypt.compare(candidatePassword, this.password);
+	}
+
+	// Instance method: Checks if password was changed after JWT was issued(for futeure task)
+	changedPasswordAfter(JWTTimestamp: number): boolean {
+		if (this.passwordChangedAt instanceof Date && this.passwordChangedAt) {
+			const changedTimestamp = Math.floor(this.passwordChangedAt.getTime() / 1000);
+			return JWTTimestamp < changedTimestamp;
+		}
+		return false;
+	}
+
+	createPasswordResetToken(): string {
+		const resetToken = crypto.randomBytes(32).toString("hex");
+
+		this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+		// expires to 10 minutes
+		this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
+
+		return resetToken;
+	}
 }
 
-// Initialize the User model
 User.init(
 	{
 		id: {
@@ -62,9 +80,7 @@ User.init(
 			allowNull: false,
 			unique: false,
 			validate: {
-				notEmpty: {
-					msg: "Display name is required",
-				},
+				notEmpty: { msg: "Display name is required" },
 				len: {
 					args: [3, 50],
 					msg: "Display name must be between 3 and 50 characters",
@@ -99,14 +115,12 @@ User.init(
 		},
 
 		confirmPassword: {
-			type: DataTypes.VIRTUAL,
+			type: DataTypes.VIRTUAL, // Not saved to DB
 			allowNull: false,
 			validate: {
 				notEmpty: { msg: "Confirm password is required" },
-
 				passwordMatches(value: string) {
-					if (value !== this.password) {
-						// Sequelize will catch this error and prevent saving/updating
+					if (value !== (this as User).password) {
 						throw new Error("Password and Confirm Password must match.");
 					}
 				},
@@ -115,6 +129,7 @@ User.init(
 
 		passwordChangedAt: {
 			type: DataTypes.DATE,
+			allowNull: true,
 		},
 
 		role: {
@@ -129,23 +144,54 @@ User.init(
 			},
 		},
 
-		// passwordResetToken: {
-		//   type: DataTypes.STRING,
-		// },
+		passwordResetToken: {
+			type: DataTypes.STRING,
+			allowNull: true,
+		},
 
-		// passwordResetExpires: {
-		//   type: DataTypes.DATE,
-		// },
+		passwordResetExpires: {
+			type: DataTypes.DATE,
+			allowNull: true,
+		},
 	},
 	{
 		sequelize,
 		timestamps: false,
+
+		hooks: {
+			// HASH PASSWORD before creating a new user
+			beforeCreate: async (user) => {
+				if (user.password) {
+					const salt = await bcrypt.genSalt(12);
+					user.password = await bcrypt.hash(user.password, salt);
+					user.confirmPassword = ""; // Clear the virtual field
+				}
+			},
+
+			// HASH PASSWORD and set passwordChangedAt before updating an existing user
+			beforeUpdate: async (user) => {
+				if (user.changed("password") && user.password) {
+					const salt = await bcrypt.genSalt(12);
+					user.password = await bcrypt.hash(user.password, salt);
+					user.confirmPassword = ""; // Clear the virtual field
+
+					user.passwordChangedAt = new Date(Date.now() - 1000);
+				}
+				if (user.changed("password") && user.passwordResetToken) {
+					user.passwordResetToken = null;
+					user.passwordResetExpires = null;
+				}
+			},
+		},
+
 		defaultScope: {
+			// Default scope excludes password for all standard queries
 			attributes: { exclude: ["password"] },
 		},
 
 		scopes: {
 			withPasswords: {
+				// Scope to explicitly include password when needed (e.g., for login)
 				attributes: {
 					include: ["password"],
 				},
@@ -153,36 +199,5 @@ User.init(
 		},
 	}
 );
-
-User.beforeCreate(async (user, options) => {
-	user.password = await bcrypt.hash(user.password, 12);
-});
-// Hook to hash the password only if it has been changed before an existing user is updated.
-User.beforeUpdate(async (user) => {
-	if (!user.changed("password")) return;
-	user.password = await bcrypt.hash(user.password, 12);
-	//   user.passwordChangedAt = Date.now();
-});
-
-User.prototype.correctPassword = async function (candidatePassword: string) {
-	return await bcrypt.compare(candidatePassword, this.password);
-};
-
-User.prototype.changedPasswordAfter = function (JWTTimestamp: number) {
-	if (this.passwordChangedAt instanceof Date && this.passwordChangedAt) {
-		const changedTimestamp = Math.floor(this.passwordChangedAt.getTime() / 1000);
-
-		return JWTTimestamp < changedTimestamp;
-	}
-	return false;
-};
-
-User.prototype.createPasswordResetToken = function () {
-	const resetToken = crypto.randomBytes(32).toString("hex");
-	this.passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-
-	this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
-	return resetToken;
-};
 
 export default User;

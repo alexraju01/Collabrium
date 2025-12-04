@@ -1,10 +1,12 @@
 import { Op } from "sequelize";
-import TaskList from "../models/taskList.model";
-import Task from "../models/task.model";
-import Workspace from "../models/workspace.model";
-import { Request, Response, NextFunction } from "express";
-import User from "../models/user.model";
-import { requireAuth } from "./taskList.controller";
+import TaskList from "../models/taskList.model.ts";
+import Task from "../models/task.model.ts";
+import Workspace from "../models/workspace.model.ts";
+// import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
+
+import User from "../models/user.model.ts";
+import { requireAuth } from "./taskList.controller.ts";
 
 export const getDashboardData = async (req: Request, res: Response, next: NextFunction) => {
 	const { userId } = requireAuth(req);

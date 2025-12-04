@@ -8,193 +8,209 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as WorkspaceRouteRouteImport } from './routes/workspace/route'
-import { Route as TestRouteRouteImport } from './routes/test/route'
-import { Route as SettingRouteRouteImport } from './routes/setting/route'
-import { Route as LoginRouteRouteImport } from './routes/login/route'
-import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as WorkspaceWorkspaceIdRouteRouteImport } from './routes/workspace/$workspaceId/route'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as WorkspaceRouteRouteImport } from "./routes/workspace/route";
+import { Route as TestRouteRouteImport } from "./routes/test/route";
+import { Route as SettingRouteRouteImport } from "./routes/setting/route";
+import { Route as LoginRouteRouteImport } from "./routes/login/route";
+import { Route as DashboardRouteRouteImport } from "./routes/dashboard/route";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as WorkspaceIndexRouteImport } from "./routes/workspace/index";
+import { Route as WorkspaceWorkspaceIdIndexRouteImport } from "./routes/workspace/$workspaceId/index";
+import { Route as WorkspaceWorkspaceIdTasklistTasklistIdRouteImport } from "./routes/workspace/$workspaceId/tasklist/$tasklistId";
 
 const WorkspaceRouteRoute = WorkspaceRouteRouteImport.update({
-  id: '/workspace',
-  path: '/workspace',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/workspace",
+	path: "/workspace",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const TestRouteRoute = TestRouteRouteImport.update({
-  id: '/test',
-  path: '/test',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/test",
+	path: "/test",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const SettingRouteRoute = SettingRouteRouteImport.update({
-  id: '/setting',
-  path: '/setting',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/setting",
+	path: "/setting",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const LoginRouteRoute = LoginRouteRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/login",
+	path: "/login",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/dashboard",
+	path: "/dashboard",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WorkspaceWorkspaceIdRouteRoute =
-  WorkspaceWorkspaceIdRouteRouteImport.update({
-    id: '/$workspaceId',
-    path: '/$workspaceId',
-    getParentRoute: () => WorkspaceRouteRoute,
-  } as any)
+	id: "/",
+	path: "/",
+	getParentRoute: () => rootRouteImport,
+} as any);
+const WorkspaceIndexRoute = WorkspaceIndexRouteImport.update({
+	id: "/workspace/",
+	path: "/workspace/",
+	getParentRoute: () => rootRouteImport,
+} as any);
+const WorkspaceWorkspaceIdIndexRoute = WorkspaceWorkspaceIdIndexRouteImport.update({
+	id: "/workspace/$workspaceId/",
+	path: "/workspace/$workspaceId/",
+	getParentRoute: () => rootRouteImport,
+} as any);
+const WorkspaceWorkspaceIdTasklistTasklistIdRoute =
+	WorkspaceWorkspaceIdTasklistTasklistIdRouteImport.update({
+		id: "/workspace/$workspaceId/tasklist/$tasklistId",
+		path: "/workspace/$workspaceId/tasklist/$tasklistId",
+		getParentRoute: () => rootRouteImport,
+	} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRoute
-  '/login': typeof LoginRouteRoute
-  '/setting': typeof SettingRouteRoute
-  '/test': typeof TestRouteRoute
-  '/workspace': typeof WorkspaceRouteRouteWithChildren
-  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteRoute
+	"/": typeof IndexRoute;
+	"/dashboard": typeof DashboardRouteRoute;
+	"/login": typeof LoginRouteRoute;
+	"/setting": typeof SettingRouteRoute;
+	"/test": typeof TestRouteRoute;
+	"/workspace": typeof WorkspaceRouteRouteWithChildren;
+	"/workspace/$workspaceId": typeof WorkspaceWorkspaceIdRouteRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRoute
-  '/login': typeof LoginRouteRoute
-  '/setting': typeof SettingRouteRoute
-  '/test': typeof TestRouteRoute
-  '/workspace': typeof WorkspaceRouteRouteWithChildren
-  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteRoute
+	"/": typeof IndexRoute;
+	"/dashboard": typeof DashboardRouteRoute;
+	"/login": typeof LoginRouteRoute;
+	"/setting": typeof SettingRouteRoute;
+	"/test": typeof TestRouteRoute;
+	"/workspace": typeof WorkspaceRouteRouteWithChildren;
+	"/workspace/$workspaceId": typeof WorkspaceWorkspaceIdRouteRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRoute
-  '/login': typeof LoginRouteRoute
-  '/setting': typeof SettingRouteRoute
-  '/test': typeof TestRouteRoute
-  '/workspace': typeof WorkspaceRouteRouteWithChildren
-  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteRoute
+	__root__: typeof rootRouteImport;
+	"/": typeof IndexRoute;
+	"/dashboard": typeof DashboardRouteRoute;
+	"/login": typeof LoginRouteRoute;
+	"/setting": typeof SettingRouteRoute;
+	"/test": typeof TestRouteRoute;
+	"/workspace": typeof WorkspaceRouteRouteWithChildren;
+	"/workspace/$workspaceId": typeof WorkspaceWorkspaceIdRouteRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/dashboard'
-    | '/login'
-    | '/setting'
-    | '/test'
-    | '/workspace'
-    | '/workspace/$workspaceId'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/dashboard'
-    | '/login'
-    | '/setting'
-    | '/test'
-    | '/workspace'
-    | '/workspace/$workspaceId'
-  id:
-    | '__root__'
-    | '/'
-    | '/dashboard'
-    | '/login'
-    | '/setting'
-    | '/test'
-    | '/workspace'
-    | '/workspace/$workspaceId'
-  fileRoutesById: FileRoutesById
+	fileRoutesByFullPath: FileRoutesByFullPath;
+	fullPaths:
+		| "/"
+		| "/dashboard"
+		| "/login"
+		| "/setting"
+		| "/test"
+		| "/workspace"
+		| "/workspace/$workspaceId"
+		| "/workspace/$workspaceId/tasklist/$tasklistId";
+	fileRoutesByTo: FileRoutesByTo;
+	to:
+		| "/"
+		| "/dashboard"
+		| "/login"
+		| "/setting"
+		| "/test"
+		| "/workspace"
+		| "/workspace/$workspaceId"
+		| "/workspace/$workspaceId/tasklist/$tasklistId";
+	id:
+		| "__root__"
+		| "/"
+		| "/dashboard"
+		| "/login"
+		| "/setting"
+		| "/test"
+		| "/workspace"
+		| "/workspace/$workspaceId";
+	fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DashboardRouteRoute: typeof DashboardRouteRoute
-  LoginRouteRoute: typeof LoginRouteRoute
-  SettingRouteRoute: typeof SettingRouteRoute
-  TestRouteRoute: typeof TestRouteRoute
-  WorkspaceRouteRoute: typeof WorkspaceRouteRouteWithChildren
+	IndexRoute: typeof IndexRoute;
+	DashboardRouteRoute: typeof DashboardRouteRoute;
+	LoginRouteRoute: typeof LoginRouteRoute;
+	SettingRouteRoute: typeof SettingRouteRoute;
+	TestRouteRoute: typeof TestRouteRoute;
+	WorkspaceRouteRoute: typeof WorkspaceRouteRouteWithChildren;
 }
 
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/workspace': {
-      id: '/workspace'
-      path: '/workspace'
-      fullPath: '/workspace'
-      preLoaderRoute: typeof WorkspaceRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/test': {
-      id: '/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/setting': {
-      id: '/setting'
-      path: '/setting'
-      fullPath: '/setting'
-      preLoaderRoute: typeof SettingRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/workspace/$workspaceId': {
-      id: '/workspace/$workspaceId'
-      path: '/$workspaceId'
-      fullPath: '/workspace/$workspaceId'
-      preLoaderRoute: typeof WorkspaceWorkspaceIdRouteRouteImport
-      parentRoute: typeof WorkspaceRouteRoute
-    }
-  }
+declare module "@tanstack/react-router" {
+	interface FileRoutesByPath {
+		"/workspace": {
+			id: "/workspace";
+			path: "/workspace";
+			fullPath: "/workspace";
+			preLoaderRoute: typeof WorkspaceRouteRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/test": {
+			id: "/test";
+			path: "/test";
+			fullPath: "/test";
+			preLoaderRoute: typeof TestRouteRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/setting": {
+			id: "/setting";
+			path: "/setting";
+			fullPath: "/setting";
+			preLoaderRoute: typeof SettingRouteRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/login": {
+			id: "/login";
+			path: "/login";
+			fullPath: "/login";
+			preLoaderRoute: typeof LoginRouteRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/dashboard": {
+			id: "/dashboard";
+			path: "/dashboard";
+			fullPath: "/dashboard";
+			preLoaderRoute: typeof DashboardRouteRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/": {
+			id: "/";
+			path: "/";
+			fullPath: "/";
+			preLoaderRoute: typeof IndexRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/workspace/": {
+			id: "/workspace/";
+			path: "/workspace";
+			fullPath: "/workspace";
+			preLoaderRoute: typeof WorkspaceIndexRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/workspace/$workspaceId/": {
+			id: "/workspace/$workspaceId/";
+			path: "/workspace/$workspaceId";
+			fullPath: "/workspace/$workspaceId";
+			preLoaderRoute: typeof WorkspaceWorkspaceIdIndexRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/workspace/$workspaceId/tasklist/$tasklistId": {
+			id: "/workspace/$workspaceId/tasklist/$tasklistId";
+			path: "/workspace/$workspaceId/tasklist/$tasklistId";
+			fullPath: "/workspace/$workspaceId/tasklist/$tasklistId";
+			preLoaderRoute: typeof WorkspaceWorkspaceIdTasklistTasklistIdRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+	}
 }
-
-interface WorkspaceRouteRouteChildren {
-  WorkspaceWorkspaceIdRouteRoute: typeof WorkspaceWorkspaceIdRouteRoute
-}
-
-const WorkspaceRouteRouteChildren: WorkspaceRouteRouteChildren = {
-  WorkspaceWorkspaceIdRouteRoute: WorkspaceWorkspaceIdRouteRoute,
-}
-
-const WorkspaceRouteRouteWithChildren = WorkspaceRouteRoute._addFileChildren(
-  WorkspaceRouteRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  DashboardRouteRoute: DashboardRouteRoute,
-  LoginRouteRoute: LoginRouteRoute,
-  SettingRouteRoute: SettingRouteRoute,
-  TestRouteRoute: TestRouteRoute,
-  WorkspaceRouteRoute: WorkspaceRouteRouteWithChildren,
-}
+	IndexRoute: IndexRoute,
+	DashboardRouteRoute: DashboardRouteRoute,
+	LoginRouteRoute: LoginRouteRoute,
+	SettingRouteRoute: SettingRouteRoute,
+	TestRouteRoute: TestRouteRoute,
+	WorkspaceRouteRoute: WorkspaceRouteRouteWithChildren,
+};
 export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+	._addFileChildren(rootRouteChildren)
+	._addFileTypes<FileRouteTypes>();

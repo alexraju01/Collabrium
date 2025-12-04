@@ -5,8 +5,8 @@ import {
 	getAllUsers,
 	getOneUser,
 	updateDisplayName,
-} from "../controllers/user.controller";
-import { login, logout, protect, signUp } from "../controllers/auth.controller";
+} from "../controllers/user.controller.ts";
+import { login, logout, protect, signUp } from "../controllers/auth.controller.ts";
 
 export const userRouter = Router();
 
