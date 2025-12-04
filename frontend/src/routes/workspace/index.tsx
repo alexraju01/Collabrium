@@ -1,8 +1,9 @@
 // @ts-nocheck
-import { useState } from "react";
-import { apiGet, apiPost } from "@/lib/fetchAxios";
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { PlusIcon } from "lucide-react";
+import { createFileRoute, redirect, Router } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { apiGet, apiPost, apiDelete } from "@/lib/fetchAxios";
+import { Link } from "@tanstack/react-router";
+import { PlusIcon, Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/workspace/")({
 	beforeLoad: async () => {
@@ -10,22 +11,49 @@ export const Route = createFileRoute("/workspace/")({
 		if (!user) throw redirect({ to: "/login" });
 		return { user };
 	},
-	loader: async () => {
-		const { data: workspace, results: totalWorkspace } = await apiGet("workspace");
-		return { workspace, totalWorkspace };
+
+	loader: () => {
+		return {};
 	},
+
+	pendingComponent: () => (
+		<div className='flex justify-center items-center h-screen'>
+			<span className='loading loading-spinner loading-lg text-indigo-600'></span>
+		</div>
+	),
+
 	component: WorkspacePage,
 });
 
 function WorkspacePage() {
-	const {
-		workspace: { workspaces },
-		totalWorkspace,
-	} = Route.useLoaderData();
+	const [loading, setLoading] = useState(true);
+	const [workspaces, setWorkspaces] = useState([]);
+	const [totalWorkspace, setTotalWorkspace] = useState(0);
 
-	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+	const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
+
 	const [newWorkspaceName, setNewWorkspaceName] = useState("");
+	const [inviteCode, setInviteCode] = useState("");
+
 	const [isLoading, setIsLoading] = useState(false);
+
+	const fetchWorkspaces = async () => {
+		setLoading(true);
+		try {
+			const ws = await apiGet("workspace");
+			setWorkspaces(ws.data.workspaces);
+			setTotalWorkspace(ws.results);
+		} catch (error) {
+			console.error("Failed to fetch workspaces:", error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		fetchWorkspaces();
+	}, []);
 
 	const handleCreateWorkspace = async () => {
 		if (!newWorkspaceName.trim()) return;
@@ -33,49 +61,98 @@ function WorkspacePage() {
 		setIsLoading(true);
 		try {
 			await apiPost("/workspace/create", { name: newWorkspaceName });
-			window.location.reload();
+			await fetchWorkspaces();
+			setIsCreateModalOpen(false);
+			setNewWorkspaceName("");
 		} catch (err) {
 			console.error(err);
 			alert("Failed to create workspace");
 		} finally {
 			setIsLoading(false);
-			setIsModalOpen(false);
-			setNewWorkspaceName("");
 		}
 	};
 
+	const handleJoinWorkspace = async () => {
+		if (!inviteCode.trim()) return;
+
+		setIsLoading(true);
+		try {
+			await apiPost("/workspace/join", { inviteCode });
+			await fetchWorkspaces();
+			setIsJoinModalOpen(false);
+			setInviteCode("");
+		} catch (err) {
+			console.error(err);
+			alert("Failed to join workspace. Please check the invite code.");
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const handleDeleteWorkspace = async (workspaceId, workspaceName, event) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		try {
+			await apiDelete(`/workspace/${workspaceId}`);
+			await fetchWorkspaces();
+		} catch (err) {
+			console.error(`Failed to delete workspace ${workspaceId}:`, err);
+			alert("Failed to delete workspace. Please try again.");
+		}
+	};
+
+	if (loading) {
+		return (
+			<main className='flex flex-col md:flex-row gap-6 p-6 md:p-10 bg-gray-50 min-h-screen animate-pulse'>
+				<section className='flex-1 flex flex-col gap-8'>
+					{/* Header Row */}
+					<div className='flex justify-between items-center'>
+						<div className='h-10 w-60 bg-gray-200 rounded'></div>
+						<div className='h-12 w-48 bg-gray-300 rounded-xl'></div>
+					</div>
+
+					{/* Metrics Card */}
+					<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
+						<div className='h-28 bg-gray-200 rounded-2xl'></div>
+					</div>
+
+					{/* Title */}
+					<div className='h-7 w-52 bg-gray-200 rounded'></div>
+
+					{/* Workspace Cards */}
+					<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+						{Array.from({ length: 8 }).map((_, i) => (
+							<div key={i} className='h-40 bg-gray-200 rounded-2xl shadow-md'></div>
+						))}
+					</div>
+				</section>
+			</main>
+		);
+	}
+
 	return (
 		<main className='flex flex-col md:flex-row gap-6 p-6 md:p-10 bg-gray-50 min-h-screen'>
-			{/* Sidebar */}
-			<aside className='w-full md:w-64 bg-white shadow-lg rounded-2xl p-6 border border-gray-200 flex flex-col'>
-				<h2 className='text-xl font-bold text-gray-800 mb-6'>Navigation</h2>
-				<ul className='space-y-3 flex-1'>
-					<li>
-						<Link
-							to='/overview'
-							className='block p-3 rounded-lg hover:bg-blue-50 transition-all text-gray-700 font-medium'>
-							Overview
-						</Link>
-					</li>
-				</ul>
-			</aside>
-
-			{/* Main Content */}
 			<section className='flex-1 flex flex-col gap-6'>
-				{/* Header */}
-				<div className='flex justify-between items-center'>
+				<div className='flex justify-between items-center '>
 					<h1 className='text-3xl font-extrabold text-gray-900'>Workspace Overview</h1>
-					<button
-						onClick={() => setIsModalOpen(true)}
-						className='inline-flex items-center gap-2 bg-linear-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md transform hover:-translate-y-1 transition-all duration-300'>
-						<PlusIcon />
-						Create Workspace
-					</button>
+					<div className='flex gap-3'>
+						<button
+							onClick={() => setIsCreateModalOpen(true)}
+							className='btn btn-primary flex items-center gap-2'>
+							<PlusIcon className='h-4 w-4' /> Create Workspace
+						</button>
+						<button
+							onClick={() => setIsJoinModalOpen(true)}
+							className='btn btn-secondary flex items-center gap-2'>
+							<PlusIcon className='h-4 w-4 rotate-45' /> Join Workspace
+						</button>
+					</div>
 				</div>
 
-				{/* Metrics Cards */}
+				{/* Metrics */}
 				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
-					<div className='bg-linear-to-b from-white to-blue-50 border border-blue-300 p-6 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 cursor-pointer '>
+					<div className='bg-white border border-blue-300 p-6 rounded-2xl shadow-lg'>
 						<h3 className='text-sm font-semibold text-indigo-600 mb-2 text-center'>
 							Active Workspaces
 						</h3>
@@ -91,8 +168,16 @@ function WorkspacePage() {
 							key={workspace.id}
 							to='/workspace/$workspaceId'
 							params={{ workspaceId: workspace.id }}
-							className='bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 p-6 border border-gray-200 flex flex-col justify-between hover:bg-indigo-50'>
-							<h3 className='text-lg font-semibold text-gray-900 truncate'>{workspace.name}</h3>
+							className='group relative bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 p-6 border border-gray-200 flex flex-col justify-between hover:bg-indigo-50'>
+							<button
+								onClick={(e) => handleDeleteWorkspace(workspace.id, workspace.name, e)}
+								className='absolute top-3 right-3 p-2 rounded-full bg-red-100 text-red-600 hover:bg-red-500 hover:text-white transition duration-200 opacity-0 group-hover:opacity-100 focus:opacity-100 z-10'
+								title='Delete Workspace'>
+								<Trash2 className='h-4 w-4' />
+							</button>
+							<h3 className='text-lg font-semibold text-gray-900 truncate pr-8'>
+								{workspace.name}
+							</h3>
 							<div className='flex items-center gap-2 mt-4'>
 								<svg
 									xmlns='http://www.w3.org/2000/svg'
@@ -113,15 +198,11 @@ function WorkspacePage() {
 							</div>
 						</Link>
 					))}
-					{workspaces.length === 0 && (
-						<p className='text-gray-500 col-span-full'>No workspaces found.</p>
-					)}
 				</div>
-				{/* <Outlet /> */}
 			</section>
 
-			{/* Modal from Daisy UI */}
-			{isModalOpen && (
+			{/* Create Workspace Modal */}
+			{isCreateModalOpen && (
 				<div className='modal modal-open'>
 					<div className='modal-box rounded-xl p-6'>
 						<h3 className='text-xl font-bold mb-4'>Create New Workspace</h3>
@@ -133,13 +214,39 @@ function WorkspacePage() {
 							className='input input-bordered w-full mb-4'
 						/>
 						<div className='modal-action flex justify-end gap-3'>
-							<button onClick={() => setIsModalOpen(false)} className='btn btn-ghost'>
+							<button onClick={() => setIsCreateModalOpen(false)} className='btn btn-ghost'>
 								Cancel
 							</button>
 							<button
 								onClick={handleCreateWorkspace}
 								className={`btn btn-primary ${isLoading ? "loading" : ""}`}>
 								Create
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Join Workspace Modal */}
+			{isJoinModalOpen && (
+				<div className='modal modal-open'>
+					<div className='modal-box rounded-xl p-6'>
+						<h3 className='text-xl font-bold mb-4'>Join Workspace</h3>
+						<input
+							type='text'
+							placeholder='Invite Code'
+							value={inviteCode}
+							onChange={(e) => setInviteCode(e.target.value)}
+							className='input input-bordered w-full mb-4'
+						/>
+						<div className='modal-action flex justify-end gap-3'>
+							<button onClick={() => setIsJoinModalOpen(false)} className='btn btn-ghost'>
+								Cancel
+							</button>
+							<button
+								onClick={handleJoinWorkspace}
+								className={`btn btn-secondary ${isLoading ? "loading" : ""}`}>
+								Join
 							</button>
 						</div>
 					</div>

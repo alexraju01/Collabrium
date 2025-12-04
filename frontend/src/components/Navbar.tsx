@@ -55,11 +55,17 @@ const Navbar = () => {
 						Home
 					</Link>
 
-					<Link to='/dashboard' className={`hover:text-blue-600 ${isActive("/dashboard")}`}>
+					<Link
+						to='/dashboard'
+						preload='render'
+						className={`hover:text-blue-600 ${isActive("/dashboard")}`}>
 						Dashboard
 					</Link>
 
-					<Link to='/workspace' className={`hover:text-blue-600 ${isActive("/workspace")}`}>
+					<Link
+						to='/workspace'
+						preload='render'
+						className={`hover:text-blue-600 ${isActive("/workspace")}`}>
 						Workspace
 					</Link>
 

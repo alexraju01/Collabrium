@@ -20,57 +20,81 @@ type ThemedCardProps = {
 export const Route = createFileRoute("/dashboard")({
 	beforeLoad: async () => {
 		const user = await apiGet("/user/me");
-		if (!user) {
-			console.warn("User not authenticated, redirecting to login.");
-			throw redirect({ to: "/login" });
-		}
+		if (!user) throw redirect({ to: "/login" });
 		return { user };
 	},
+
 	loader: async () => {
 		const response = await apiGet("dashboard");
-		const dashboard = response?.data?.dashboard;
-
-		if (!dashboard) {
-			throw new Error("Dashboard data could not be fetched.");
-		}
-		const { totalWorkspaces, totalTasks } = dashboard;
-		return { totalWorkspaces, totalTasks };
+		return response?.data?.dashboard;
 	},
+
+	pendingComponent: () => (
+		<div className='flex justify-center items-center h-screen'>
+			<span className='loading loading-spinner loading-lg text-indigo-600'></span>
+		</div>
+	),
+
 	component: DashboardPage,
 });
 
-const ThemedDashboardCard = ({ title, value, subtitle, icon, color }: ThemedCardProps) => {
-	return (
-		<div
-			className={`
-                rounded-xl border bg-white shadow-lg 
-                transition-shadow duration-300 hover:shadow-xl 
-                border-t-4 ${color} p-6
-            `}>
-			<div className='flex items-center justify-between mb-4'>
-				<span className='text-sm font-medium text-gray-500 uppercase tracking-wider'>{title}</span>
-				<div
-					className={`p-2 rounded-full bg-opacity-10 ${color.replace("border", "bg")} text-gray-700`}>
-					{icon}
-				</div>
-			</div>
-
-			{/* Content / Value Section */}
-			<div className='flex flex-col'>
-				<span className='text-4xl font-extrabold text-gray-900'>{value}</span>
-				<p className='text-sm text-gray-500 mt-1'>{subtitle}</p>
+const ThemedDashboardCard = ({ title, value, subtitle, icon, color }: ThemedCardProps) => (
+	<div
+		className={`
+			rounded-xl border bg-white shadow-lg 
+			transition-shadow duration-300 hover:shadow-xl 
+			border-t-4 ${color} p-6
+		`}>
+		<div className='flex items-center justify-between mb-4'>
+			<span className='text-sm font-medium text-gray-500 uppercase tracking-wider'>{title}</span>
+			<div className={`p-2 rounded-full bg-opacity-10 ${color.replace("border", "bg")}`}>
+				{icon}
 			</div>
 		</div>
-	);
-};
+
+		<div className='flex flex-col'>
+			<span className='text-4xl font-extrabold text-gray-900'>{value}</span>
+			<p className='text-sm text-gray-500 mt-1'>{subtitle}</p>
+		</div>
+	</div>
+);
 
 function DashboardPage() {
-	const dashboard = Route.useLoaderData() as DashboardData;
+	const dashboard = Route.useLoaderData() as DashboardData | undefined;
 	const { user } = Route.useRouteContext();
-	console.log(user);
 
-	console.log("Dashboard Data Loaded:", dashboard);
+	// ⭐ LOADING SKELETON
+	if (!dashboard) {
+		return (
+			<div className='min-h-screen p-8 bg-gray-50 space-y-8 animate-pulse'>
+				{/* Header skeleton */}
+				<div className='h-10 w-96 bg-gray-200 rounded'></div>
 
+				{/* Cards grid */}
+				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+					{Array.from({ length: 3 }).map((_, i) => (
+						<div
+							key={i}
+							className='rounded-xl border bg-white shadow-lg border-t-4 border-gray-200 p-6'>
+							{/* Title and Icon */}
+							<div className='flex items-center justify-between mb-4'>
+								<div className='h-4 w-32 bg-gray-200 rounded'></div>
+								<div className='h-10 w-10 bg-gray-200 rounded-full'></div>
+							</div>
+
+							{/* Values */}
+							<div className='flex flex-col'>
+								<div className='h-10 w-20 bg-gray-200 rounded mb-2'></div>
+								<div className='h-4 w-40 bg-gray-200 rounded'></div>
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+		);
+	}
+
+	// ⭐ REAL CONTENT
 	return (
 		<div className='min-h-screen p-8 bg-gray-50 space-y-8'>
 			<h1 className='text-3xl font-bold text-gray-800 pb-4'>
@@ -89,7 +113,7 @@ function DashboardPage() {
 				<ThemedDashboardCard
 					title='Open Tasks'
 					value={dashboard.totalTasks}
-					subtitle={`${dashboard.totalTasks} task require your attention.`}
+					subtitle={`${dashboard.totalTasks} tasks require your attention.`}
 					icon={<ClipboardList size={24} className='text-red-600' />}
 					color='border-red-600'
 				/>
@@ -97,3 +121,5 @@ function DashboardPage() {
 		</div>
 	);
 }
+
+export default DashboardPage;

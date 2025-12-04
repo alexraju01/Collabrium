@@ -59,15 +59,16 @@ function RegisterComponent({ setLogin }: { setLogin: () => void }) {
 	const [username, setUserName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
 
 	async function Register() {
-		console.log(`register ${username} ${email} ${password} button`);
+		console.log(`register ${username} ${email} ${password} ${confirmPassword} button`);
 		const detials = {
 			displayName: username,
 			email: email,
 			password: password,
 		} as RegisterForm;
-		const response = await fetch("http://localhost:3001/api/users/register", {
+		const response = await apiPost("users/register", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(detials),
