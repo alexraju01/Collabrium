@@ -15,6 +15,6 @@ taskListRouter.use(protect);
 taskListRouter.route("/").post(getAllTaskLists).post(restrictTo("admin"), createTaskList);
 taskListRouter
 	.route("/:taskListId")
-	.get(getOneTaskList)
+	.post(getOneTaskList)
 	.patch(restrictTo("admin"), updateTaskList)
 	.delete(restrictTo("admin"), deleteTaskList);

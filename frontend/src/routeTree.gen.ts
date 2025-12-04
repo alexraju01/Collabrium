@@ -14,7 +14,8 @@ import { Route as LoginRouteRouteImport } from './routes/login/route'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkspaceIndexRouteImport } from './routes/workspace/index'
-import { Route as WorkspaceWorkspaceIdRouteRouteImport } from './routes/workspace/$workspaceId/route'
+import { Route as WorkspaceWorkspaceIdIndexRouteImport } from './routes/workspace/$workspaceId/index'
+import { Route as WorkspaceWorkspaceIdTasklistTasklistIdRouteImport } from './routes/workspace/$workspaceId/tasklist/$tasklistId'
 
 const SettingRouteRoute = SettingRouteRouteImport.update({
   id: '/setting',
@@ -41,10 +42,16 @@ const WorkspaceIndexRoute = WorkspaceIndexRouteImport.update({
   path: '/workspace/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WorkspaceWorkspaceIdRouteRoute =
-  WorkspaceWorkspaceIdRouteRouteImport.update({
-    id: '/workspace/$workspaceId',
-    path: '/workspace/$workspaceId',
+const WorkspaceWorkspaceIdIndexRoute =
+  WorkspaceWorkspaceIdIndexRouteImport.update({
+    id: '/workspace/$workspaceId/',
+    path: '/workspace/$workspaceId/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const WorkspaceWorkspaceIdTasklistTasklistIdRoute =
+  WorkspaceWorkspaceIdTasklistTasklistIdRouteImport.update({
+    id: '/workspace/$workspaceId/tasklist/$tasklistId',
+    path: '/workspace/$workspaceId/tasklist/$tasklistId',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -53,16 +60,18 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteRoute
   '/login': typeof LoginRouteRoute
   '/setting': typeof SettingRouteRoute
-  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteRoute
   '/workspace': typeof WorkspaceIndexRoute
+  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdIndexRoute
+  '/workspace/$workspaceId/tasklist/$tasklistId': typeof WorkspaceWorkspaceIdTasklistTasklistIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRoute
   '/login': typeof LoginRouteRoute
   '/setting': typeof SettingRouteRoute
-  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteRoute
   '/workspace': typeof WorkspaceIndexRoute
+  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdIndexRoute
+  '/workspace/$workspaceId/tasklist/$tasklistId': typeof WorkspaceWorkspaceIdTasklistTasklistIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,8 +79,9 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteRoute
   '/login': typeof LoginRouteRoute
   '/setting': typeof SettingRouteRoute
-  '/workspace/$workspaceId': typeof WorkspaceWorkspaceIdRouteRoute
   '/workspace/': typeof WorkspaceIndexRoute
+  '/workspace/$workspaceId/': typeof WorkspaceWorkspaceIdIndexRoute
+  '/workspace/$workspaceId/tasklist/$tasklistId': typeof WorkspaceWorkspaceIdTasklistTasklistIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -80,24 +90,27 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/setting'
-    | '/workspace/$workspaceId'
     | '/workspace'
+    | '/workspace/$workspaceId'
+    | '/workspace/$workspaceId/tasklist/$tasklistId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/dashboard'
     | '/login'
     | '/setting'
-    | '/workspace/$workspaceId'
     | '/workspace'
+    | '/workspace/$workspaceId'
+    | '/workspace/$workspaceId/tasklist/$tasklistId'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/login'
     | '/setting'
-    | '/workspace/$workspaceId'
     | '/workspace/'
+    | '/workspace/$workspaceId/'
+    | '/workspace/$workspaceId/tasklist/$tasklistId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -105,8 +118,9 @@ export interface RootRouteChildren {
   DashboardRouteRoute: typeof DashboardRouteRoute
   LoginRouteRoute: typeof LoginRouteRoute
   SettingRouteRoute: typeof SettingRouteRoute
-  WorkspaceWorkspaceIdRouteRoute: typeof WorkspaceWorkspaceIdRouteRoute
   WorkspaceIndexRoute: typeof WorkspaceIndexRoute
+  WorkspaceWorkspaceIdIndexRoute: typeof WorkspaceWorkspaceIdIndexRoute
+  WorkspaceWorkspaceIdTasklistTasklistIdRoute: typeof WorkspaceWorkspaceIdTasklistTasklistIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -146,11 +160,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/workspace/$workspaceId': {
-      id: '/workspace/$workspaceId'
+    '/workspace/$workspaceId/': {
+      id: '/workspace/$workspaceId/'
       path: '/workspace/$workspaceId'
       fullPath: '/workspace/$workspaceId'
-      preLoaderRoute: typeof WorkspaceWorkspaceIdRouteRouteImport
+      preLoaderRoute: typeof WorkspaceWorkspaceIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workspace/$workspaceId/tasklist/$tasklistId': {
+      id: '/workspace/$workspaceId/tasklist/$tasklistId'
+      path: '/workspace/$workspaceId/tasklist/$tasklistId'
+      fullPath: '/workspace/$workspaceId/tasklist/$tasklistId'
+      preLoaderRoute: typeof WorkspaceWorkspaceIdTasklistTasklistIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -161,8 +182,10 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRouteRoute: DashboardRouteRoute,
   LoginRouteRoute: LoginRouteRoute,
   SettingRouteRoute: SettingRouteRoute,
-  WorkspaceWorkspaceIdRouteRoute: WorkspaceWorkspaceIdRouteRoute,
   WorkspaceIndexRoute: WorkspaceIndexRoute,
+  WorkspaceWorkspaceIdIndexRoute: WorkspaceWorkspaceIdIndexRoute,
+  WorkspaceWorkspaceIdTasklistTasklistIdRoute:
+    WorkspaceWorkspaceIdTasklistTasklistIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

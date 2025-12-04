@@ -4,11 +4,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Briefcase, ClipboardList } from "lucide-react";
 import React from "react";
 
-type UserData = {
-	displayName: string;
-	id: string;
-};
-
 type DashboardData = {
 	totalWorkspaces: number;
 	totalTasks: number;
@@ -24,14 +19,14 @@ type ThemedCardProps = {
 
 export const Route = createFileRoute("/dashboard")({
 	beforeLoad: async () => {
-		const user = await apiGet<UserData>("/user/me");
-		if (!user || !user.displayName) throw redirect({ to: "/login" });
+		const user = await apiGet("/user/me");
+		if (!user) throw redirect({ to: "/login" });
 		return { user };
 	},
 
 	loader: async () => {
-		const response = await apiGet<{ dashboard: DashboardData }>("dashboard");
-		return response?.dashboard;
+		const response = await apiGet("dashboard");
+		return response?.data?.dashboard;
 	},
 
 	pendingComponent: () => (
@@ -46,10 +41,10 @@ export const Route = createFileRoute("/dashboard")({
 const ThemedDashboardCard = ({ title, value, subtitle, icon, color }: ThemedCardProps) => (
 	<div
 		className={`
-            rounded-xl border bg-white shadow-lg 
-            transition-shadow duration-300 hover:shadow-xl 
-            border-t-4 ${color} p-6
-        `}>
+			rounded-xl border bg-white shadow-lg 
+			transition-shadow duration-300 hover:shadow-xl 
+			border-t-4 ${color} p-6
+		`}>
 		<div className='flex items-center justify-between mb-4'>
 			<span className='text-sm font-medium text-gray-500 uppercase tracking-wider'>{title}</span>
 			<div className={`p-2 rounded-full bg-opacity-10 ${color.replace("border", "bg")}`}>
@@ -66,30 +61,27 @@ const ThemedDashboardCard = ({ title, value, subtitle, icon, color }: ThemedCard
 
 function DashboardPage() {
 	const dashboard = Route.useLoaderData() as DashboardData | undefined;
-	const { user } = Route.useRouteContext() as { user: UserData };
-
-	if (!user?.displayName) {
-		return (
-			<div className='flex justify-center items-center h-screen'>
-				<span className='loading loading-spinner loading-lg text-indigo-600'></span>
-			</div>
-		);
-	}
+	const { user } = Route.useRouteContext();
 
 	if (!dashboard) {
-		// Skeleton loading state
 		return (
 			<div className='min-h-screen p-8 bg-gray-50 space-y-8 animate-pulse'>
+				{/* Header skeleton */}
 				<div className='h-10 w-96 bg-gray-200 rounded'></div>
+
+				{/* Cards grid */}
 				<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
 					{Array.from({ length: 3 }).map((_, i) => (
 						<div
 							key={i}
 							className='rounded-xl border bg-white shadow-lg border-t-4 border-gray-200 p-6'>
+							{/* Title and Icon */}
 							<div className='flex items-center justify-between mb-4'>
 								<div className='h-4 w-32 bg-gray-200 rounded'></div>
 								<div className='h-10 w-10 bg-gray-200 rounded-full'></div>
 							</div>
+
+							{/* Values */}
 							<div className='flex flex-col'>
 								<div className='h-10 w-20 bg-gray-200 rounded mb-2'></div>
 								<div className='h-4 w-40 bg-gray-200 rounded'></div>

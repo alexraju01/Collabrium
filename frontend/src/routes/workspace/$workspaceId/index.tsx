@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { apiGet, apiPost } from "@/lib/fetchAxios";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ClipboardIcon, CheckIcon } from "@heroicons/react/24/outline"; // Using Heroicons
 import { useEffect, useState } from "react";
 
@@ -25,7 +25,7 @@ interface LoaderData {
 	allMembers: Member[];
 }
 
-export const Route = createFileRoute("/workspace/$workspaceId")({
+export const Route = createFileRoute("/workspace/$workspaceId/")({
 	loader: async ({ params }) => {
 		const { workspaceId } = params;
 
@@ -196,11 +196,21 @@ function RouteComponent() {
 									{tasklists.map((tasklist) => (
 										<li
 											key={tasklist.id}
-											className='bg-white p-4 rounded shadow-sm flex justify-between'>
-											<span>{tasklist.title}</span>
-											<span className='text-gray-400 text-sm'>
-												Created: {new Date(tasklist.createdAt).toLocaleDateString()}
-											</span>
+											// Applying Collabrium theme styling
+											className='bg-white p-4 rounded-lg shadow-sm 
+                       cursor-pointer hover:shadow-md transition-shadow duration-150'>
+											<Link
+												// Tanstack Router's 'to' prop is type-safe and points to the dynamic route path
+												to='./tasklist/$tasklistId'
+												// The 'params' prop is where you pass the dynamic variable(s)
+												params={{ workspaceId: workspace.id, tasklistId: tasklist.id }}
+												className='flex justify-between w-full items-center no-underline' // Ensure link covers the area
+											>
+												<span className='font-medium text-gray-800'>{tasklist.title}</span>
+												<span className='text-gray-500 text-sm'>
+													Created: {new Date(tasklist.createdAt).toLocaleDateString()}
+												</span>
+											</Link>
 										</li>
 									))}
 								</ul>
