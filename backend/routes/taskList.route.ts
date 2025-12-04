@@ -12,7 +12,7 @@ export const taskListRouter = Router({ mergeParams: true });
 
 taskListRouter.use(protect);
 
-taskListRouter.route("/").get(getAllTaskLists).post(restrictTo("admin"), createTaskList);
+taskListRouter.route("/").post(getAllTaskLists).post(restrictTo("admin"), createTaskList);
 taskListRouter
 	.route("/:taskListId")
 	.get(getOneTaskList)

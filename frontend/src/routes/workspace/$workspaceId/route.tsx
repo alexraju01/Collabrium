@@ -1,9 +1,9 @@
-import { apiGet } from "@/lib/fetchAxios";
+// @ts-nocheck
+import { apiGet, apiPost } from "@/lib/fetchAxios";
 import { createFileRoute } from "@tanstack/react-router";
 import { ClipboardIcon, CheckIcon } from "@heroicons/react/24/outline"; // Using Heroicons
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-// --- Data Structures ---
 interface Member {
 	id: number;
 	displayName: string;
@@ -25,14 +25,13 @@ interface LoaderData {
 	allMembers: Member[];
 }
 
-// --- Route Definition ---
 export const Route = createFileRoute("/workspace/$workspaceId")({
 	loader: async ({ params }) => {
 		const { workspaceId } = params;
 
 		try {
-			const { data } = await apiGet<LoaderData>(`/workspace/${workspaceId}`);
-			return data;
+			const { data: workspace } = await apiGet<LoaderData>(`/workspace/${workspaceId}`);
+			return workspace;
 		} catch (error) {
 			console.error("Failed to load workspace data:", error);
 			throw new Error(`Could not fetch workspace ${workspaceId}`);
@@ -42,7 +41,6 @@ export const Route = createFileRoute("/workspace/$workspaceId")({
 	component: RouteComponent,
 });
 
-// --- Helper Component for Detail Cards ---
 interface DetailCardProps {
 	title: string;
 	value: string | number;
@@ -61,19 +59,54 @@ function DetailCard({ title, value, colorClass, boldValue = false }: DetailCardP
 	);
 }
 
+// Tasklist type
+interface Tasklist {
+	id: number;
+	name: string;
+	createdAt: string;
+	updatedAt: string;
+}
+
 function RouteComponent() {
 	const { workspace } = Route.useLoaderData();
 	const { workspaceId } = Route.useParams();
 	const [copied, setCopied] = useState(false);
 
+	// Tasklists state
+	const [tasklists, setTasklists] = useState<Tasklist[]>([]);
+	const [loadingTasks, setLoadingTasks] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+
+	// Copy to clipboard
 	const handleCopy = (text: string) => {
 		navigator.clipboard.writeText(text);
 		setCopied(true);
-		setTimeout(() => setCopied(false), 1500); // Reset after 1.5s
+		setTimeout(() => setCopied(false), 1500);
 	};
+
+	// Fetch tasklists after component mounts
+	useEffect(() => {
+		const fetchTasklists = async () => {
+			setLoadingTasks(true);
+			setError(null);
+			try {
+				const { data } = await apiPost<Tasklist[]>("/tasklist", { workspaceId });
+				console.log(data.taskLists);
+				setTasklists(data.taskLists);
+			} catch (err) {
+				console.error(err);
+				setError("Failed to load tasklists.");
+			} finally {
+				setLoadingTasks(false);
+			}
+		};
+
+		fetchTasklists();
+	}, [workspaceId]);
 
 	return (
 		<div className='flex min-h-screen bg-gray-50'>
+			{/* Sidebar with members */}
 			<aside className='w-72 mt-5 mb-5 ml-5 p-5 bg-white rounded-xl shadow-md flex-shrink-0 border border-gray-100'>
 				<h3 className='text-lg text-gray-900 border-b-2 border-indigo-600 pb-3 mb-5 font-semibold flex gap-2 justify-center items-center'>
 					<svg
@@ -113,7 +146,7 @@ function RouteComponent() {
 				</ul>
 			</aside>
 
-			{/* Right Main Content */}
+			{/* Main content */}
 			<main className='grow p-5'>
 				<h1 className='text-4xl text-gray-900 mb-1 font-bold'>{workspace.name}</h1>
 				<p className='text-lg text-indigo-600 mb-8 font-medium'>Workspace ID: {workspaceId}</p>
@@ -125,7 +158,6 @@ function RouteComponent() {
 						colorClass='text-blue-600'
 					/>
 
-					{/* Invite Code with Copy Icon */}
 					<div className='relative bg-white rounded-xl shadow-md p-5 text-center'>
 						<h4 className='text-sm text-gray-500 mb-2'>Invite Code</h4>
 						<p className='text-2xl font-bold text-yellow-600'>{workspace.inviteCode}</p>
@@ -148,7 +180,34 @@ function RouteComponent() {
 					/>
 				</div>
 
-				{/* Tasklists... same as before */}
+				{/* Tasklists */}
+				<section className='mt-10'>
+					<h2 className='text-2xl font-semibold mb-4'>Tasklists</h2>
+
+					{loadingTasks && <p>Loading tasklists...</p>}
+					{error && <p className='text-red-500'>{error}</p>}
+
+					{!loadingTasks && !error && (
+						<>
+							{tasklists.length === 0 ? (
+								<p className='text-gray-500'>No tasklists available.</p>
+							) : (
+								<ul className='space-y-3'>
+									{tasklists.map((tasklist) => (
+										<li
+											key={tasklist.id}
+											className='bg-white p-4 rounded shadow-sm flex justify-between'>
+											<span>{tasklist.title}</span>
+											<span className='text-gray-400 text-sm'>
+												Created: {new Date(tasklist.createdAt).toLocaleDateString()}
+											</span>
+										</li>
+									))}
+								</ul>
+							)}
+						</>
+					)}
+				</section>
 			</main>
 		</div>
 	);

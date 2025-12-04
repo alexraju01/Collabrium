@@ -3,7 +3,7 @@ import { createFileRoute, redirect, Router } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { apiGet, apiPost, apiDelete } from "@/lib/fetchAxios";
 import { Link } from "@tanstack/react-router";
-import { PlusIcon, Trash2 } from "lucide-react";
+import { PlusIcon, Trash2, UserPlus } from "lucide-react";
 
 export const Route = createFileRoute("/workspace/")({
 	beforeLoad: async () => {
@@ -145,7 +145,8 @@ function WorkspacePage() {
 						<button
 							onClick={() => setIsJoinModalOpen(true)}
 							className='btn btn-secondary flex items-center gap-2'>
-							<PlusIcon className='h-4 w-4 rotate-45' /> Join Workspace
+							<UserPlus />
+							Join Workspace
 						</button>
 					</div>
 				</div>

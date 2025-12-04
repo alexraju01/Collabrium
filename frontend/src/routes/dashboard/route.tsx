@@ -63,7 +63,6 @@ function DashboardPage() {
 	const dashboard = Route.useLoaderData() as DashboardData | undefined;
 	const { user } = Route.useRouteContext();
 
-	// ⭐ LOADING SKELETON
 	if (!dashboard) {
 		return (
 			<div className='min-h-screen p-8 bg-gray-50 space-y-8 animate-pulse'>
@@ -94,7 +93,6 @@ function DashboardPage() {
 		);
 	}
 
-	// ⭐ REAL CONTENT
 	return (
 		<div className='min-h-screen p-8 bg-gray-50 space-y-8'>
 			<h1 className='text-3xl font-bold text-gray-800 pb-4'>
