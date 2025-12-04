@@ -151,7 +151,7 @@ function RouteComponent() {
 				<h1 className='text-4xl text-gray-900 mb-1 font-bold'>{workspace.name}</h1>
 				<p className='text-lg text-indigo-600 mb-8 font-medium'>Workspace ID: {workspaceId}</p>
 
-				<div className='grid grid-cols-1 md:grid-cols-4 gap-5'>
+				<div className='grid grid-cols-2  lg:grid-cols-4 gap-5'>
 					<DetailCard
 						title='Total Members'
 						value={workspace.memberCount}

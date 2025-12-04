@@ -1,7 +1,7 @@
 [
 	{
 		"displayName": "Sarah Johnson",
-		"email": "sarah.johnson@example.com",
+		"email": "sarah@example.com",
 		"password": "Password123!",
 		"confirmPassword": "Password123!"
 	},
@@ -24,8 +24,8 @@
 		"confirmPassword": "Password123!"
 	},
 	{
-		"displayName": "Maria Lopez",
-		"email": "maria.lopez@example.com",
+		"displayName": "alex raju",
+		"email": "alex@example.com",
 		"password": "Password123!",
 		"confirmPassword": "Password123!"
 	}
