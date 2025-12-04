@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { useAuth } from "@/context/authContext";
 import { apiPost } from "@/lib/fetchAxios";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 
 export const Route = createFileRoute("/login")({
@@ -55,71 +55,113 @@ interface RegisterForm {
 	password: string;
 }
 
+interface RegisterForm {
+	displayName: string;
+	email: string;
+	password: string;
+}
+
 function RegisterComponent({ setLogin }: { setLogin: () => void }) {
 	const [username, setUserName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-
+	const [success, setSuccess] = useState(false);
+	const [error, setError] = useState(""); // <-- new error state
+	const router = useRouter();
 	async function Register() {
-		console.log(`register ${username} ${email} ${password} ${confirmPassword} button`);
-		const detials = {
-			displayName: username,
-			email: email,
-			password: password,
-		} as RegisterForm;
-		const response = await apiPost("users/register", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(detials),
-		});
-		if (!response || response.status != 200) {
-			console.log("failed");
+		setError(""); // reset previous error
+		if (password !== confirmPassword) {
+			setError("Passwords do not match!");
 			return;
 		}
+
+		const details: RegisterForm & { confirmPassword: string } = {
+			displayName: username,
+			email,
+			password,
+			confirmPassword,
+		};
+
+		try {
+			const response = await apiPost("user/signup", details);
+			console.log("responsssssse", response.status);
+			// Check the status property
+			if (response?.status === "success") {
+				setSuccess(true);
+
+				// Navigate after success animation
+				setTimeout(() => {
+					router.navigate({ to: "/dashboard" }); // ⬅️ TanStack navigation
+					setSuccess(false);
+				}, 2000);
+			} else {
+				setError(response?.data?.message || "Registration failed!");
+			}
+		} catch (err: any) {
+			console.error(err);
+			setError(err?.response?.data?.message || "Registration failed!");
+		}
 	}
-	function returnSignIn() {
-		setLogin(true);
-	}
+
 	return (
 		<div>
 			<h2 className='text-center'>Register</h2>
-			<div>
-				<input
-					type='text'
-					value={username}
-					onChange={(e) => setUserName(e.currentTarget.value)}
-					placeholder='Username'
-					className='w-full border border-gray rounded px-4 py-3 my-2'
-				/>
-				<input
-					type='email'
-					value={email}
-					onChange={(e) => setEmail(e.currentTarget.value)}
-					placeholder='Email'
-					className='w-full border border-gray rounded px-4 py-3 my-2'
-				/>
-				<input
-					type='password'
-					value={password}
-					onChange={(e) => setPassword(e.currentTarget.value)}
-					placeholder='Password'
-					className='w-full border border-gray rounded px-4 py-3 my-2'
-				/>
-				<button
-					className='w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2'
-					onClick={Register}>
-					Create an Account
-				</button>
-			</div>
-			<div className='flex flex-col md:flex-row md:items-center md:justify-between my-2'>
-				<p>Already have an account?</p>
-				<button
-					className='border bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 md:mt-0'
-					onClick={returnSignIn}>
-					Sign In
-				</button>
-			</div>
+
+			{success ? (
+				<div className='text-green-600 text-center my-4'>
+					You have been successfully signed up! Redirecting to login...
+				</div>
+			) : (
+				<>
+					<div>
+						<input
+							type='text'
+							value={username}
+							onChange={(e) => setUserName(e.currentTarget.value)}
+							placeholder='Username'
+							className='w-full border border-gray rounded px-4 py-3 my-2'
+						/>
+						<input
+							type='email'
+							value={email}
+							onChange={(e) => setEmail(e.currentTarget.value)}
+							placeholder='Email'
+							className='w-full border border-gray rounded px-4 py-3 my-2'
+						/>
+						<input
+							type='password'
+							value={password}
+							onChange={(e) => setPassword(e.currentTarget.value)}
+							placeholder='Password'
+							className='w-full border border-gray rounded px-4 py-3 my-2'
+						/>
+						<input
+							type='password'
+							value={confirmPassword}
+							onChange={(e) => setConfirmPassword(e.currentTarget.value)}
+							placeholder='Confirm Password'
+							className='w-full border border-gray rounded px-4 py-3 my-2'
+						/>
+						<button
+							className='w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-2'
+							onClick={Register}>
+							Create an Account
+						</button>
+
+						{/* Show error message */}
+						{error && <div className='text-red-600 text-center my-2'>{error}</div>}
+					</div>
+					<div className='flex flex-col md:flex-row md:items-center md:justify-between my-2'>
+						<p>Already have an account?</p>
+						<button
+							className='border bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 md:mt-0'
+							onClick={setLogin}>
+							Sign In
+						</button>
+					</div>
+				</>
+			)}
 		</div>
 	);
 }
