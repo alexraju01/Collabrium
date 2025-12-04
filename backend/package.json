@@ -10,7 +10,7 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"dev": "nodemon  server.ts",
 		"seed": "npx ts-node ./seeds/seed.ts",
-		"start:prod": "cross-env NODE_ENV=production&&nodemon server.ts"
+		"start:prod": "cross-env NODE_ENV=production nodemon server.ts"
 	},
 	"dependencies": {
 		"bcryptjs": "^3.0.3",
