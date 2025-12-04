@@ -1,7 +1,7 @@
-import { CreationOptional, DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "../config/db";
-import TaskList from "./taskList.model";
-import Workspace from "./workspace.model";
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "../config/db.ts";
+import TaskList from "./taskList.model.ts";
+import Workspace from "./workspace.model.ts";
 
 type Status = "not started" | "in progress" | "completed" | "in review";
 type Priority = "low" | "medium" | "high";
@@ -23,14 +23,14 @@ export interface TaskAttributes {
 }
 
 // 2. Define the attributes required for creation (ID is optional)
-export type TaskCreationAttributes = Optional<
+export type TaskCreationAttributes = Omit<
 	TaskAttributes,
 	"id" | "createdAt" | "updatedAt" | "assignedTo"
 >;
 
 // 3. Define the Model Class extending Sequelize.Model
 class Task extends Model<TaskAttributes, TaskCreationAttributes> {
-	declare id: CreationOptional<number>;
+	declare id: number;
 	declare title: string;
 	declare description: string;
 	declare status: Status;
@@ -69,7 +69,7 @@ Task.init(
 		},
 
 		description: {
-			type: DataTypes.TEXT,
+			type: DataTypes.STRING(2048),
 			allowNull: true,
 		},
 

@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { protect, restrictTo } from "../controllers/auth.controller";
+import { protect, restrictTo } from "../controllers/auth.controller.ts";
 import {
 	createTaskList,
 	deleteTaskList,
 	getAllTaskLists,
 	getOneTaskList,
 	updateTaskList,
-} from "../controllers/taskList.controller";
+} from "../controllers/taskList.controller.ts";
 
 export const taskListRouter = Router({ mergeParams: true });
 

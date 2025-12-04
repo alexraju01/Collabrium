@@ -1,14 +1,16 @@
-import { NextFunction, Request, Response } from "express";
-import Task from "../models/task.model";
-import AppError from "../lib/AppError";
+// import { NextFunction, Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
+import Task from "../models/task.model.ts";
+import AppError from "../lib/AppError.ts";
 import { Op } from "sequelize";
-import APIFeatures, { QueryString } from "../lib/APIFearure";
-import { checkMembership, requireAuth } from "./taskList.controller";
-import TaskList from "../models/taskList.model";
-import { WorkspaceUser } from "../models/workspaceUser.model";
-import { checkWorkspaceAdmin } from "../lib/checkWorkspaceAdmin";
+import APIFeatures from "../lib/APIFearure.ts";
+import type { QueryString } from "../lib/APIFearure.ts";
+import { checkMembership, requireAuth } from "./taskList.controller.ts";
+import TaskList from "../models/taskList.model.ts";
+import { WorkspaceUser } from "../models/workspaceUser.model.ts";
+import { checkWorkspaceAdmin } from "../lib/checkWorkspaceAdmin.ts";
 
-import { sequelize } from "../config/db";
+import { sequelize } from "../config/db.ts";
 
 export const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
 	const { userId } = requireAuth(req);

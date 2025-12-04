@@ -1,5 +1,5 @@
-import { WorkspaceUser } from "../models/workspaceUser.model";
-import AppError from "./AppError";
+import { WorkspaceUser } from "../models/workspaceUser.model.ts";
+import AppError from "./AppError.ts";
 
 export const checkWorkspaceAdmin = async (userId: number, workspaceId: number) => {
 	const workspaceUser = await WorkspaceUser.findOne({
