@@ -9,9 +9,9 @@ import Footer from "@/components/Footer";
 export const Route = createRootRoute({
 	component: () => (
 		<AuthProvider>
-			<div className="grid grid-rows-[auto_1fr_auto] max-h-screen h-screen max-w-screen">
+			<div className=''>
 				<Navbar />
-				<main className="flex  px-4">
+				<main className='flex  px-4'>
 					<Outlet /> {/* Nested routes render here */}
 				</main>
 				<Footer />
