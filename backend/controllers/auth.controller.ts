@@ -42,6 +42,7 @@ const createSendToken = (user: User, statusCode: number, res: Response) => {
 
 		sameSite: isProduction ? "none" : ("lax" as const),
 	} as CookieOptions;
+	console.log(isProduction);
 
 	res.cookie("JWT", token, cookieOptions);
 
