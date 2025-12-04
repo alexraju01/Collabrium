@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import Footer from "@/components/Footer";
 
 export const Route = createFileRoute("/")({
 	component: LandingPage,

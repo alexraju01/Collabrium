@@ -170,7 +170,7 @@ function WorkspacePage() {
 
 				{/* Metrics */}
 				<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
-					<div className='bg-white border border-blue-300 p-6 rounded-2xl shadow-lg'>
+					<div className='bg-linear-to-b from-white to-blue-50 border border-blue-300 p-6 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 cursor-pointer '>
 						<h3 className='text-sm font-semibold text-indigo-600 mb-2 text-center'>
 							Active Workspaces
 						</h3>

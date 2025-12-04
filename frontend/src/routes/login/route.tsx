@@ -69,6 +69,8 @@ function RegisterComponent({ setLogin }: { setLogin: () => void }) {
 	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState(""); // <-- new error state
 	const router = useRouter();
+	const { setUser } = useAuth();
+
 	async function Register() {
 		setError(""); // reset previous error
 		if (password !== confirmPassword) {
@@ -89,6 +91,14 @@ function RegisterComponent({ setLogin }: { setLogin: () => void }) {
 			// Check the status property
 			if (response?.status === "success") {
 				setSuccess(true);
+
+				const { data } = await apiPost("/user/login", details);
+				if (!data) {
+					console.log("Login failed");
+					return;
+				}
+				console.log(data);
+				setUser(data.user);
 
 				// Navigate after success animation
 				setTimeout(() => {
