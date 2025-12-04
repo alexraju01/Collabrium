@@ -11,7 +11,7 @@ function LandingPage() {
 	useEffect(() => {
 		setIsVisible(true);
 	}, []);
-
+	// comment
 	return (
 		<div className='min-h-screen bg-white flex flex-col'>
 			{/* Main Content */}
