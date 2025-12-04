@@ -11,7 +11,7 @@ async function startServer() {
 		// check
 		const { PORT } = process.env;
 		app.listen(PORT, () => {
-			console.log(`${ORANGE}Server listenings on http://localhost:${PORT}${RESET}`);
+			console.log(`${ORANGE}Server listenings on ${process.env.URL} ${RESET}`);
 		});
 	} catch (error) {
 		console.error(`${RED}Unable to connect to the database:${RESET}`, error);

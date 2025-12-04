@@ -5,9 +5,9 @@ import { Sequelize } from "sequelize";
 
 // Use the full connection URI from the environment variable
 const connectionUri = process.env.DB_URI;
-
+console.log(connectionUri);
 if (!connectionUri) {
-	throw new Error("DB_UIR environment variable is not set.");
+	throw new Error("DB_URI environment variable is not set.");
 }
 
 export const sequelize = new Sequelize(connectionUri, {
