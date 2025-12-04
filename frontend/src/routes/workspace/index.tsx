@@ -139,14 +139,31 @@ function WorkspacePage() {
 					<div className='flex gap-3'>
 						<button
 							onClick={() => setIsCreateModalOpen(true)}
-							className='btn btn-primary flex items-center gap-2'>
-							<PlusIcon className='h-4 w-4' /> Create Workspace
+							className='
+                                    bg-blue-600 hover:bg-blue-700 
+                                    text-white 
+                                    font-semibold 
+                                    py-2 px-4 
+                                    rounded-lg 
+                                    shadow-md 
+                                    transition-colors duration-200 
+                                    flex items-center gap-2'>
+							<PlusIcon className='h-4 w-4' /> New Workspace
 						</button>
+
 						<button
 							onClick={() => setIsJoinModalOpen(true)}
-							className='btn btn-secondary flex items-center gap-2'>
+							className='
+                                    bg-white hover:bg-blue-50 
+                                    border border-blue-600 
+                                    text-blue-600 
+                                    font-medium 
+                                    py-2 px-4 
+                                    rounded-lg 
+                                    transition-colors duration-200 
+                                    flex items-center gap-2'>
 							<UserPlus />
-							Join Workspace
+							Join
 						</button>
 					</div>
 				</div>
@@ -246,7 +263,8 @@ function WorkspacePage() {
 							</button>
 							<button
 								onClick={handleJoinWorkspace}
-								className={`btn btn-secondary ${isLoading ? "loading" : ""}`}>
+								className={`btn bg-blue-600 hover:bg-blue-700 
+                                    text-white  ${isLoading ? "loading" : ""}`}>
 								Join
 							</button>
 						</div>
