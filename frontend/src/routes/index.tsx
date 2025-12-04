@@ -15,34 +15,6 @@ function LandingPage() {
 
 	return (
 		<div className='min-h-screen bg-white flex flex-col'>
-			{/* Navigation */}
-			{/* <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-sm border-b border-gray-100 z-50">
-        <div className="max-w-6xl mx-auto px-8 py-4 flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-3 group">
-            <img
-              src="/collabrium-logo-new.jpeg"
-              alt="Collabrium Logo"
-              className="h-10 w-10 object-contain transition-opacity group-hover:opacity-80"
-            />
-            <span className="text-xl font-bold text-gray-900">Collabrium</span>
-          </Link>
-          <div className="flex gap-4 items-center">
-            <Link
-              to="/login"
-              className="px-4 py-2 text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              Sign in
-            </Link>
-            <Link
-              to="/dashboard"
-              className="px-6 py-2.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all font-bold"
-            >
-              Get started
-            </Link>
-          </div>
-        </div>
-      </nav> */}
-
 			{/* Main Content */}
 			<div className='flex-1'>
 				{/* Hero Section */}
@@ -211,9 +183,6 @@ function LandingPage() {
 					</div>
 				</section>
 			</div>
-
-			{/* Footer */}
-			<Footer />
 		</div>
 	);
 }
